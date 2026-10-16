@@ -1,0 +1,51 @@
+import {test,expect} from '@playwright/test';
+test('navigation, learning, program and persistence',async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');
+ await expect(page.getByRole('heading',{name:/Путь начинается/})).toBeVisible();
+ await page.getByRole('link',{name:'Термины',exact:true}).click();
+ await page.getByRole('button',{name:'Вспомнил(а) — открыть ответ'}).click();
+ await page.getByRole('button',{name:'Легко',exact:true}).click();
+ await page.reload();await page.getByRole('link',{name:'Прогресс',exact:true}).click();
+ await expect(page.locator('.stats')).toContainText('1 / 10');
+ await page.getByRole('link',{name:'Техника',exact:true}).click();
+ await page.getByRole('button',{name:'Блоки',exact:true}).click();
+ await expect(page.locator('.video')).toHaveCount(2);
+ await page.getByRole('button',{name:'Отметить «Повторено»'}).first().click();
+ await page.getByRole('link',{name:'Повторение',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'План техники · 5'})).toBeVisible();
+ await page.getByRole('link',{name:'Программа',exact:true}).click();
+ await page.getByLabel('Организация или клуб').fill('Мой додзё');
+ await page.getByLabel('Маэ-гэри',{exact:true}).check();
+ await page.getByRole('button',{name:'Сохранить программу'}).click();await page.reload();
+ await expect(page.getByLabel('Организация или клуб')).toHaveValue('Мой додзё');
+ await page.getByRole('link',{name:'Техника',exact:true}).click();await page.getByRole('button',{name:'Все',exact:true}).click();
+ await expect(page.locator('.video')).toHaveCount(1);
+ await expect(page.locator('body')).toHaveJSProperty('scrollWidth',await page.evaluate(()=>document.documentElement.clientWidth));
+ expect(errors).toEqual([]);
+});
+test('lesson completion counted once and missing audio explicit',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Занятие на 10 минут →'}).click();
+ for(let i=0;i<4;i++){await page.getByRole('button',{name:'Вспомнил(а) — открыть ответ'}).click();await page.getByRole('button',{name:'С трудом',exact:true}).click();}
+ await expect(page.getByRole('heading',{name:'Одна техническая тема'})).toBeVisible();
+ await page.getByRole('button',{name:'Завершить занятие'}).click();
+ await expect(page.getByText(/Занятие ·/)).toHaveCount(1);await page.reload();
+ await expect(page.getByText(/Занятие ·/)).toHaveCount(1);
+ await page.getByRole('link',{name:'Термины',exact:true}).click();
+ await expect(page.getByText(/Аудио недоступно/)).toBeVisible();
+ await page.getByRole('button',{name:'На слух',exact:true}).click();
+ await expect(page.getByText(/Упражнение на слух недоступно/)).toBeVisible();
+});
+test('choice feedback, recall deadline and browser back navigation',async({page})=>{
+ await page.clock.install({time:new Date('2026-10-16T12:00:00Z')});
+ await page.goto('/#terms');
+ await page.getByRole('button',{name:'Выбрать перевод',exact:true}).click();
+ await page.getByRole('button',{name:'Поклон',exact:true}).click();
+ await expect(page.getByText(/Правильный ответ:/)).toBeVisible();
+ await page.getByRole('button',{name:'Не помню',exact:true}).click();
+ await page.getByRole('link',{name:'Повторение',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Термины · 0',exact:true})).toBeVisible();
+ await page.clock.fastForward(600001);await page.reload();
+ await expect(page.getByRole('heading',{name:'Термины · 1',exact:true})).toBeVisible();
+ await page.getByRole('link',{name:'Техника',exact:true}).click();await page.goBack();
+ await expect(page.getByRole('heading',{name:'Повторение',exact:true})).toBeVisible();
+});
