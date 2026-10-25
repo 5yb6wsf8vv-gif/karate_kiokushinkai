@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 test('navigation, learning, program and persistence',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');
- await expect(page.getByRole('heading',{name:/Путь начинается/})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Твой путь/})).toBeVisible();
  await page.getByRole('link',{name:'Термины',exact:true}).click();
  await page.getByRole('button',{name:'Вспомнил(а) — открыть ответ'}).click();
  await page.getByRole('button',{name:'Легко',exact:true}).click();

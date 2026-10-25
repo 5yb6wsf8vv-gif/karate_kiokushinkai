@@ -22,3 +22,21 @@ test('progress round trip and corrupt storage recovery',()=>{
  raw='{bad';assert.deepEqual(load(storage).terms,{});
  assert.equal(save({setItem(){throw Error('full');}},state),false);
 });
+
+import {lessons,examQuestions,examReady,examPassed,unlocked} from '../src/curriculum.js';
+test('32 unique lessons, valid answers and sequential unlocks',()=>{
+ assert.equal(lessons.length,32);assert.equal(new Set(lessons.map(l=>l.id)).size,32);
+ for(const l of lessons){assert.equal(l.options.length,3);assert.ok(l.options.includes(l.answer));assert.equal(l.body.length,2);}
+ assert.equal(unlocked({},1),true);assert.equal(unlocked({},2),false);assert.equal(unlocked({1:{passed:true}},2),true);
+});
+test('final exam requires every lesson passed AND reviewed',()=>{
+ const p=Object.fromEntries(lessons.map(l=>[l.id,{passed:true,reviewed:true}]));
+ assert.equal(examReady(p),true);p[32].reviewed=false;assert.equal(examReady(p),false);
+ p[32].reviewed=true;p[1].passed=false;assert.equal(examReady(p),false);
+});
+test('exam requires two correct answers per block, not just total score',()=>{
+ const results=examQuestions.map(q=>({block:q.block,correct:true}));assert.equal(examPassed(results),true);
+ results[0].correct=false;assert.equal(examPassed(results),true);
+ results[1].correct=false;assert.equal(examPassed(results),false);
+ assert.equal(examPassed(results.slice(1)),false);
+});
