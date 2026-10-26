@@ -1,4 +1,3 @@
-import {solveDojo} from './dojo-helper.js';
 import {test,expect} from '@playwright/test';
 test('navigation, learning, program and persistence',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');
@@ -28,9 +27,7 @@ test('lesson completion counted once and missing audio explicit',async({page})=>
  await page.goto('/');await page.getByRole('button',{name:'Занятие на 10 минут →'}).click();
  for(let i=0;i<4;i++){await page.getByRole('button',{name:'Вспомнил(а) — открыть ответ'}).click();await page.getByRole('button',{name:'С трудом',exact:true}).click();}
  await expect(page.getByRole('heading',{name:'Одна техническая тема'})).toBeVisible();
- await page.getByRole('button',{name:'Перейти к додзе кун'}).click();
- await expect(page.getByRole('button',{name:'Завершить занятие'})).toBeDisabled();
- await solveDojo(page);
+ await expect(page.getByRole('heading',{name:'Додзе кун',exact:true})).toHaveCount(0);
  await page.getByRole('button',{name:'Завершить занятие'}).click();
  await expect(page.getByText(/Занятие ·/)).toHaveCount(1);await page.reload();
  await expect(page.getByText(/Занятие ·/)).toHaveCount(1);

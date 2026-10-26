@@ -10,10 +10,12 @@ test('complete and repeat all 32 lessons to unlock exam',async({page})=>{
   if(l.id===1)await page.getByRole('button',{name:/Урок 1:/}).click();
   await expect(page.getByRole('heading',{name:l.title,exact:true})).toBeVisible();
   await page.getByRole('button',{name:l.answer,exact:true}).click();
-  await solveDojo(page);
+  if(l.id%8===0)await solveDojo(page);
+  else await expect(page.getByRole('heading',{name:'Додзе кун',exact:true})).toHaveCount(0);
   await page.getByRole('button',{name:'Повторить и закрепить'}).click();
   await page.getByRole('button',{name:l.answer,exact:true}).click();
-  await solveDojo(page);
+  if(l.id%8===0)await solveDojo(page);
+  else await expect(page.getByRole('heading',{name:'Додзе кун',exact:true})).toHaveCount(0);
   await page.getByRole('button',{name:l.id<32?'Следующий урок →':'К итоговому тесту'}).click();
  }
  await expect(page.getByRole('button',{name:'Начать кю-тест'})).toBeEnabled();await page.reload();
