@@ -36,7 +36,7 @@ test('sensei on every section, mobile layout and interrupted exam',async({page})
  await ready(page);await page.getByRole('button',{name:'Начать кю-тест'}).click();
  for(const name of ['Термины','Техника','Повторение','Прогресс','Программа','Мой путь']){
   await page.getByRole('link',{name,exact:true}).click();
-  await expect(page.getByRole('img',{name:'Мультяшный сенсей Аки'})).toBeVisible();
+  await expect(page.getByRole('img',{name:/Сенсей Дмитрий:/})).toBeVisible();
   expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth)).toBe(true);
  }
  await page.getByRole('button',{name:'Начать кю-тест'}).click();
