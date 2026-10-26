@@ -7,6 +7,9 @@ test('Dmitry portrait, six emotions, changing advice and lesson feedback',async(
  const avatar=page.locator('.sensei-portrait');
  await expect(page.getByRole('img',{name:'Сенсей Дмитрий: Уверенность'})).toBeVisible();
  await expect(avatar).toHaveCSS('background-size','300% 200%');
+ await expect(avatar).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
+ await expect(avatar).toHaveCSS('border-top-width','0px');
+ await expect(avatar).toHaveCSS('box-shadow','none');
  const background=await avatar.evaluate(el=>getComputedStyle(el).backgroundImage);
  const assetURL=background.slice(5,-2);
  expect((await page.request.get(assetURL)).status()).toBe(200);

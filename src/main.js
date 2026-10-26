@@ -2,6 +2,7 @@ import {createDojoExercise} from './dojo.js';
 import {setSensei,handleSensei} from './sensei.js';
 import {createJourney,sensei} from './journey.js';
 import './style.css';
+import './dark.css';
 import {terms,techniques} from './data.js';
 import {load,save,schedule,dueItems,DAY} from './core.js';
 let storage;try{storage=window.localStorage;}catch{storage={getItem(){return null;},setItem(){throw Error('Storage unavailable');}};}
