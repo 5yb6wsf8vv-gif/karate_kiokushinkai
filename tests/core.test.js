@@ -40,3 +40,10 @@ test('exam requires two correct answers per block, not just total score',()=>{
  results[1].correct=false;assert.equal(examPassed(results),false);
  assert.equal(examPassed(results.slice(1)),false);
 });
+
+import {dojoKun,correctDojoOrder} from '../src/dojo.js';
+test('dojo kun requires all seven unique phrases in photo order',()=>{
+ assert.equal(dojoKun.length,7);
+ assert.equal(correctDojoOrder([0,1,2,3,4,5,6]),true);
+ for(const wrong of [[],[0,1,2],[1,0,2,3,4,5,6],[0,0,2,3,4,5,6],[0,1,2,3,4,5,6,7]])assert.equal(correctDojoOrder(wrong),false);
+});

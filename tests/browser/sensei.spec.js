@@ -1,3 +1,4 @@
+import {solveDojo} from './dojo-helper.js';
 import {test,expect} from '@playwright/test';
 
 test('Dmitry portrait, six emotions, changing advice and lesson feedback',async({page})=>{
@@ -23,7 +24,8 @@ test('Dmitry portrait, six emotions, changing advice and lesson feedback',async(
  const wrong=await page.locator('.sensei-reply').textContent();
  await page.getByRole('button',{name:'Поклон',exact:true}).click();
  await expect(page.locator('.sensei-reply')).not.toHaveText(wrong);
- await expect(page.locator('.feedback')).toContainText('Верно!');
+ await expect(page.locator('.feedback').first()).toContainText('Верно!');
+ await solveDojo(page);
  await page.reload();await expect(page.getByText('1/32 пройдено',{exact:true})).toBeVisible();
  expect(errors).toEqual([]);
  expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth)).toBe(true);

@@ -1,0 +1,23 @@
+import {test,expect} from '@playwright/test';
+import {dojoKun} from '../../src/dojo.js';
+import {solveDojo} from './dojo-helper.js';
+test('dojo order gates lesson completion, supports correction, and persists pass',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Продолжить обучение →'}).click();
+ await page.getByRole('button',{name:'Поклон',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Додзе кун',exact:true})).toBeVisible();
+ await expect(page.getByRole('button',{name:'Следующий урок →'})).toHaveCount(0);
+ await expect(page.getByRole('button',{name:'Проверить порядок'})).toBeDisabled();
+ for(const id of [1,0,2,3,4,5,6])await page.getByRole('button',{name:dojoKun[id],exact:true}).click();
+ await page.getByRole('button',{name:'Проверить порядок'}).click();
+ await expect(page.locator('.dojo-wrong')).toHaveCount(2);
+ expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth)).toBe(true);
+ await expect(page.getByRole('button',{name:'Следующий урок →'})).toHaveCount(0);
+ await page.getByRole('button',{name:'Начать заново',exact:true}).click();
+ await page.getByRole('button',{name:dojoKun[0],exact:true}).click();
+ await page.getByRole('button',{name:'Убрать фразу 1',exact:true}).click();
+ await expect(page.getByRole('button',{name:dojoKun[0],exact:true})).toBeVisible();
+ await solveDojo(page);
+ await expect(page.getByRole('button',{name:'Следующий урок →'})).toBeVisible();
+ await page.reload();await expect(page.getByText('1/32 пройдено',{exact:true})).toBeVisible();
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('kyokushin-v1')).course.lessons[1].dojoKunAt)).toBeGreaterThan(0);
+});
