@@ -1,5 +1,5 @@
 export const terms = [
-{id:'osu',jp:'押忍',reading:'Осу',translation:'Приветствие и выражение уважения'},
+{id:'osu',jp:'押忍',reading:'Ос',translation:'Приветствие и выражение уважения'},
 {id:'rei',jp:'礼',reading:'Рэй',translation:'Поклон'},
 {id:'hajime',jp:'始め',reading:'Хадзимэ',translation:'Начинайте'},
 {id:'yame',jp:'止め',reading:'Ямэ',translation:'Остановитесь'},
