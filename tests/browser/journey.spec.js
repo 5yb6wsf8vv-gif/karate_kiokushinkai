@@ -2,17 +2,16 @@ import {solveDojo} from './dojo-helper.js';
 import {test,expect} from '@playwright/test';
 import {lessons,examQuestions} from '../../src/curriculum.js';
 async function ready(page){await page.goto('/');await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'))||{version:1,terms:{},techniques:{},sessions:[],program:{organization:'Учебная программа',notes:'',enabled:[]}};s.course={lessons:Object.fromEntries(Array.from({length:32},(_,i)=>[i+1,{passed:true,reviewed:true}])),attempts:[],belt:null};localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();}
-test('complete and repeat all 32 lessons to unlock exam',async({page})=>{
+test('complete 32 lessons once to unlock exam',async({page})=>{
  test.setTimeout(120000);
  await page.goto('/');await expect(page.getByRole('button',{name:'Пока закрыто'})).toBeDisabled();
  await expect(page.getByRole('button',{name:/Урок 2:/})).toBeDisabled();
  for(const l of lessons){
   if(l.id===1)await page.getByRole('button',{name:/Урок 1:/}).click();
   await expect(page.getByRole('heading',{name:l.title,exact:true})).toBeVisible();
-  await page.getByRole('button',{name:l.answer,exact:true}).click();
-  if(l.id%8===0)await solveDojo(page);
-  else await expect(page.getByRole('heading',{name:'Додзе кун',exact:true})).toHaveCount(0);
-  await page.getByRole('button',{name:'Повторить и закрепить'}).click();
+  await expect(page.locator('.reading')).toBeVisible();
+  await page.getByRole('button',{name:'К заданиям →'}).click();
+  await expect(page.locator('.reading')).toHaveCount(0);
   await page.getByRole('button',{name:l.answer,exact:true}).click();
   if(l.id%8===0)await solveDojo(page);
   else await expect(page.getByRole('heading',{name:'Додзе кун',exact:true})).toHaveCount(0);
@@ -20,7 +19,8 @@ test('complete and repeat all 32 lessons to unlock exam',async({page})=>{
  }
  await expect(page.getByRole('button',{name:'Начать кю-тест'})).toBeEnabled();await page.reload();
  await expect(page.getByRole('button',{name:'Начать кю-тест'})).toBeEnabled();
- await expect(page.getByText('32/32 повторено',{exact:true})).toBeVisible();
+ await expect(page.getByText('32/32 пройдено',{exact:true})).toBeVisible();
+ await expect(page.locator('.path-step button span').filter({hasText:'✓✓'})).toHaveCount(0);
 });
 test('5-second deadline, failed block and retry with persisted belt',async({page})=>{
  await page.clock.install({time:new Date('2026-10-25T10:00:00Z')});await ready(page);

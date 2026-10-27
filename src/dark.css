@@ -4,3 +4,6 @@
 .sensei>.sensei-portrait{width:200px;min-width:200px;height:200px;padding:0;border:0;border-radius:0;box-shadow:none;background-color:transparent;filter:none;background-size:300% 200%}
 @media(max-width:1050px) and (min-width:761px){.sensei>.sensei-portrait{width:160px;min-width:160px;height:160px}}
 @media(max-width:760px){header,nav,.app-topbar{background:#101720;border-color:#2d3c51}.sensei>.sensei-portrait{width:125px;min-width:125px;height:125px}.sensei{gap:8px}.sensei>.sensei-bubble{padding:12px 10px}nav a[aria-current]{background:#1b3459}}
+nav a[href='#memory']:before{content:'書'}
+@media(max-width:760px){nav{grid-template-columns:repeat(7,1fr)}nav a{font-size:7px}.app-topbar{font-variant-numeric:tabular-nums}}
+.repetition .answers{margin-top:24px}.repetition>.text{margin:15px 0 0}

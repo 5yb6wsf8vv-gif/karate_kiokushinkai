@@ -21,9 +21,11 @@ test('Dmitry portrait, six emotions, changing advice and lesson feedback',async(
   await expect(page.getByRole('img',{name:'Сенсей Дмитрий: '+mood,exact:true})).toBeVisible();
  }
  await page.getByRole('button',{name:'Продолжить обучение →'}).click();
+ await page.getByRole('button',{name:'К заданиям →'}).click();
  await page.getByRole('button',{name:'Удар',exact:true}).click();
  await expect(page.locator('.sensei')).toHaveAttribute('data-emotion','sadness');
  const wrong=await page.locator('.sensei-reply').textContent();
+ await page.getByRole('button',{name:'Попробовать ещё раз',exact:true}).click();
  await page.getByRole('button',{name:'Поклон',exact:true}).click();
  await expect(page.locator('.sensei-reply')).not.toHaveText(wrong);
  await expect(page.locator('.feedback').first()).toContainText('Верно!');

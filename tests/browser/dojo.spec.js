@@ -4,11 +4,13 @@ import {solveDojo} from './dojo-helper.js';
 test('dojo gates stage completion, supports correction, and persists pass',async({page})=>{
  await page.goto('/');
  await page.getByRole('button',{name:'Продолжить обучение →'}).click();
+ await page.getByRole('button',{name:'К заданиям →'}).click();
  await page.getByRole('button',{name:'Поклон',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Додзе кун',exact:true})).toHaveCount(0);
  await expect(page.getByRole('button',{name:'Следующий урок →'})).toBeVisible();
  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'));for(let i=1;i<=7;i++)s.course.lessons[i]={passed:true};localStorage.setItem('kyokushin-v1',JSON.stringify(s));});
  await page.reload();await page.getByRole('button',{name:/Урок 8:/}).click();
+ await page.getByRole('button',{name:'К заданиям →'}).click();
  await page.getByRole('button',{name:'Сан',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Додзе кун',exact:true})).toBeVisible();
  await expect(page.getByRole('button',{name:'Следующий урок →'})).toHaveCount(0);

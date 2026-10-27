@@ -29,9 +29,9 @@ test('32 unique lessons, valid answers and sequential unlocks',()=>{
  for(const l of lessons){assert.equal(l.options.length,3);assert.ok(l.options.includes(l.answer));assert.equal(l.body.length,2);}
  assert.equal(unlocked({},1),true);assert.equal(unlocked({},2),false);assert.equal(unlocked({1:{passed:true}},2),true);
 });
-test('final exam requires every lesson passed AND reviewed',()=>{
+test('final exam requires one pass without mandatory repeat',()=>{
  const p=Object.fromEntries(lessons.map(l=>[l.id,{passed:true,reviewed:true}]));
- assert.equal(examReady(p),true);p[32].reviewed=false;assert.equal(examReady(p),false);
+ assert.equal(examReady(p),true);p[32].reviewed=false;assert.equal(examReady(p),true);
  p[32].reviewed=true;p[1].passed=false;assert.equal(examReady(p),false);
 });
 test('exam requires two correct answers per block, not just total score',()=>{
@@ -46,4 +46,19 @@ test('dojo kun requires all seven unique phrases in photo order',()=>{
  assert.equal(dojoKun.length,7);
  assert.equal(correctDojoOrder([0,1,2,3,4,5,6]),true);
  for(const wrong of [[],[0,1,2],[1,0,2,3,4,5,6],[0,0,2,3,4,5,6],[0,1,2,3,4,5,6,7]])assert.equal(correctDojoOrder(wrong),false);
+});
+
+
+import {ensureEconomy,changeXP,recordReview} from '../src/core.js';
+test('XP migration preserves legacy earnings once and penalties persist',()=>{
+ const s={course:{lessons:{1:{passed:true,reviewed:true},2:{passed:true}}}};
+ assert.equal(ensureEconomy(s).xp,50);changeXP(s,-1);s.course.lessons[3]={passed:true};
+ assert.equal(ensureEconomy(s).xp,49);
+ const storage={getItem:()=>null,setItem(){}};const fresh=load(storage);assert.equal(changeXP(fresh,-1),-1);
+});
+test('review awards five XP only on each tenth correct answer',()=>{
+ const s={};for(let i=1;i<=9;i++)assert.equal(recordReview(s),0);assert.equal(s.economy.xp,0);
+ assert.equal(recordReview(s),5);assert.equal(s.economy.xp,5);changeXP(s,-1);
+ for(let i=11;i<=19;i++)assert.equal(recordReview(s),0);
+ assert.equal(recordReview(s),5);assert.equal(s.economy.reviewCorrect,20);assert.equal(s.economy.xp,9);
 });
