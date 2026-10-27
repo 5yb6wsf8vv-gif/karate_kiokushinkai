@@ -21,8 +21,8 @@ export function createDuelServer({engine=new DuelEngine(),origins=['https://5yb6
    if(req.method!=='POST')throw new DuelError(404,'Не найдено.');
    let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>8192)throw new DuelError(413,'Слишком большой запрос.');}
    let body;try{body=JSON.parse(raw||'{}');}catch{throw new DuelError(400,'Неверный JSON.');}
-   if(url.pathname==='/rooms')send(201,engine.create(body.name));
-   else if(url.pathname==='/join')send(200,engine.join(body.room,body.name));
+   if(url.pathname==='/rooms')send(201,engine.create(body.name,body.skinId));
+   else if(url.pathname==='/join')send(200,engine.join(body.room,body.name,body.skinId));
    else if(url.pathname==='/answer')send(200,engine.answer(body.room,key,body.round,body.order));
    else if(url.pathname==='/leave')send(200,engine.leave(body.room,key));
    else throw new DuelError(404,'Не найдено.');
