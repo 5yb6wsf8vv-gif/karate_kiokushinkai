@@ -62,3 +62,12 @@ test('review awards five XP only on each tenth correct answer',()=>{
  for(let i=11;i<=19;i++)assert.equal(recordReview(s),0);
  assert.equal(recordReview(s),5);assert.equal(s.economy.reviewCorrect,20);assert.equal(s.economy.xp,9);
 });
+
+import {relayTasks,relayPassed,validRelayOrder} from '../src/relay.js';
+test('four relays have ten valid image-sequence tasks and threshold seven',()=>{
+ assert.equal(relayTasks.length,4);
+ for(const tasks of relayTasks){assert.equal(tasks.length,10);for(const task of tasks){assert.ok(task.steps.length>=3);assert.equal(validRelayOrder(task,task.steps.map(s=>s.id)),true);assert.equal(validRelayOrder(task,task.steps.map(()=>0)),false);}}
+ assert.equal(relayPassed(Array.from({length:10},(_,i)=>({correct:i<7}))),true);
+ assert.equal(relayPassed(Array.from({length:10},(_,i)=>({correct:i<6}))),false);
+ assert.equal(relayPassed(Array.from({length:7},()=>({correct:true}))),false);
+});
