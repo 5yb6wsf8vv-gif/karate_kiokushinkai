@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "test": "node --test tests/core.test.js",
+    "test": "node --test tests/*.test.js",
     "preview": "vite preview --host 0.0.0.0",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "duel:server": "node multiplayer/server.js"
   },
   "devDependencies": {
     "vite": "^6.1.0",

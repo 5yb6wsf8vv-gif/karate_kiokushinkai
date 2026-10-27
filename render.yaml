@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: kyokushin-duel
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: node multiplayer/server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: ALLOWED_ORIGINS
+        value: https://5yb6wsf8vv-gif.github.io
