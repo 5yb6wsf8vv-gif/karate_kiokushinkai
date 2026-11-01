@@ -1,29 +1,21 @@
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const COURSE_KEY='player-course';
+const validCourse=value=>/^[1-4]$/.test(String(value??''));
 const courseSelect=selected=>`<label>Курс обучения<select name="course" required><option value="">Выберите курс</option>${[1,2,3,4].map(n=>`<option value="${n}" ${String(selected)===String(n)?'selected':''}>${n} курс</option>`).join('')}</select></label>`;
 export function createAccount(render,storage){
- let user=null,token='',endpoint='',config=null,busy=false,message='',email='',name='',course='',step='email',loaded=false;
- try{const saved=JSON.parse(storage.getItem('player-account')||'null');if(saved){endpoint=saved.endpoint;token=saved.token;}}catch{}
- function server(){const raw=endpoint||import.meta.env.VITE_API_URL||storage.getItem('duel-server')||'';if(!raw)return '';const u=new URL(raw);if(u.username||u.password||u.search||u.hash||u.protocol!=='https:'&&!(['localhost','127.0.0.1'].includes(u.hostname)&&['localhost','127.0.0.1'].includes(location.hostname)&&u.protocol==='http:'))throw Error('Неверный адрес сервера аккаунтов.');return u.origin+u.pathname.replace(/\/$/,'');}
- async function api(path,data){const response=await fetch(endpoint+'/auth'+path,{method:data?'POST':'GET',headers:{...(data?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{})},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(20000)});const result=await response.json();if(!response.ok){const error=Error(result.error||'Не удалось выполнить вход.');error.status=response.status;throw error;}return result;}
- function remember(result){try{storage.setItem('player-account',JSON.stringify({endpoint,token:result.token}));}catch{throw Error('Разрешите сохранение данных в браузере, чтобы войти.');}token=result.token;user=result.user;message=user.course?'Вы вошли в аккаунт.':'Выберите курс обучения, чтобы завершить регистрацию.';}
- async function task(fn){if(busy)return;busy=true;message='';render();try{await fn();}catch(e){message=e.name==='TimeoutError'?'Сервер не ответил. Попробуйте позже.':e.message;}finally{busy=false;render();}}
- async function open(){if(loaded)return;loaded=true;await task(async()=>{endpoint=server();if(!endpoint){message='Регистрация пока недоступна: администратору нужно подключить сервер аккаунтов.';return;}config=await api('/config');
-  const params=new URLSearchParams(location.search);if(params.has('state')&&(params.has('code')||params.has('error'))){const pending=JSON.parse(sessionStorage.getItem('vk-login')||'null');sessionStorage.removeItem('vk-login');const authState=params.get('state'),code=params.get('code'),device=params.get('device_id');for(const key of ['state','code','device_id','error','error_description'])params.delete(key);history.replaceState(null,'',location.pathname+(params.size?'?'+params:'')+'#account');if(!pending||pending.state!==authState||pending.endpoint!==endpoint)throw Error('Не удалось проверить сеанс VK ID. Начните вход заново.');if(!code)throw Error('Вход через ВК отменён.');remember(await api('/vk/finish',{state:authState,code,device_id:device}));}
-  else if(token){try{user=(await api('/me')).user;}catch(e){if(e.status===401){token='';storage.removeItem('player-account');}throw e;}}
- });}
- function view(){const status=`<p class="feedback" role="status">${esc(message)}</p>`;
-  if(user)return `<h1>Мой аккаунт</h1>${status}<section class="card"><p>${user.provider==='vk'?'Вход через ВК':'Почта: '+esc(user.email)}</p><form id="account-profile"><label>Имя<input name="name" maxlength="60" value="${esc(user.name)}" required autocomplete="nickname"></label>${courseSelect(user.course)}<button class="primary" ${busy?'disabled':''}>Сохранить профиль</button></form><button class="text" data-action="account-logout" ${busy?'disabled':''}>Выйти из аккаунта</button></section><p class="muted">Профиль сохранён онлайн. Учебный прогресс, XP и покупки пока хранятся на этом устройстве.</p>`;
-  return `<h1>Вход и регистрация</h1><p class="intro">Войдите по коду из письма или через ВК. При регистрации укажите курс обучения: с 1-го по 4-й.</p>${status}${!config?'<p>Подключение аккаунтов ещё не настроено или сервер недоступен.</p><button class="secondary" data-action="account-retry">Проверить подключение</button>':`<section class="card">${config.email?`<h2>Войти по почте</h2><form id="account-email"><label>Электронная почта<input name="email" type="email" maxlength="254" value="${esc(email)}" required autocomplete="email" ${step==='code'?'readonly':''}></label>${step==='code'?`<label>Имя<input name="name" maxlength="60" value="${esc(name)}" required autocomplete="nickname"></label>${courseSelect(course)}<label>Код из письма<input name="code" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="one-time-code" required></label><p class="muted">Код действует 10 минут. Не более 5 попыток.</p>`:''}<button class="primary" ${busy?'disabled':''}>${busy?'Подождите…':step==='code'?'Подтвердить и войти':'Получить код'}</button></form>${step==='code'?'<button class="text" data-action="account-other-email">Другой адрес / новый код</button>':''}`:'<p>Вход по почте ещё не настроен.</p>'}<hr>${config.vk?`<button class="primary" data-action="account-vk" ${busy?'disabled':''}>Войти через ВК</button><p class="muted">Вы перейдёте на страницу VK ID. При первом входе затем выберите курс.</p>`:'<p>Вход через ВК ещё не настроен.</p>'}</section>`}<p class="muted">Продолжая регистрацию, вы передаёте почту или идентификатор VK ID, имя и курс для создания профиля. Вход необязателен: можно продолжать учиться без аккаунта.</p>`;
+ let course='',message='';
+ try{const saved=storage.getItem(COURSE_KEY);if(validCourse(saved))course=saved;}catch{}
+ function view(){
+  return `<h1>${course?'Мой аккаунт':'Вход по номеру курса'}</h1><p class="intro">${course?`Вы вошли: ${course} курс.`:'Выберите свой курс обучения, чтобы продолжить.'}</p><section class="card"><form id="account-course">${courseSelect(course)}<button class="primary">${course?'Сохранить курс':'Войти'}</button></form>${course?'<button class="text" data-action="account-logout">Выйти</button>':''}</section><p class="feedback" role="status">${message}</p><p class="muted">Курс, прогресс и покупки сохраняются в этом браузере. Выбор курса не создаёт отдельный онлайн-аккаунт. При смене курса или выходе учебный прогресс остаётся на устройстве.</p>`;
  }
- return {view,open,name:()=>user?.name||'',handle(a){if(!a.startsWith('account-'))return false;
-  if(a==='account-retry'){loaded=false;open();}
-  if(a==='account-other-email'){step='email';message='';render();}
-  if(a==='account-vk')task(async()=>{const result=await api('/vk/start',{});sessionStorage.setItem('vk-login',JSON.stringify({state:result.state,endpoint}));location.assign(result.url);});
-  if(a==='account-logout')task(async()=>{await api('/logout',{});storage.removeItem('player-account');user=null;token='';step='email';message='Вы вышли из аккаунта.';});
-  return true;
- },submit(form){if(!['account-email','account-profile'].includes(form.id))return false;const f=new FormData(form);
-  if(form.id==='account-profile')task(async()=>{user=(await api('/profile',{name:f.get('name'),course:f.get('course')})).user;message='Профиль сохранён.';});
-  else {email=String(f.get('email')).trim();if(step==='code'){name=String(f.get('name'));course=String(f.get('course'));}task(async()=>{if(step==='email'){const result=await api('/email/start',{email});step='code';message=result.message;}else remember(await api('/email/verify',{email,name,course,code:f.get('code')}));});}
-  return true;
+ return {view,open(){},name:()=>course?`Игрок · ${course} курс`:'',handle(action){
+  if(action!=='account-logout')return false;
+  try{storage.removeItem(COURSE_KEY);course='';message='Вы вышли. Учебный прогресс сохранён.';}catch{message='Не удалось сохранить выход. Проверьте хранилище браузера.';}
+  render();return true;
+ },submit(form){
+  if(form.id!=='account-course')return false;
+  const next=String(new FormData(form).get('course')??'');
+  if(!validCourse(next)){message='Выберите курс от 1 до 4.';render();return true;}
+  try{storage.setItem(COURSE_KEY,next);course=next;message='Курс сохранён. Можно продолжать обучение.';}catch{message='Не удалось сохранить курс. Проверьте хранилище браузера.';}
+  render();return true;
  }};
 }
