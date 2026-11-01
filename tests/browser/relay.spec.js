@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures.js';
 import {relayTasks} from '../../src/relay.js';
 async function setup(page){await page.clock.install({time:new Date('2026-10-27T10:00:00Z')});await page.goto('/');await expect(page.locator('.relay-gate')).toHaveCount(4);await expect(page.locator('.relay-gate').first().getByRole('button')).toBeDisabled();await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'));s.course.lessons=Object.fromEntries(Array.from({length:32},(_,i)=>[i+1,{passed:true}]));localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();}
 async function open(page,stage){await page.locator('.relay-gate').nth(stage-1).getByRole('button').click();}

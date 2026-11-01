@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures.js';
 import {dojoKun} from '../../src/dojo.js';
 import {solveDojo} from './dojo-helper.js';
 test('dojo gates stage completion, supports correction, and persists pass',async({page})=>{

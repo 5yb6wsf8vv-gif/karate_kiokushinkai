@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures.js';
 test('three skin slots, insufficient XP, buy, equip, reload and duel preview',async({page})=>{
  await page.goto('/#shop');await expect(page.locator('.skin-card')).toHaveCount(3);
  await expect(page.getByRole('button',{name:'Купить за 50 XP',exact:true})).toBeDisabled();

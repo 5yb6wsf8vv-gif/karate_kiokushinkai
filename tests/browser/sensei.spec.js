@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures.js';
 
 test('Dmitry portrait, six emotions, changing advice and lesson feedback',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));

@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures.js';
 import {terms} from '../../src/data.js';
 const stored=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('kyokushin-v1')));
 test('lesson penalty once, no replay reward, one checkmark, memory separate',async({page})=>{

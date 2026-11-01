@@ -1,5 +1,5 @@
 import {solveDojo} from './dojo-helper.js';
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures.js';
 import {lessons,examQuestions} from '../../src/curriculum.js';
 async function ready(page){await page.goto('/');await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'))||{version:1,terms:{},techniques:{},sessions:[],program:{organization:'Учебная программа',notes:'',enabled:[]}};s.course={lessons:Object.fromEntries(Array.from({length:32},(_,i)=>[i+1,{passed:true,reviewed:true}])),attempts:[],belt:null};localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();}
 test('complete 32 lessons once to unlock exam',async({page})=>{
