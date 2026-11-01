@@ -24,6 +24,8 @@ jobs:
       - run: npm ci
       - run: npm test
       - name: Build for repository URL
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
         run: npm run build -- --base /karate_kiokushinkai/
       - uses: actions/upload-pages-artifact@v3
         with:
