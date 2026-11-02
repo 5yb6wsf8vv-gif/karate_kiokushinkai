@@ -10,11 +10,16 @@
     "preview": "vite preview --host 0.0.0.0",
     "test:e2e": "playwright test",
     "duel:server": "node multiplayer/server.js",
-    "test:pwa": "playwright test --config playwright.pwa.config.js"
+    "test:pwa": "playwright test --config playwright.pwa.config.js",
+    "cloudflare:dev": "wrangler dev --config deploy/cloudflare/wrangler.jsonc --ip 127.0.0.1 --port 8787 --var ALLOW_LOCAL_ORIGINS:true",
+    "cloudflare:deploy": "wrangler deploy --config deploy/cloudflare/wrangler.jsonc",
+    "cloudflare:check": "wrangler deploy --config deploy/cloudflare/wrangler.jsonc --dry-run",
+    "test:cloudflare": "playwright test --config playwright.cloudflare.config.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.51.0",
     "vite": "^6.1.0",
-    "vite-plugin-pwa": "^1.3.0"
+    "vite-plugin-pwa": "^1.3.0",
+    "wrangler": "^4.156.1"
   }
 }

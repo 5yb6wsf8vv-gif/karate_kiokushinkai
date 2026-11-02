@@ -148,3 +148,7 @@ GitHub Pages и HTTPS подходят для установки; отдельн
 ### Постоянные онлайн-поединки без Codespaces
 
 Подготовлен запуск API на VPS Ubuntu 24.04: Docker Compose, автоматический старт, Caddy с HTTPS и отдельный непубличный порт API. Инструкция для Timeweb Cloud с нуля: [deploy/vps/README.md](deploy/vps/README.md). Для нового сервера укажите `VITE_API_URL` в GitHub Actions Variables и повторно опубликуйте сайт: форма поединков подключится автоматически. Перезапуск API завершает активные комнаты.
+
+### Поединки через Cloudflare без VPS
+
+Сервер адаптирован для Workers + SQLite Durable Objects на бесплатных квотах Cloudflare. Собственный домен и постоянно включённый Codespaces не нужны. [Инструкция регистрации, публикации через GitHub и подключения сайта](deploy/cloudflare/README.md). Команды: `npm run cloudflare:check`, `npm run cloudflare:dev`, `npm run cloudflare:deploy`, `npm run test:cloudflare`. Фактический deploy требует доступа к вашему аккаунту Cloudflare.
