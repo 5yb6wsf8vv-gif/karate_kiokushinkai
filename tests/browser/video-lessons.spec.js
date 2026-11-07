@@ -47,13 +47,15 @@ test('uploaded training clip plays with seek-synchronized cues and no completion
  await page.locator('[data-action="video-lesson:training-1"]').click();
  const dialog=page.getByRole('dialog'),video=dialog.locator('video');
  await expect(dialog.getByRole('heading',{name:'Тайкиоку соно ичи'})).toBeVisible();
- await expect(video).toHaveAttribute('src',/taikyoku-silhouette\.mp4$/);
+ await expect(video).toHaveAttribute('src',/taikyoku-contours\.mp4$/);
  await expect(dialog.getByRole('button',{name:'Начать · 3, 2, 1'})).toBeEnabled();
  await expect(video).toHaveJSProperty('duration',await video.evaluate(v=>v.duration));
- expect(await video.evaluate(v=>v.duration)).toBeGreaterThan(28);
+ expect(await video.evaluate(v=>v.duration)).toBeGreaterThan(31);
  await expect(dialog.locator('.follow-track-card.is-current b')).toHaveText('Готовность');
  await video.evaluate(v=>{v.currentTime=8.8;});
  await expect(dialog.locator('.follow-track-card.is-current small')).toHaveText('8.6 с');
+ await video.evaluate(v=>{v.currentTime=30.5;});
+ await expect(dialog.locator('.follow-track-card.is-current b')).toHaveText('Начальная стойка');
  await video.evaluate(v=>{v.currentTime=0;});
  await expect(dialog.locator('.follow-track-card.is-current b')).toHaveText('Готовность');
  await dialog.getByLabel('Скорость видео').selectOption('0.5');
@@ -61,7 +63,7 @@ test('uploaded training clip plays with seek-synchronized cues and no completion
  await dialog.getByRole('button',{name:'Начать · 3, 2, 1'}).click();
  await expect(video).toHaveJSProperty('paused',false,{timeout:6000});
  await video.evaluate(v=>{v.currentTime=v.duration-0.2;});
- await expect(dialog.locator('.video-error')).toContainText('Это конец фрагмента');
+ await expect(dialog.locator('.video-error')).toContainText('Возврат к начальной стойке');
  expect(await dialog.evaluate(e=>e.scrollWidth<=e.clientWidth)).toBe(true);
  await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
 });

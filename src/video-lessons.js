@@ -61,7 +61,7 @@ export function createVideoLessons(){
      track.innerHTML=`<div class="follow-track-cards">${trainingClip.cues.slice(index,index+3).map((cue,n)=>{let illustration='';for(const task of kumiteTasks){const slot=task.steps.indexOf(cue.pose);if(slot>=0){illustration=exerciseCard(task.id,slot);break;}}return `<article class="follow-track-card ${n===0?'is-current':''}"><span class="eyebrow">${n===0?'Сейчас':n===1?'Далее':'Затем'}</span>${illustration}<b>${cue.label}</b><small>${cue.time.toFixed(1)} с</small></article>`;}).join('')}</div><p class="muted">Подсказки следуют времени видео, в том числе при замедлении и перемотке. Рисунки показывают тип движения; направление и сторону повторяйте по тренеру.</p>`;
     };
     for(const event of ['timeupdate','seeking','loadedmetadata','ended'])video.addEventListener(event,paint);paint();
-    video.addEventListener('ended',()=>{if(!timelineEnabled||video.loop)return;error.textContent='Запись завершилась во время комплекса. Это конец фрагмента, а не завершение ката.';});
+    video.addEventListener('ended',()=>{if(!timelineEnabled||video.loop)return;error.textContent='Урок завершён. Возврат к начальной стойке добавлен плавным монтажным переходом.';});
    }
 if(media.attribution){const credit=document.createElement('p');credit.className='muted';credit.textContent=media.attribution;dialog.querySelector('.video-lesson-shell').append(credit);}}
  }

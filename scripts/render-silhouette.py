@@ -50,6 +50,8 @@ def render(source,target):
         process=subprocess.Popen(['ffmpeg','-hide_banner','-loglevel','error','-y','-f','rawvideo','-pix_fmt','bgr24','-s',f'{width}x{height}','-r',str(fps),'-i','pipe:0','-an','-c:v','libx264','-preset','fast','-crf','22','-pix_fmt','yuv420p',str(silent)],stdin=subprocess.PIPE)
         with mp.solutions.pose.Pose(model_complexity=1,enable_segmentation=True,smooth_segmentation=True,min_detection_confidence=.35,min_tracking_confidence=.35) as pose:
             index=0
+            first_frame=None
+            last_frame=None
             while True:
                 ok,frame=cap.read()
                 if not ok:break
@@ -60,11 +62,17 @@ def render(source,target):
                     if previous_mask is None:raise RuntimeError('No person found in first frame')
                     mask=previous_mask.copy()
                 else:
-                    mask=np.uint8(result.segmentation_mask>.48)*255
+                    mask=np.uint8(result.segmentation_mask>.28)*255
                     count,labels,stats,_=cv2.connectedComponentsWithStats(mask)
                     if count>1:
                         largest=1+np.argmax(stats[1:,cv2.CC_STAT_AREA])
-                        mask=np.uint8(labels==largest)*255
+                        keep=stats[:,cv2.CC_STAT_AREA]>18;keep[0]=False
+                        # Retain small disconnected hands/feet close to the main figure.
+                        x,y,w,h,_=stats[largest]
+                        for component in range(1,count):
+                            cx,cy,cw,ch,_=stats[component]
+                            if cx+cw<x-20 or cx>x+w+20 or cy+ch<y-20 or cy>y+h+20:keep[component]=False
+                        mask=np.uint8(keep[labels])*255
                     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
                     previous_mask=mask.copy()
                 ys,xs=np.nonzero(mask)
@@ -91,14 +99,49 @@ def render(source,target):
                 output+=aura[:,:,None]*np.array([70,50,5],np.float32)
                 border=np.maximum(0,edge.astype(np.float32)/255-alpha)
                 output=output*(1-border[:,:,None]) + np.array([243,219,79],np.float32)*border[:,:,None]
-                output=output*(1-alpha[:,:,None]) + np.array([246,249,241],np.float32)*alpha[:,:,None]
-                process.stdin.write(np.uint8(np.clip(output,0,255)).tobytes())
+                # Preserve real folds and overlapping limb boundaries from the source,
+                # rather than drawing inferred skeleton bones over the person.
+                smooth=cv2.bilateralFilter(frame,7,45,45)
+                gray=cv2.cvtColor(smooth,cv2.COLOR_BGR2GRAY)
+                lines=cv2.Canny(gray,45,105)
+                inner=cv2.erode(mask,np.ones((5,5),np.uint8))
+                lines=cv2.bitwise_and(lines,inner)
+                # Keep the head anonymous: no eyes, nose or mouth in the silhouette.
+                if result.pose_landmarks:
+                    points=result.pose_landmarks.landmark
+                    head=np.array([[int(points[i].x*960),int(points[i].y*540)] for i in range(11)])
+                    hx,hy,hw,hh=cv2.boundingRect(head)
+                    cv2.ellipse(lines,(hx+hw//2,hy+hh//2),(max(8,int(hw*.85)),max(12,int(hh*1.15))),0,0,360,0,-1)
+                lines=cv2.dilate(lines,np.ones((2,2),np.uint8))
+                projected_lines=cv2.warpAffine(lines,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
+                projected_gray=cv2.warpAffine(gray,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
+                # Solid light body with restrained fabric shading and dark contour strokes.
+                fill=np.empty_like(output)
+                for channel,color in enumerate([246,249,241]):fill[:,:,channel]=color*(.86+.14*projected_gray)
+                contour_color=np.array([116,90,34],np.float32)
+                detail=projected_lines*.82
+                fill=fill*(1-detail[:,:,None])+contour_color*detail[:,:,None]
+                output=output*(1-alpha[:,:,None])+fill*alpha[:,:,None]
+                encoded=np.uint8(np.clip(output,0,255))
+                if first_frame is None:first_frame=encoded.copy()
+                last_frame=encoded
+                process.stdin.write(encoded.tobytes())
                 if index%120==0:print(f'{index}/{total} frames',flush=True)
                 index+=1
+        # The missing return in the source is represented by an editorial dissolve,
+        # followed by a hold of the exact initial stance. No invented kata steps.
+        return_frames=round(fps*1.2)
+        hold_frames=round(fps*1.5)
+        for frame_index in range(return_frames):
+            amount=(frame_index+1)/return_frames
+            blended=cv2.addWeighted(last_frame,1-amount,first_frame,amount,0)
+            cv2.putText(blended,'RETURN TO START',(49,119),cv2.FONT_HERSHEY_SIMPLEX,.45,(201,210,213),1,cv2.LINE_AA)
+            process.stdin.write(blended.tobytes())
+        for _ in range(hold_frames):process.stdin.write(first_frame.tobytes())
         cap.release();process.stdin.close()
         if process.wait()!=0:raise RuntimeError('Video encoding failed')
         target.parent.mkdir(parents=True,exist_ok=True)
-        subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(silent),'-i',str(source),'-map','0:v:0','-map','1:a:0?','-c:v','copy','-c:a','aac','-b:a','96k','-map_metadata','-1','-movflags','+faststart',str(target)],check=True)
+        subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(silent),'-i',str(source),'-map','0:v:0','-map','1:a:0?','-c:v','copy','-c:a','aac','-b:a','96k','-af','apad','-shortest','-map_metadata','-1','-movflags','+faststart',str(target)],check=True)
         print(json.dumps({'frames':index,'fps':fps,'missing_masks':missed,'output':str(target)}),flush=True)
 
 if __name__=='__main__':

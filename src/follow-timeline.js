@@ -1,8 +1,8 @@
 // Observation-based cues for IMG_1100.MOV. Times refer to the video clock.
 export const trainingClip = {
  name:'Тайкиоку соно ичи',
- steps:['Посмотрите на направление движения тренера.','Следуйте подсказкам «сейчас» и «далее».','Запись обрывается: завершение комплекса в ней отсутствует.'],
- url:`${import.meta.env.BASE_URL}videos/taikyoku-silhouette.mp4`,
+ steps:['Посмотрите на направление движения тренера.','Следуйте подсказкам «сейчас» и «далее».','В конце добавлен плавный переход к начальной стойке; это монтажный возврат, а не показ недостающих шагов ката.'],
+ url:`${import.meta.env.BASE_URL}videos/taikyoku-contours.mp4`,
  cues:[
  [0,'Готовность','ready'],[2.4,'Поворот и нижний блок','gedan'],[3.6,'Шаг и прямой удар','tsuki'],
  [4.8,'Разворот и нижний блок','gedan'],[6.2,'Шаг и прямой удар','tsuki'],
@@ -14,7 +14,7 @@ export const trainingClip = {
  [20.3,'Ещё шаг и удар','tsuki'],[21.6,'Шаг и прямой удар','tsuki'],
  [22.9,'Разворот и нижний блок','gedan'],[24.2,'Шаг и прямой удар','tsuki'],
  [25.6,'Разворот и нижний блок','gedan'],[27,'Шаг и прямой удар','tsuki'],
- [28.25,'Конец записи','ready']
+ [28.53,'Возврат · плавный переход','ready'],[29.73,'Начальная стойка','ready']
  ].map(([time,label,pose])=>({time,label,pose}))
 };
 export function cueIndex(cues,time){let index=0;for(let i=0;i<cues.length;i++){if(cues[i].time>time)break;index=i;}return index;}
