@@ -12,7 +12,7 @@ async function bodyOf(request){
  try{const value=JSON.parse(new TextDecoder().decode(bytes)||'{}');if(!value||Array.isArray(value)||typeof value!=='object')throw Error();return value;}catch{fail(400,'Неверный JSON.');}
 }
 function roomCode(){return [...crypto.getRandomValues(new Uint8Array(3))].map(n=>n.toString(16).padStart(2,'0')).join('').toUpperCase();}
-function cors(request,env){const origin=request.headers.get('Origin');const allowed=(env.ALLOWED_ORIGINS||'https://5yb6wsf8vv-gif.github.io').split(',').map(v=>v.trim());const local=env.ALLOW_LOCAL_ORIGINS==='true'&&/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin||'');if(origin&&!allowed.includes(origin)&&!local)fail(403,'Этот адрес сайта не разрешён сервером.');return {'Vary':'Origin',...(origin?{'Access-Control-Allow-Origin':origin}:{}),'Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Authorization'};}
+function cors(request,env){const origin=request.headers.get('Origin');const allowed=(env.ALLOWED_ORIGINS||'https://5yb6wsf8vv-gif.github.io,https://kihongo.ru,https://www.kihongo.ru').split(',').map(v=>v.trim());const local=env.ALLOW_LOCAL_ORIGINS==='true'&&/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin||'');if(origin&&!allowed.includes(origin)&&!local)fail(403,'Этот адрес сайта не разрешён сервером.');return {'Vary':'Origin',...(origin?{'Access-Control-Allow-Origin':origin}:{}),'Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Authorization'};}
 export default {
  async fetch(request,env){let headers={};try{
   headers=cors(request,env);const url=new URL(request.url),path=url.pathname;

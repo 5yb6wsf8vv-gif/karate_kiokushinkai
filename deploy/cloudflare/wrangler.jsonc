@@ -8,7 +8,7 @@
   ],
   "workers_dev": true,
   "vars": {
-    "ALLOWED_ORIGINS": "https://5yb6wsf8vv-gif.github.io",
+    "ALLOWED_ORIGINS": "https://5yb6wsf8vv-gif.github.io,https://kihongo.ru,https://www.kihongo.ru",
     "ALLOW_LOCAL_ORIGINS": "false"
   },
   "durable_objects": {

@@ -152,3 +152,7 @@ GitHub Pages и HTTPS подходят для установки; отдельн
 ### Поединки через Cloudflare без VPS
 
 Сервер адаптирован для Workers + SQLite Durable Objects на бесплатных квотах Cloudflare. Собственный домен и постоянно включённый Codespaces не нужны. [Инструкция регистрации, публикации через GitHub и подключения сайта](deploy/cloudflare/README.md). Команды: `npm run cloudflare:check`, `npm run cloudflare:dev`, `npm run cloudflare:deploy`, `npm run test:cloudflare`. Фактический deploy требует доступа к вашему аккаунту Cloudflare.
+
+### Собственный домен kihongo.ru
+
+Подготовлены настройки публикации и CORS для `https://kihongo.ru` и `https://www.kihongo.ru`. Workflow автоматически выбирает корневой путь или подпапку репозитория по настройкам GitHub Pages. DNS и Custom domain в кабинетах владельца ещё нужно подключить: [инструкция для REG.RU](deploy/domain/README.md). Локальный прогресс со старого origin автоматически на новый домен не переносится.
