@@ -5,7 +5,7 @@ test('setup blocks deep links and all features until name and course are saved',
  await page.evaluate(()=>{location.hash='shop';});await expect(page.locator('.skin-card')).toHaveCount(0);
  await page.getByLabel('Имя',{exact:true}).fill('   ');await page.getByLabel('Курс обучения').selectOption('2');await page.getByRole('button',{name:'Начать обучение'}).click();await expect(page.getByRole('heading',{name:'Настройка аккаунта'})).toBeVisible();
  await page.getByLabel('Имя',{exact:true}).fill('  Анна  ');await page.getByLabel('Курс обучения').selectOption('2');await page.getByRole('button',{name:'Начать обучение'}).click();await expect(page.locator('.skin-card')).toHaveCount(3);
- await page.getByRole('link',{name:'Поединок',exact:true}).click();await expect(page.getByLabel('Ваше имя')).toHaveValue('Анна');await page.reload();await expect(page.getByLabel('Ваше имя')).toHaveValue('Анна');expect(api).toEqual([]);
+ await page.getByRole('link',{name:'Кумитэ',exact:true}).click();await expect(page.getByLabel('Ваше имя')).toHaveValue('Анна');await page.reload();await expect(page.getByLabel('Ваше имя')).toHaveValue('Анна');expect(api).toEqual([]);
  expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth)).toBe(true);
 });
 test('setup from account opens learning; profile edit, exit and browser navigation preserve progress',async({page})=>{
