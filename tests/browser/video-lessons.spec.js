@@ -42,3 +42,25 @@ test('morote video is assigned to three levels and embeds only after countdown',
   await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
  }
 });
+test('uploaded training clip plays with seek-synchronized cues and no completion reward',async({page})=>{
+ await page.goto('/#tech');
+ await page.locator('[data-action="video-lesson:training-1"]').click();
+ const dialog=page.getByRole('dialog'),video=dialog.locator('video');
+ await expect(dialog.getByRole('heading',{name:'Учебный комплекс · видео 1'})).toBeVisible();
+ await expect(dialog.getByRole('button',{name:'Начать · 3, 2, 1'})).toBeEnabled();
+ await expect(video).toHaveJSProperty('duration',await video.evaluate(v=>v.duration));
+ expect(await video.evaluate(v=>v.duration)).toBeGreaterThan(28);
+ await expect(dialog.locator('.follow-track-card.is-current b')).toHaveText('Готовность');
+ await video.evaluate(v=>{v.currentTime=8.8;});
+ await expect(dialog.locator('.follow-track-card.is-current small')).toHaveText('8.6 с');
+ await video.evaluate(v=>{v.currentTime=0;});
+ await expect(dialog.locator('.follow-track-card.is-current b')).toHaveText('Готовность');
+ await dialog.getByLabel('Скорость видео').selectOption('0.5');
+ await expect(video).toHaveJSProperty('playbackRate',0.5);
+ await dialog.getByRole('button',{name:'Начать · 3, 2, 1'}).click();
+ await expect(video).toHaveJSProperty('paused',false,{timeout:6000});
+ await video.evaluate(v=>{v.currentTime=v.duration-0.2;});
+ await expect(dialog.locator('.video-error')).toContainText('Это конец фрагмента');
+ expect(await dialog.evaluate(e=>e.scrollWidth<=e.clientWidth)).toBe(true);
+ await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
+});

@@ -1,12 +1,14 @@
 import {techniques} from './data.js';
 import {kihon10} from './program10.js';
+import {trainingClip,cueIndex} from './follow-timeline.js';
+import {exerciseCard,kumiteTasks} from './kumite-tasks.js';
 
 // Fill with verified playable URLs when source videos are supplied.
 // Keep the original host attribution alongside each URL.
 const moroteVideo={youtube:'y4r1qAHXHwI',attribution:'Сэйкэн моротэ-цуки · общее видео техники для трёх уровней.'};
 export const lessonMedia = {'kihon-0':moroteVideo,'kihon-1':moroteVideo,'kihon-2':moroteVideo};
 const escape = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const lesson = id => id.startsWith('kihon-')
+const lesson = id => id==='training-1'?trainingClip:id.startsWith('kihon-')
  ? (()=>{const row=kihon10[Number(id.slice(6))];return row&&{name:row[0],steps:[row[1],`Рабочая сторона: ${row[2].toLowerCase()}.`,'Вернитесь в исходное положение.']};})()
  : techniques.find(t=>t.id===id);
 export function videoLessonButton(id){return `<button class="secondary video-lesson-open" data-action="video-lesson:${id}">▷ Повторяй за тренером</button>`;}
@@ -21,6 +23,7 @@ export function createVideoLessons(){
   document.body.append(dialog);dialog.showModal();
   let youtubeId=null;
   const video=dialog.querySelector('video'),start=dialog.querySelector('[data-video="start"]'),error=dialog.querySelector('.video-error'),counter=dialog.querySelector('.follow-countdown');
+  let timelineEnabled=id==='training-1';
   function source(url){youtubeId=null;dialog.querySelector('iframe')?.remove();video.hidden=false;for(const control of dialog.querySelectorAll('[data-video=mirror],select,[data-video=loop]'))control.disabled=false;clearInterval(timer);counter.hidden=true;video.pause();video.src=url;video.load();dialog.querySelector('.follow-empty').hidden=true;start.disabled=true;error.textContent='Загрузка видео…';}
   video.addEventListener('loadedmetadata',()=>{start.disabled=false;error.textContent='';});
   video.addEventListener('error',()=>{clearInterval(timer);counter.hidden=true;start.disabled=true;error.textContent='Не удалось открыть видео. Попробуйте другой файл или формат MP4/WebM.';});
@@ -37,11 +40,11 @@ export function createVideoLessons(){
    }
   });
   dialog.addEventListener('change',e=>{
-   if(e.target.type==='file'){const file=e.target.files[0];if(!file)return;stop();objectURL=URL.createObjectURL(file);source(objectURL);}
+   if(e.target.type==='file'){const file=e.target.files[0];if(!file)return;stop();timelineEnabled=false;dialog.querySelector('.follow-track')?.remove();objectURL=URL.createObjectURL(file);source(objectURL);}
    if(e.target.tagName==='SELECT')video.playbackRate=Number(e.target.value);
    if(e.target.dataset.video==='loop')video.loop=e.target.checked;
   });
-  const media=lessonMedia[id];
+  const media=id==='training-1'?trainingClip:lessonMedia[id];
   if(media?.youtube){
    youtubeId=media.youtube;video.hidden=true;start.disabled=false;
    for(const control of dialog.querySelectorAll('[data-video=mirror],select,[data-video=loop]'))control.disabled=true;
@@ -49,7 +52,18 @@ export function createVideoLessons(){
    const note=document.createElement('p');note.className='muted';note.textContent=media.attribution+' Скорость меняется в настройках YouTube. Повторный старт запускает ролик с начала.';
    const link=document.createElement('a');link.href=`https://www.youtube.com/watch?v=${youtubeId}`;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Открыть видео на YouTube';note.append(' ',link);dialog.querySelector('.video-error').after(note);
   }
-  if(media?.url){source(media.url);if(media.attribution){const credit=document.createElement('p');credit.className='muted';credit.textContent=media.attribution;dialog.querySelector('.video-lesson-shell').append(credit);}}
+  if(media?.url){source(media.url);
+   if(id==='training-1'){
+    const track=document.createElement('section');track.className='follow-track';track.setAttribute('aria-label','Подсказки движений');
+    dialog.querySelector('.follow-stage').after(track);
+    let previous=-1;
+    const paint=()=>{if(!timelineEnabled)return;const index=cueIndex(trainingClip.cues,video.currentTime);if(index===previous)return;previous=index;
+     track.innerHTML=`<div class="follow-track-cards">${trainingClip.cues.slice(index,index+3).map((cue,n)=>{let illustration='';for(const task of kumiteTasks){const slot=task.steps.indexOf(cue.pose);if(slot>=0){illustration=exerciseCard(task.id,slot);break;}}return `<article class="follow-track-card ${n===0?'is-current':''}"><span class="eyebrow">${n===0?'Сейчас':n===1?'Далее':'Затем'}</span>${illustration}<b>${cue.label}</b><small>${cue.time.toFixed(1)} с</small></article>`;}).join('')}</div><p class="muted">Подсказки следуют времени видео, в том числе при замедлении и перемотке. Рисунки показывают тип движения; направление и сторону повторяйте по тренеру.</p>`;
+    };
+    for(const event of ['timeupdate','seeking','loadedmetadata','ended'])video.addEventListener(event,paint);paint();
+    video.addEventListener('ended',()=>{if(!timelineEnabled||video.loop)return;error.textContent='Запись завершилась во время комплекса. Это конец фрагмента, а не завершение ката.';});
+   }
+if(media.attribution){const credit=document.createElement('p');credit.className='muted';credit.textContent=media.attribution;dialog.querySelector('.video-lesson-shell').append(credit);}}
  }
  return {open,close};
 }
