@@ -41,3 +41,19 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .kyu-movements h3{font-size:19px;overflow-wrap:anywhere}.kyu-movements p{margin-bottom:0}
 .kyu-pairs{display:grid;gap:16px}.kyu-pairs article{background:#101e2e;padding:18px;border-radius:12px;border-left:3px solid #568bff}
 @media(max-width:600px){.kyu-content{font-size:17px}.kyu-heading{gap:10px}.kyu-heading>span{font-size:30px}.kyu-section>summary{font-size:18px}.kyu-count{grid-template-columns:1fr}.kyu-pairs article{padding:12px}}
+
+.video-lesson-open{margin:12px 0}
+.video-lesson-dialog{width:min(1100px,96vw);max-width:96vw;max-height:94dvh;padding:0;background:#101a29;color:#edf4ff;border:1px solid #45608a;border-radius:20px;overscroll-behavior:contain}
+.video-lesson-dialog::backdrop{background:#020713ed}
+.video-lesson-shell{padding:24px}.video-lesson-header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.video-lesson-header h2{margin:0 0 20px;font-size:clamp(20px,3vw,30px)}
+.follow-stage{position:relative;aspect-ratio:16/9;background:#050b14;border-radius:16px;overflow:hidden;border-bottom:4px solid #548dff}
+.follow-stage video{width:100%;height:100%;object-fit:contain}.follow-stage video.mirrored{transform:scaleX(-1)}
+.follow-empty{position:absolute;inset:0;display:grid;align-content:center;text-align:center;padding:24px;background:radial-gradient(ellipse at center,#203957,#07101e)}
+.follow-empty[hidden],.follow-countdown[hidden]{display:none}
+.follow-empty b{font-size:24px}.follow-empty p{max-width:550px;margin:12px auto;font-size:17px}
+.follow-countdown{position:absolute;inset:0;display:grid;place-items:center;background:#07101e88;font-size:100px;font-weight:900;pointer-events:none;color:white}
+.follow-controls{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0}.follow-controls label{margin:0}.follow-controls select{margin:4px 0;min-width:90px}
+.video-file{padding:14px;background:#18283e;border-radius:12px}.video-file input{max-width:100%}
+.follow-cues{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding-left:24px}.follow-cues li{background:#18283e;border-radius:12px;padding:16px;font-size:18px;line-height:1.6}
+@media(max-width:600px){.video-lesson-shell{padding:14px}.follow-stage{aspect-ratio:3/4}.follow-cues{grid-template-columns:1fr}.follow-empty{padding:14px}.follow-empty b{font-size:20px}.follow-controls>button{flex:1 1 120px}}
