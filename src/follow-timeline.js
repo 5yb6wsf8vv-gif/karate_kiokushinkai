@@ -1,6 +1,6 @@
 // Observation-based cues for IMG_1100.MOV. Times refer to the video clock.
 export const trainingClip = {
- name:'Учебный комплекс · видео 1',
+ name:'Тайкиоку соно ичи',
  steps:['Посмотрите на направление движения тренера.','Следуйте подсказкам «сейчас» и «далее».','Запись обрывается: завершение комплекса в ней отсутствует.'],
  url:`${import.meta.env.BASE_URL}videos/training-combination-1.mp4`,
  cues:[

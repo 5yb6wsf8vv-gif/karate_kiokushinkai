@@ -46,7 +46,7 @@ test('uploaded training clip plays with seek-synchronized cues and no completion
  await page.goto('/#tech');
  await page.locator('[data-action="video-lesson:training-1"]').click();
  const dialog=page.getByRole('dialog'),video=dialog.locator('video');
- await expect(dialog.getByRole('heading',{name:'Учебный комплекс · видео 1'})).toBeVisible();
+ await expect(dialog.getByRole('heading',{name:'Тайкиоку соно ичи'})).toBeVisible();
  await expect(dialog.getByRole('button',{name:'Начать · 3, 2, 1'})).toBeEnabled();
  await expect(video).toHaveJSProperty('duration',await video.evaluate(v=>v.duration));
  expect(await video.evaluate(v=>v.duration)).toBeGreaterThan(28);
