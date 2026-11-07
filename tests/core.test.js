@@ -26,7 +26,7 @@ test('progress round trip and corrupt storage recovery',()=>{
 import {lessons,examQuestions,examReady,examPassed,unlocked} from '../src/curriculum.js';
 test('32 unique lessons, valid answers and sequential unlocks',()=>{
  assert.equal(lessons.length,32);assert.equal(new Set(lessons.map(l=>l.id)).size,32);
- for(const l of lessons){assert.equal(l.options.length,3);assert.ok(l.options.includes(l.answer));assert.equal(l.body.length,2);}
+ for(const l of lessons){assert.equal(l.options.length,3);assert.ok(l.options.includes(l.answer));assert.ok(l.body.length>=2);assert.ok(l.body.every(p=>typeof p==='string'&&p.trim().length>0));}
  assert.equal(unlocked({},1),true);assert.equal(unlocked({},2),false);assert.equal(unlocked({1:{passed:true}},2),true);
 });
 test('final exam requires one pass without mandatory repeat',()=>{

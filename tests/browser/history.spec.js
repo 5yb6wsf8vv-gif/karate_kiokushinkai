@@ -1,0 +1,14 @@
+import {test,expect} from './fixtures.js';
+test('history has timeline, readable topics, recall cards and source; reading preserves XP and progress',async({page})=>{
+ await page.goto('/');const before=await page.evaluate(()=>localStorage.getItem('kyokushin-v1'));
+ await page.getByRole('link',{name:'История',exact:true}).click();await expect(page.getByRole('heading',{name:'История киокушинкай',exact:true})).toBeVisible();await expect(page.locator('.history-timeline>li')).toHaveCount(6);await expect(page.locator('.history-topic')).toHaveCount(8);
+ await page.locator('#history-origins summary').click();await expect(page.locator('#history-origins')).toContainText('Гитина Фунакоши');await page.locator('#history-kanku summary').click();await expect(page.locator('#history-kanku')).toContainText('непрерывность и круговое движение');
+ await page.getByRole('button',{name:'Запомнить',exact:true}).click();expect(new URL(page.url()).hash).toBe('#history');await page.locator('.history-recall-card').first().locator('summary').click();await expect(page.locator('.history-recall-card').first().locator('p')).toHaveText('Масутацу Ояма.');
+ await expect(page.locator('.history-source a[target="_blank"]')).toHaveAttribute('href','https://www.kyokushin-iko.by/history');expect(await page.evaluate(()=>localStorage.getItem('kyokushin-v1'))).toBe(before);expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth)).toBe(true);
+ await page.reload();await expect(page.getByRole('heading',{name:'История киокушинкай',exact:true})).toBeVisible();await page.getByRole('link',{name:'Вернуться к заучиванию'}).click();await page.getByRole('link',{name:'Читать историю киокушинкай →'}).click();await expect(page.getByRole('heading',{name:'История киокушинкай',exact:true})).toBeVisible();
+});
+test('existing history lessons receive source material without losing passed lessons or changing course length',async({page})=>{
+ await page.goto('/');await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'));s.course.lessons={1:{passed:true},2:{passed:true},3:{passed:true},4:{passed:true},5:{passed:true}};localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();
+ await expect(page.locator('.path-step')).toHaveCount(32);await page.getByRole('button',{name:'Урок 4: Масутацу Ояма',exact:true}).click();await expect(page.locator('.reading')).toContainText('27 июля 1923');await expect(page.locator('.reading')).toContainText('Гитина Фунакоши');await page.getByRole('link',{name:'Подробнее: история киокушинкай →'}).click();await expect(page.getByRole('heading',{name:'История киокушинкай',exact:true})).toBeVisible();
+ const progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('kyokushin-v1')).course.lessons);expect(Object.values(progress).filter(l=>l.passed)).toHaveLength(5);
+});
