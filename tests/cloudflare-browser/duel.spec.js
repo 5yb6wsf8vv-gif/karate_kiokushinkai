@@ -1,6 +1,8 @@
+import {exerciseName} from '../../src/kumite-tasks.js';
 import {test,expect} from '@playwright/test';
 async function signup(page,name){await expect(page.getByRole('heading',{name:'Настройка аккаунта'})).toBeVisible();await page.getByLabel('Имя',{exact:true}).fill(name);await page.getByLabel('Курс обучения').selectOption('2');await page.getByRole('button',{name:'Начать обучение'}).click();}
-async function solve(page,wrong=false){await expect(page.locator('#duel-timer')).toContainText('сек',{timeout:15000});const boxes=['0 0 100 100','100 0 100 100','0 100 100 100','100 100 100 100'];for(const box of wrong?boxes.reverse():boxes)await page.locator('.duel-bank button').filter({has:page.locator(`svg[viewBox="${box}"]`)}).click();await page.getByRole('button',{name:'Отправить ответ',exact:true}).click();}
+async function solve(page,wrong=false){await expect(page.locator('#duel-timer')).toContainText('сек',{timeout:15000});const index=Number((await page.locator('.section-title').innerText()).match(/Задание (\d+)/)[1])-1;for(const slot of wrong?[3,2,1,0]:[0,1,2,3])await page.getByRole('button',{name:'Выбрать: '+exerciseName(index,slot),exact:true}).click();await page.getByRole('button',{name:'Отправить ответ',exact:true}).click();}
+
 test('real Cloudflare runtime: two fresh players, invitation, one attempt, ten rounds and 7:3',async({browser},info)=>{
  const options={baseURL:'http://127.0.0.1:5173',viewport:info.project.use.viewport,isMobile:info.project.use.isMobile,hasTouch:info.project.use.hasTouch};const a=await browser.newContext(options),b=await browser.newContext(options);
  try{const p=await a.newPage(),q=await b.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));q.on('pageerror',e=>errors.push(e.message));
