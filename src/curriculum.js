@@ -1,4 +1,4 @@
-import {historyLessonNotes,historySource} from './history.js';
+import {historyLessonNotes} from './history.js';
 // Учебный маршрут, не норматив конкретной федерации.
 const rows = [
 ['Додзё начинается с уважения','Этикет','Додзё — место практики пути. При входе и выходе следуют правилам своего клуба: поклон, приветствие, чистая форма и внимание к тренеру. Рэй означает поклон; ос — принятое в киокушинкай выражение уважения и готовности.','Не перебивайте объяснение и не начинайте контактную работу без команды. Украшения снимают, ногти держат короткими. О травме сообщают до занятия.','Что означает «рэй»?','Поклон','Удар','Пояс'],
@@ -46,7 +46,7 @@ export const examQuestions=[
 {block:'История',question:'Год учреждения организации киокушинкай?',options:['1964','1923','1994'],answer:'1964'},
 {block:'История',question:'Первый открытый чемпионат мира состоялся в…',options:['1975','1964','2000'],answer:'1975'}
 ];
-export const sources=[[historySource.title,historySource.url],['IKO Kyokushinkaikan · история организации','https://www.kyokushinkaikan.org/en/about/'],['WKO Shinkyokushinkai · организация и история','https://www.wko.or.jp/']];
+export const sources=[['IKO Kyokushinkaikan · история организации','https://www.kyokushinkaikan.org/en/about/'],['WKO Shinkyokushinkai · организация и история','https://www.wko.or.jp/']];
 export function unlocked(progress,id){return id===1||Boolean(progress[id-1]?.passed);}
 export function examReady(progress){return lessons.every(l=>progress[l.id]?.passed);}
 export function examPassed(results){return results.length===examQuestions.length&&['Японские термины','Ката','История'].every(block=>results.filter(r=>r.block===block&&r.correct).length>=2);}
