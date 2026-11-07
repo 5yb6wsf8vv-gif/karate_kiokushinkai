@@ -2,7 +2,7 @@
 export const trainingClip = {
  name:'Тайкиоку соно ичи',
  steps:['Посмотрите на направление движения тренера.','Следуйте подсказкам «сейчас» и «далее».','Запись обрывается: завершение комплекса в ней отсутствует.'],
- url:`${import.meta.env.BASE_URL}videos/training-combination-1.mp4`,
+ url:`${import.meta.env.BASE_URL}videos/taikyoku-silhouette.mp4`,
  cues:[
  [0,'Готовность','ready'],[2.4,'Поворот и нижний блок','gedan'],[3.6,'Шаг и прямой удар','tsuki'],
  [4.8,'Разворот и нижний блок','gedan'],[6.2,'Шаг и прямой удар','tsuki'],
