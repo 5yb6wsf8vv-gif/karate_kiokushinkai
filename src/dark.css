@@ -57,3 +57,5 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .video-file{padding:14px;background:#18283e;border-radius:12px}.video-file input{max-width:100%}
 .follow-cues{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding-left:24px}.follow-cues li{background:#18283e;border-radius:12px;padding:16px;font-size:18px;line-height:1.6}
 @media(max-width:600px){.video-lesson-shell{padding:14px}.follow-stage{aspect-ratio:3/4}.follow-cues{grid-template-columns:1fr}.follow-empty{padding:14px}.follow-empty b{font-size:20px}.follow-controls>button{flex:1 1 120px}}
+.follow-stage iframe{display:block;width:100%;height:100%;border:0;background:#000}
+.follow-stage video[hidden]{display:none}
