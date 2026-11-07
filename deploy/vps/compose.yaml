@@ -9,7 +9,7 @@ services:
     environment:
       PORT: "3001"
       ENABLE_AUTH: "false"
-      ALLOWED_ORIGINS: https://5yb6wsf8vv-gif.github.io,https://kihongo.ru,https://www.kihongo.ru
+      ALLOWED_ORIGINS: https://5yb6wsf8vv-gif.github.io,https://kihongo.online,https://www.kihongo.online
       TRUST_PROXY: "true"
     # No host port: only Caddy can reach this container from the internet.
     read_only: true

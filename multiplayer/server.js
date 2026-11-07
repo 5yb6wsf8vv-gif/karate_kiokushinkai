@@ -3,7 +3,7 @@ import http from 'node:http';
 import {isIP} from 'node:net';
 import {pathToFileURL} from 'node:url';
 import {DuelEngine,DuelError} from './engine.js';
-export function createDuelServer({engine=new DuelEngine(),origins=['https://5yb6wsf8vv-gif.github.io','https://kihongo.ru','https://www.kihongo.ru'],allowLocal=false,auth=null,trustProxy=false}={}){
+export function createDuelServer({engine=new DuelEngine(),origins=['https://5yb6wsf8vv-gif.github.io','https://kihongo.online','https://www.kihongo.online'],allowLocal=false,auth=null,trustProxy=false}={}){
  const rates=new Map(),authRates=new Map();
  return http.createServer(async(req,res)=>{
   const origin=req.headers.origin;
@@ -41,7 +41,7 @@ export function createDuelServer({engine=new DuelEngine(),origins=['https://5yb6
  });
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
- const origins=(process.env.ALLOWED_ORIGINS||'https://5yb6wsf8vv-gif.github.io,https://kihongo.ru,https://www.kihongo.ru').split(',').map(v=>v.trim()).filter(Boolean);
+ const origins=(process.env.ALLOWED_ORIGINS||'https://5yb6wsf8vv-gif.github.io,https://kihongo.online,https://www.kihongo.online').split(',').map(v=>v.trim()).filter(Boolean);
  const auth=process.env.ENABLE_AUTH==='true'?createAuthService({filename:process.env.AUTH_DB_PATH||'data/accounts.sqlite',appUrl:process.env.PUBLIC_APP_URL,vkClientId:process.env.VK_CLIENT_ID,sendMail:resendMailer(process.env.RESEND_API_KEY,process.env.AUTH_EMAIL_FROM)}):null;
  const server=createDuelServer({origins,auth,trustProxy:process.env.TRUST_PROXY==='true',allowLocal:process.env.ALLOW_LOCAL_ORIGINS==='true'});
  server.listen(Number(process.env.PORT)||3001,'0.0.0.0',()=>console.log('Duel server listening'));
