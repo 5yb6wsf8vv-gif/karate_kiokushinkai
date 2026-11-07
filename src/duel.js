@@ -3,7 +3,7 @@ import {avatar,ensureCosmetics} from './shop.js';
 import {duelPuzzles,puzzleSVG} from './duel-puzzles.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function createDuel(render,storage,profile,accountName=()=>''){
- const configured=import.meta.env.VITE_API_URL||'';let endpoint='',saved='';try{saved=storage.getItem('duel-server')||'';}catch{}
+ const configured=import.meta.env.VITE_API_URL||(import.meta.env.PROD?'https://kyokushin-duel.5yb6wsf8vv.workers.dev':'');let endpoint='',saved='';try{saved=storage.getItem('duel-server')||'';}catch{}
  let session=null,state=null,order=[],error='',busy=false,visible=false,poll=null,clock=null,offset=0,notice='',revision=0;
  const query=new URLSearchParams(location.search);const sharedRoom=query.get('room')||'';
  let previous=null;try{previous=JSON.parse(sessionStorage.getItem('duel-session'));}catch{}
