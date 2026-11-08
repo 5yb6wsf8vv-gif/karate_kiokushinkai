@@ -36,11 +36,11 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .kyu-content{padding:0 4px 18px;font-size:18px;line-height:1.8}
 .kyu-glossary{margin:0}.kyu-glossary>div{padding:12px 0;border-bottom:1px solid #2a3a50}
 .kyu-glossary dt{font-weight:700;color:#a8c5ff}.kyu-glossary dd{margin:4px 0 0}
-.kyu-count{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 32px;padding-left:28px}
+.kyu-count{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(5,auto);grid-auto-flow:column;gap:10px 32px;padding-left:28px}
 .kyu-movements{padding-left:28px}.kyu-movements>li{padding:16px 12px;margin:12px 0;background:#101e2e;border-radius:12px}
 .kyu-movements h3{font-size:19px;overflow-wrap:anywhere}.kyu-movements p{margin-bottom:0}
 .kyu-pairs{display:grid;gap:16px}.kyu-pairs article{background:#101e2e;padding:18px;border-radius:12px;border-left:3px solid #568bff}
-@media(max-width:600px){.kyu-content{font-size:17px}.kyu-heading{gap:10px}.kyu-heading>span{font-size:30px}.kyu-section>summary{font-size:18px}.kyu-count{grid-template-columns:1fr}.kyu-pairs article{padding:12px}}
+@media(max-width:600px){.kyu-content{font-size:17px}.kyu-heading{gap:10px}.kyu-heading>span{font-size:30px}.kyu-section>summary{font-size:18px}.kyu-count{grid-template-columns:1fr;grid-template-rows:none;grid-auto-flow:row}.kyu-pairs article{padding:12px}}
 
 .video-lesson-open{margin:12px 0}
 .video-lesson-dialog{width:min(1100px,96vw);max-width:96vw;max-height:94dvh;padding:0;background:#101a29;color:#edf4ff;border:1px solid #45608a;border-radius:20px;overscroll-behavior:contain}

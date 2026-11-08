@@ -6,7 +6,7 @@ test('video lesson plays a local file with countdown and controls, without award
  const before=await page.evaluate(()=>localStorage.getItem('kyokushin-v1'));
  await page.locator('[data-action="video-lesson:zenkutsu"]').click();
  const dialog=page.getByRole('dialog');
- await expect(dialog.getByRole('heading',{name:'Дзэнкуцу-дати'})).toBeVisible();
+ await expect(dialog.getByRole('heading',{name:'Дзэнкуцу-дачи'})).toBeVisible();
  await expect(dialog.getByText('Видео ещё не подключено')).toBeVisible();
  await expect(dialog.getByRole('button',{name:'Начать · 3, 2, 1'})).toBeDisabled();
  await dialog.getByLabel('Видео с устройства').setInputFiles({name:'clip.webm',mimeType:'video/webm',buffer:clip});
