@@ -1,7 +1,7 @@
 import unittest
 import cv2
 import numpy as np
-from arm_mask import arm_mask,repair_short_gaps,front_arm_layers,apply_wrist_anchors
+from arm_mask import arm_mask,repair_short_gaps,relaxed_person_mask
 
 class ArmCoverageTests(unittest.TestCase):
     def test_extended_arm_is_connected_to_shoulder_including_wrist(self):
@@ -19,24 +19,14 @@ class ArmCoverageTests(unittest.TestCase):
         self.assertAlmostEqual(float(result[1,15,0]),.4,places=5)
         self.assertEqual(result[8,15,2],0)
 
-    def test_front_arm_can_be_outlined_but_hidden_arm_is_not_drawn_over_torso(self):
-        joints=np.zeros((33,4),np.float32)
-        joints[11]=[.2,.5,.9,0];joints[13]=[.4,.5,.9,-.1];joints[15]=[.6,.5,.9,-.2]
-        self.assertEqual(len(front_arm_layers((300,400),joints)),1)
-        joints[15,3]=.2
-        self.assertEqual(len(front_arm_layers((300,400),joints)),0)
-
-    def test_manual_hand_anchor_follows_observed_translation(self):
-        frames=[]
-        for index in range(9):
-            image=np.zeros((120,200),np.uint8)
-            cv2.rectangle(image,(40+index,40),(60+index,60),220,-1)
-            cv2.circle(image,(50+index,50),3,20,-1)
-            frames.append(image)
-        tracks=np.zeros((9,33,4),np.float32)
-        tracks[:,15,:2]=[.25,.42];tracks[:,16,:2]=[.9,.9]
-        result=apply_wrist_anchors(tracks,frames,[{'time':4,'start':0,'end':8,'wrist':[54,50]}],1)
-        self.assertAlmostEqual(float(result[0,15,0])*200,50,delta=1)
-        self.assertAlmostEqual(float(result[8,15,0])*200,58,delta=1)
+    def test_uncertain_hand_pixels_are_kept_only_near_an_arm(self):
+        joints=np.zeros((33,3),np.float32)
+        joints[11]=[.2,.5,.9];joints[13]=[.4,.5,.9];joints[15]=[.6,.5,.9]
+        probability=np.zeros((300,400),np.float32)
+        probability[146:154,250:270]=.04
+        probability[10:20,370:380]=.04
+        mask=relaxed_person_mask(probability,joints)
+        self.assertGreater(mask[150,260],0)
+        self.assertEqual(mask[15,375],0)
 
 if __name__=='__main__':unittest.main()
