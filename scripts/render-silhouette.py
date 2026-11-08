@@ -9,7 +9,7 @@ from pathlib import Path
 import cv2
 import mediapipe as mp
 import numpy as np
-from arm_mask import arm_mask,repair_short_gaps
+from arm_mask import arm_mask,repair_short_gaps,front_arm_layers,apply_wrist_anchors
 
 
 def arena(width, height):
@@ -38,19 +38,24 @@ def arena(width, height):
 
 
 def track_arms(source):
-    capture=cv2.VideoCapture(str(source));tracks=[]
+    capture=cv2.VideoCapture(str(source));tracks=[];frames=[]
     with mp.solutions.pose.Pose(model_complexity=1,min_detection_confidence=.35,min_tracking_confidence=.35) as tracker:
         while True:
             ok,frame=capture.read()
             if not ok:break
             frame=cv2.resize(frame,(1280,720),interpolation=cv2.INTER_AREA)
+            frames.append(cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY))
             result=tracker.process(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB))
-            joints=np.zeros((33,3),np.float32)
+            joints=np.zeros((33,4),np.float32)
             if result.pose_landmarks:
-                joints=np.array([[p.x,p.y,p.visibility] for p in result.pose_landmarks.landmark],np.float32)
+                joints=np.array([[p.x,p.y,p.visibility,p.z] for p in result.pose_landmarks.landmark],np.float32)
             tracks.append(joints)
     capture.release()
-    return repair_short_gaps(np.array(tracks))
+    tracks=repair_short_gaps(np.array(tracks))
+    anchors=json.loads(Path(__file__).with_name('training-hand-anchors.json').read_text())
+    if source.name==anchors['sourceFile']:
+        tracks=apply_wrist_anchors(tracks,frames,anchors['anchors'],float(Fraction('30000/1001')))
+    return tracks
 
 
 def render(source,target):
@@ -125,13 +130,13 @@ def render(source,target):
                 shadow=cv2.GaussianBlur(shadow,(31,15),7).astype(np.float32)/255
                 output*=1-shadow[:,:,None]*.7
 
-                border=np.maximum(0,edge.astype(np.float32)/255-alpha)
-                output=output*(1-border[:,:,None]) + np.array([243,219,79],np.float32)*border[:,:,None]
+                border=np.maximum(0,edge.astype(np.float32)/255-alpha)*.35
+                output=output*(1-border[:,:,None]) + np.array([190,193,156],np.float32)*border[:,:,None]
                 # Preserve real folds and overlapping limb boundaries from the source,
                 # rather than drawing inferred skeleton bones over the person.
                 smooth=cv2.bilateralFilter(frame,5,25,25)
                 gray=cv2.cvtColor(smooth,cv2.COLOR_BGR2GRAY)
-                lines=cv2.Canny(gray,35,90)
+                lines=cv2.Canny(gray,70,140)
                 inner=cv2.erode(mask,np.ones((5,5),np.uint8))
                 lines=cv2.bitwise_and(lines,inner)
                 # Keep the head anonymous: no eyes, nose or mouth in the silhouette.
@@ -140,16 +145,24 @@ def render(source,target):
                     head=np.array([[int(points[i].x*1280),int(points[i].y*720)] for i in range(11)])
                     hx,hy,hw,hh=cv2.boundingRect(head)
                     cv2.ellipse(lines,(hx+hw//2,hy+hh//2),(max(8,int(hw*.85)),max(12,int(hh*1.15))),0,0,360,0,-1)
-                lines=cv2.dilate(lines,np.ones((2,2),np.uint8))
+                # Keep fabric strokes single-pixel and uniformly restrained.
                 projected_lines=cv2.warpAffine(lines,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
                 projected_gray=cv2.warpAffine(gray,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
                 # Solid light body with restrained fabric shading and dark contour strokes.
                 fill=np.empty_like(output)
                 for channel,color in enumerate([246,249,241]):fill[:,:,channel]=color*(.86+.14*projected_gray)
-                contour_color=np.array([116,90,34],np.float32)
-                detail=projected_lines*.95
+                contour_color=np.array([174,181,171],np.float32)
+                detail=projected_lines*.38
                 fill=fill*(1-detail[:,:,None])+contour_color*detail[:,:,None]
                 output=output*(1-alpha[:,:,None])+fill*alpha[:,:,None]
+                # Distinguish a visible forearm from an equally light torso.
+                # Only a thin boundary is added; the source silhouette is retained.
+                if index<len(arm_tracks):
+                    for layer in front_arm_layers(mask.shape,arm_tracks[index]):
+                        boundary=cv2.subtract(layer,cv2.erode(layer,np.ones((3,3),np.uint8)))
+                        boundary=cv2.warpAffine(boundary,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
+                        boundary*=alpha*.48
+                        output=output*(1-boundary[:,:,None])+np.array([169,178,165],np.float32)*boundary[:,:,None]
                 encoded=np.uint8(np.clip(output,0,255))
                 if first_frame is None:first_frame=encoded.copy()
                 last_frame=encoded
