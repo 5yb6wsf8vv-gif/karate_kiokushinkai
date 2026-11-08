@@ -91,3 +91,11 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .block-sequence .pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:245px}
 .block-sequence .pose-caption{text-align:left;width:100%;font-size:15px}
 @media(max-width:600px){.block-sequence .pose-row{grid-template-columns:1fr}.block-sequence .pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:280px}}
+
+/* Shared illustration treatment for technique cards and timed video prompts. */
+.pose-panel{border-radius:14px}
+.follow-track-card .technique-illustration{width:100%;margin:4px 0;padding:4px;border:0;background:transparent}
+.follow-track-card .technique-illustration>figcaption,.follow-track-card .pose-caption{display:none}
+.follow-track-card .pose-row{display:block}
+.follow-track-card .pose-picture{height:170px}
+@media(max-width:600px){.follow-track-card .pose-picture{height:120px}}

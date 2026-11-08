@@ -1,7 +1,7 @@
 import {techniques} from './data.js';
 import {kihon10} from './program10.js';
-import {trainingClip,cueIndex} from './follow-timeline.js';
-import {exerciseCard,kumiteTasks} from './kumite-tasks.js';
+import {trainingClip,trainingVisualCues,cueIndex} from './follow-timeline.js';
+import {techniqueIllustration} from './technique-illustrations.js';
 
 // Fill with verified playable URLs when source videos are supplied.
 // Keep the original host attribution alongside each URL.
@@ -57,10 +57,12 @@ export function createVideoLessons(){
     const track=document.createElement('section');track.className='follow-track';track.setAttribute('aria-label','Подсказки движений');
     dialog.querySelector('.follow-stage').after(track);
     let previous=-1;
-    const paint=()=>{if(!timelineEnabled)return;const index=cueIndex(trainingClip.cues,video.currentTime);if(index===previous)return;previous=index;
-     track.innerHTML=`<div class="follow-track-cards">${trainingClip.cues.slice(index,index+3).map((cue,n)=>{let illustration='';for(const task of kumiteTasks){const slot=task.steps.indexOf(cue.pose);if(slot>=0){illustration=exerciseCard(task.id,slot);break;}}return `<article class="follow-track-card ${n===0?'is-current':''}"><span class="eyebrow">${n===0?'Сейчас':n===1?'Далее':'Затем'}</span>${illustration}<b>${cue.label}</b><small>${cue.time.toFixed(1)} с</small></article>`;}).join('')}</div><p class="muted">Подсказки следуют времени видео, в том числе при замедлении и перемотке. Рисунки показывают тип движения; направление и сторону повторяйте по тренеру.</p>`;
+    const paint=()=>{if(!timelineEnabled)return;const index=cueIndex(trainingVisualCues,video.currentTime);if(index===previous)return;previous=index;
+     track.innerHTML=`<div class="follow-track-cards">${trainingVisualCues.slice(index,index+3).map((cue,n)=>{const illustration=techniqueIllustration([{pose:cue.illustration}]);return `<article class="follow-track-card ${n===0?'is-current':''}"><span class="eyebrow">${n===0?'Сейчас':n===1?'Далее':'Затем'}</span>${illustration}<b>${cue.label}</b><small>${cue.time.toFixed(1)} с</small></article>`;}).join('')}</div><p class="muted">Подсказки следуют времени видео, в том числе при замедлении и перемотке. Карточки показывают этап движения из раздела «Техника». Направление поворота и рабочую сторону повторяйте по тренеру.</p>`;
     };
-    for(const event of ['timeupdate','seeking','loadedmetadata','ended'])video.addEventListener(event,paint);paint();
+    for(const event of ['timeupdate','seeking','loadedmetadata','ended'])video.addEventListener(event,paint);
+    if(video.requestVideoFrameCallback){const frame=()=>{if(!dialog?.contains(video)||!timelineEnabled)return;paint();video.requestVideoFrameCallback(frame);};video.requestVideoFrameCallback(frame);}
+    paint();
     video.addEventListener('ended',()=>{if(!timelineEnabled||video.loop)return;error.textContent='Урок завершён. Возврат к начальной стойке добавлен плавным монтажным переходом.';});
    }
 if(media.attribution){const credit=document.createElement('p');credit.className='muted';credit.textContent=media.attribution;dialog.querySelector('.video-lesson-shell').append(credit);}}

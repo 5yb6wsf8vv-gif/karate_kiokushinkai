@@ -70,3 +70,20 @@ test('uploaded training clip plays with seek-synchronized cues and no completion
  expect(await dialog.evaluate(e=>e.scrollWidth<=e.clientWidth)).toBe(true);
  await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
 });
+
+test('video prompts use the same phased illustrations as technique cards',async({page})=>{
+ await page.goto('/#tech');
+ await expect(page.getByText('Силуэт с голубой обводкой и выделением рук на виртуальном татами и карточки «сейчас → далее». Подсказки связаны со временем записи.',{exact:true})).toHaveCount(0);
+ await page.locator('[data-action="video-lesson:training-1"]').click();
+ const dialog=page.getByRole('dialog'),video=dialog.locator('video');
+ await expect(dialog.getByRole('button',{name:'Начать · 3, 2, 1'})).toBeEnabled();
+ for(const [time,pose] of [[2.6,'lowerPrepare'],[2.8,'lowerTravel'],[3.1,'lowerFinish'],[4.3,'middleAttack'],[5.2,'lowerPrepare'],[0,'fudo']]){
+  await video.evaluate((v,time)=>{v.currentTime=time;},time);
+  await expect(dialog.locator('.follow-track-card.is-current .pose-panel')).toHaveAttribute('data-pose',pose);
+ }
+ await dialog.getByLabel('Скорость видео').selectOption('0.5');
+ await video.evaluate(v=>{v.currentTime=3.1;});
+ await expect(dialog.locator('.follow-track-card.is-current .pose-panel')).toHaveAttribute('data-pose','lowerFinish');
+ expect(await dialog.evaluate(e=>e.scrollWidth<=e.clientWidth)).toBe(true);
+ await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
+});
