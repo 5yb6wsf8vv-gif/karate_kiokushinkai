@@ -2,7 +2,7 @@ import {solveDojo} from './dojo-helper.js';
 import {test,expect} from './fixtures.js';
 import {lessons,examQuestions} from '../../src/curriculum.js';
 async function answer(page,q){await page.locator('[data-action="exam-answer:'+q.options.indexOf(q.answer)+'"]').click();}
-async function ready(page){await page.goto('/');await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'))||{version:1,terms:{},techniques:{},sessions:[],program:{organization:'Учебная программа',notes:'',enabled:[]}};s.course={lessons:Object.fromEntries(Array.from({length:32},(_,i)=>[i+1,{passed:true,reviewed:true}])),attempts:[],belt:null};localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();}
+async function ready(page){await page.goto('/');await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'))||{version:1,terms:{},techniques:{},sessions:[],program:{organization:'Учебная программа',notes:'',enabled:[]}};s.course={lessons:Object.fromEntries(Array.from({length:32},(_,i)=>[i+1,{passed:true,reviewed:true}])),attempts:[],belt:null,relays:Object.fromEntries([1,2,3,4].map(n=>[n,{startedAt:1,done:true,results:[]}]))};localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();}
 test('complete 32 lessons once to unlock exam',async({page})=>{
  test.setTimeout(120000);
  await page.goto('/');await expect(page.getByRole('button',{name:'Пока закрыто'})).toBeDisabled();
@@ -16,7 +16,13 @@ test('complete 32 lessons once to unlock exam',async({page})=>{
   await page.getByRole('button',{name:l.answer,exact:true}).click();
   if(l.id%8===0)await solveDojo(page);
   else await expect(page.getByRole('heading',{name:'Додзе кун',exact:true})).toHaveCount(0);
-  await page.getByRole('button',{name:l.id<32?'Следующий урок →':'К итоговому тесту'}).click();
+  if(l.id%8===0){
+   await page.getByRole('button',{name:'К эстафете этапа '+(l.id/8)+' →',exact:true}).click();
+   await page.getByRole('button',{name:'Начать эстафету',exact:true}).click();
+   await expect(page.locator('#relay-countdown')).toHaveText('10');
+   await page.getByRole('button',{name:'← К маршруту',exact:true}).click();
+   if(l.id<32)await page.getByRole('button',{name:new RegExp('^Урок '+(l.id+1)+':')}).click();
+  }else await page.getByRole('button',{name:'Следующий урок →',exact:true}).click();
  }
  await expect(page.getByRole('button',{name:'Начать кю-тест'})).toBeEnabled();await page.reload();
  await expect(page.getByRole('button',{name:'Начать кю-тест'})).toBeEnabled();
@@ -48,4 +54,20 @@ test('sensei on every section, mobile layout and interrupted exam',async({page})
  }
  await page.getByRole('button',{name:'Начать кю-тест'}).click();
  await expect(page.locator('.section-title')).toContainText('1 / 9');
+});
+
+test('next stage is locked until relay starts; intro alone and direct action cannot bypass',async({page})=>{
+ await page.goto('/');await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'));s.course.lessons=Object.fromEntries(Array.from({length:8},(_,i)=>[i+1,{passed:true}]));localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();
+ await expect(page.getByRole('button',{name:/^Урок 9:/})).toBeDisabled();
+ await page.evaluate(()=>{const b=document.querySelector('[data-action="course:9"]');b.disabled=false;b.click();});
+ await expect(page.locator('.reading')).toHaveCount(0);await expect(page.getByRole('button',{name:'К заданиям →',exact:true})).toHaveCount(0);
+ await page.getByRole('button',{name:'К эстафете этапа 1 →',exact:true}).click();
+ await page.getByRole('button',{name:'← К маршруту',exact:true}).click();
+ await expect(page.getByRole('button',{name:/^Урок 9:/})).toBeDisabled();
+ await page.getByRole('button',{name:'К эстафете этапа 1 →',exact:true}).click();
+ await page.getByRole('button',{name:'Начать эстафету',exact:true}).click();await expect(page.locator('#relay-countdown')).toHaveText('10');
+ await page.getByRole('button',{name:'← К маршруту',exact:true}).click();
+ await expect(page.getByRole('button',{name:/^Урок 9:/})).toBeEnabled();
+ await page.reload();await page.getByRole('button',{name:/^Урок 9:/}).click();
+ await expect(page.getByRole('heading',{name:lessons[8].title,exact:true})).toBeVisible();
 });

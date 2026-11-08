@@ -29,7 +29,7 @@ export function createRelay(state,persist,render){
   a.loading=true;a.loadError=false;a.deadline=null;persist();
   preloadIllustrations(task.steps.map(step=>step.pose)).then(()=>{
    if(epoch!==loadEpoch||attempt()!==a||a.done)return;
-   a.loading=false;a.deadline=Date.now()+10000;persist();render();
+   a.loading=false;a.startedAt??=Date.now();a.deadline=Date.now()+10000;persist();render();
   }).catch(()=>{
    if(epoch!==loadEpoch||attempt()!==a||a.done)return;
    a.loadError=true;persist();render();

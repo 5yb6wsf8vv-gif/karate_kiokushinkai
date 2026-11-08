@@ -47,6 +47,12 @@ export const examQuestions=[
 {block:'История',question:'Первый открытый чемпионат мира состоялся в…',options:['1975','1964','2000'],answer:'1975'}
 ];
 export const sources=[['IKO Kyokushinkaikan · история организации','https://www.kyokushinkaikan.org/en/about/'],['WKO Shinkyokushinkai · организация и история','https://www.wko.or.jp/']];
-export function unlocked(progress,id){return id===1||Boolean(progress[id-1]?.passed);}
-export function examReady(progress){return lessons.every(l=>progress[l.id]?.passed);}
+export function relayAttempted(attempt){return Boolean(attempt&&(Number.isFinite(attempt.startedAt)||Number.isFinite(attempt.deadline)||attempt.aborted===true||(attempt.results?.length>0)));}
+export function unlocked(progress,id,relays={}){
+ if(progress[id]?.passed)return true; // Existing completed lessons remain available for reading.
+ if(id!==1&&!progress[id-1]?.passed)return false;
+ for(let stage=1;stage<=Math.floor((id-1)/8);stage++)if(!relayAttempted(relays[stage]))return false;
+ return true;
+}
+export function examReady(progress,relays={}){return lessons.every(l=>progress[l.id]?.passed)&&[1,2,3,4].every(stage=>relayAttempted(relays[stage]));}
 export function examPassed(results){return results.length===examQuestions.length&&['Японские термины','Ката','История'].every(block=>results.filter(r=>r.block===block&&r.correct).length>=2);}

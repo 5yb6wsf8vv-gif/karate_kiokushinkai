@@ -37,7 +37,7 @@ test('Dmitry portrait, six emotions, changing advice and lesson feedback',async(
 test('sensei controls never reset the exam clock',async({page})=>{
  await page.clock.install({time:new Date('2026-10-26T10:00:00Z')});
  await page.goto('/');
- await page.evaluate(()=>{const s={version:1,terms:{},techniques:{},sessions:[],program:{organization:'Демо',notes:'',enabled:[]},course:{lessons:Object.fromEntries(Array.from({length:32},(_,i)=>[i+1,{passed:true,reviewed:true}])),attempts:[],belt:null}};localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();
+ await page.evaluate(()=>{const s={version:1,terms:{},techniques:{},sessions:[],program:{organization:'Демо',notes:'',enabled:[]},course:{lessons:Object.fromEntries(Array.from({length:32},(_,i)=>[i+1,{passed:true,reviewed:true}])),attempts:[],belt:null,relays:Object.fromEntries([1,2,3,4].map(n=>[n,{startedAt:1,done:true,results:[]}]))}};localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();
  await page.getByRole('button',{name:'Начать кю-тест'}).click();
  await page.clock.fastForward(3000);
  await page.getByRole('button',{name:'Ещё совет ↻'}).click();

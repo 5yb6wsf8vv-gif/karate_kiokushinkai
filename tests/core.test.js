@@ -30,9 +30,9 @@ test('32 unique lessons, valid answers and sequential unlocks',()=>{
  assert.equal(unlocked({},1),true);assert.equal(unlocked({},2),false);assert.equal(unlocked({1:{passed:true}},2),true);
 });
 test('final exam requires one pass without mandatory repeat',()=>{
- const p=Object.fromEntries(lessons.map(l=>[l.id,{passed:true,reviewed:true}]));
- assert.equal(examReady(p),true);p[32].reviewed=false;assert.equal(examReady(p),true);
- p[32].reviewed=true;p[1].passed=false;assert.equal(examReady(p),false);
+ const p=Object.fromEntries(lessons.map(l=>[l.id,{passed:true,reviewed:true}]));const relays=Object.fromEntries([1,2,3,4].map(n=>[n,{startedAt:1}]));
+ assert.equal(examReady(p,relays),true);p[32].reviewed=false;assert.equal(examReady(p,relays),true);
+ p[32].reviewed=true;p[1].passed=false;assert.equal(examReady(p,relays),false);
 });
 test('exam requires two correct answers per block, not just total score',()=>{
  const results=examQuestions.map(q=>({block:q.block,correct:true}));assert.equal(examPassed(results),true);
@@ -70,4 +70,17 @@ test('four relays have ten valid image-sequence tasks and threshold seven',()=>{
  assert.equal(relayPassed(Array.from({length:10},(_,i)=>({correct:i<7}))),true);
  assert.equal(relayPassed(Array.from({length:10},(_,i)=>({correct:i<6}))),false);
  assert.equal(relayPassed(Array.from({length:7},()=>({correct:true}))),false);
+});
+
+test('every next stage requires a real relay attempt, not opening its introduction',()=>{
+ const p=Object.fromEntries(lessons.map(l=>[l.id,{passed:l.id<=8}]));
+ assert.equal(unlocked(p,9),false);assert.equal(unlocked(p,9,{1:{}}),false);
+ assert.equal(unlocked(p,9,{1:{loading:true,deadline:null}}),false);
+ assert.equal(unlocked(p,9,{1:{startedAt:100,passed:false,aborted:true}}),true);
+ assert.equal(unlocked(p,9,{1:{done:true,aborted:true,results:[]}}),true); // Legacy interrupted attempts must not lock a player out forever.
+ const all=Object.fromEntries(lessons.map(l=>[l.id,{passed:true}]));
+ assert.equal(examReady(all),false);
+ const relays=Object.fromEntries([1,2,3].map(n=>[n,{results:[{correct:false}]}]));
+ assert.equal(examReady(all,relays),false);relays[4]={startedAt:100,passed:false};assert.equal(examReady(all,relays),true);
+ all[25]={passed:false};assert.equal(unlocked(all,25,{3:{startedAt:100}}),false);
 });
