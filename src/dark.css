@@ -64,3 +64,9 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .follow-track-card.is-current{border-color:#7bd8a4;background:#18362f}.follow-track-card .kumite-exercise{width:100%;max-width:150px}.follow-track-card svg{height:110px;width:100%}
 .follow-track-card .kumite-kind,.follow-track-card .kumite-exercise-name{display:none}.follow-track-card small{color:#a6b7cf}
 @media(max-width:600px){.follow-track-cards{gap:6px}.follow-track-card{padding:8px 4px;font-size:13px}.follow-track-card svg{height:80px}.follow-track-card .eyebrow{font-size:10px}}
+.program-cards{margin:24px 0 36px}.program-cards>label{max-width:520px}
+.program-flashcard{border-top:4px solid #568bff;max-width:800px}
+.program-flashcard h3{font-size:clamp(23px,4vw,32px);line-height:1.4;overflow-wrap:anywhere}
+.program-flashcard .translation{font-size:19px;line-height:1.8;margin:20px 0;white-space:normal}
+.program-flashcard .secondary,.program-flashcard .primary{margin:6px 8px 6px 0}
+.program-flashcard .card-footer{flex-wrap:wrap;gap:8px}.program-flashcard .ratings{margin-top:18px}

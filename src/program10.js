@@ -38,17 +38,16 @@ export const ippon10 = [
  {name:'Ити · первая связка',attack:'Сэйкэн ой-цуки дзёдан',defence:'Сэйкэн дзёдан-укэ → кин-гэри'},
  {name:'Ни · вторая связка',attack:'Сэйкэн ой-цуки тюдан',defence:'Сэйкэн маэ гэдан-барай → хидза-гэри'}
 ];
-const pairs = rows => `<dl class="kyu-glossary">${rows.map(([term,meaning])=>`<div><dt>${term}</dt><dd>${meaning}</dd></div>`).join('')}</dl>`;
-const section = (title,body) => `<details class="kyu-section"><summary>${title}</summary><div class="kyu-content">${body}</div></details>`;
-export function program10View(){return `<section class="card kyu-program" aria-label="Программа 10 кю"><div class="kyu-heading"><span aria-hidden="true">基本</span><div><p class="eyebrow">Первый шаг · базовая техника</p><h2>Программа 10 кю</h2></div></div><p>Термины, команды и упражнения для знакомства с программой школы «Победитель». Требования разных организаций могут отличаться — согласуйте свою программу с тренером.</p>
-${section('Термины и обращения',pairs(glossary))}
-${section('Приветствия и боевой возглас',pairs(greetings))}
-${section('Команды в додзё',pairs(commands))}
-${section('Счёт от 1 до 10',`<ol class="kyu-count">${['Ичи','Ни','Сан','Ши','Го','Року','Сичи','Хачи','Кю','Дзю'].map(n=>`<li>${n}</li>`).join('')}</ol>`)}
-${section('Технический словарь',pairs(vocabulary))}
-${section('Стойки',pairs(stances))}
-${section('Формы и методы тренировок',pairs(methods))}
-${section('Кихон · 10 движений',`<p>Комплекс выполняется в фудо-дачи на 10 счётов. В программе также требуется знать выполнение техники в камаэтэ.</p><ol class="kyu-movements">${kihon10.map(([name,description,side],i)=>`<li><span class="badge">${side}</span><h3>${name}</h3><p>${description}</p><button class="secondary" data-action="video-lesson:kihon-${i}">▷ Повторяй за тренером</button></li>`).join('')}</ol>`)}
-${section('Иппон-кумитэ · две связки',`<p>Исходная стойка — дзэнкуцу-дачи.</p><div class="kyu-pairs">${ippon10.map(t=>`<article><h3>${t.name}</h3><p><b>Атака:</b> ${t.attack}</p><p><b>Защита и контратака:</b> ${t.defence}</p></article>`).join('')}</div>`)}
-${section('Ката · Тайкёку соно ити','<p>Первая базовая форма группы Тайкёку. Название переводят как «великий предел» или «широкий обзор». Группа включает три формы: ити, ни и сан.</p><p class="muted">Последовательность и исполнение изучайте по показу тренера. Видеоматериал готовится.</p>')}
-<p class="muted">Названия целей приведены для изучения программы. Парные упражнения и техническое исполнение разбирайте с тренером; самостоятельно изучайте движения без контакта. Чтение этого блока не начисляет XP и не отмечает упражнения выполненными.</p></section>`;}
+export const program10Groups = [
+ {id:'glossary',name:'Термины и обращения',rows:glossary},
+ {id:'greetings',name:'Приветствия и боевой возглас',rows:greetings},
+ {id:'commands',name:'Команды в додзё',rows:commands},
+ {id:'count',name:'Счёт от 1 до 10',rows:['Ичи','Ни','Сан','Ши','Го','Року','Сичи','Хачи','Кю','Дзю'].map((name,i)=>[name,String(i+1)])},
+ {id:'vocabulary',name:'Технический словарь',rows:vocabulary},
+ {id:'stances',name:'Стойки',rows:stances},
+ {id:'methods',name:'Формы и методы тренировок',rows:methods},
+ {id:'kihon',name:'Кихон · 10 движений',rows:kihon10.map(([name,description,side],i)=>[name,`${description} Рабочая сторона: ${side.toLowerCase()}. Комплекс выполняется в фудо-дачи на 10 счётов; также изучается выполнение в камаэтэ.`, `kihon-${i}`])},
+ {id:'ippon',name:'Иппон-кумитэ · две связки',rows:ippon10.map(t=>[t.name,`Исходная стойка — дзэнкуцу-дачи. Атака: ${t.attack}. Защита и контратака: ${t.defence}.`])},
+ {id:'kata',name:'Ката',rows:[['Тайкиоку соно ичи','Первая базовая форма группы Тайкёку. Название переводят как «великий предел» или «широкий обзор». Группа включает три формы: ити, ни и сан. Последовательность и исполнение изучайте по показу тренера.','training-1']]}
+];
+export const program10Cards=program10Groups.flatMap(group=>group.rows.map(([name,description,video],i)=>({id:`p10-${group.id}-${i+1}`,group:group.id,topic:group.name,name,description,video})));
