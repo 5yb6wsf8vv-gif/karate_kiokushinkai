@@ -1,4 +1,6 @@
 const sheets={
+ upperCross:{url:new URL('./assets/technique-silhouettes/upper-cross.png',import.meta.url).href,width:2172,height:724,columns:4,rows:1},
+ kicks:{url:new URL('./assets/technique-silhouettes/kick-steps.png',import.meta.url).href,width:1254,height:1254,columns:4,rows:3},
  blocks:{url:new URL('./assets/technique-silhouettes/block-steps.png',import.meta.url).href,width:1536,height:1024,columns:4,rows:2},
  stances:{url:new URL('./assets/technique-silhouettes/stances.png',import.meta.url).href,width:1536,height:1024,columns:3,rows:2},
  kihon:{url:new URL('./assets/technique-silhouettes/kihon.png',import.meta.url).href,width:1254,height:1254,columns:3,rows:3},
@@ -32,8 +34,8 @@ export const illustrationPoses={
 };
 const upperSteps=[
  {pose:'upperStart',caption:'Исходная стойка: стопы устойчивы, плечи опущены, кулаки у бёдер.'},
- {pose:'upperPrepare',caption:'Подготовка: правая рука впереди, левая готовится к подъёму.'},
- {pose:'upperTravel',caption:'Поднимайте левое предплечье перед лицом. Правый кулак возвращайте к поясу.'},
+ {pose:'upperPrepare',caption:'Перекрестите предплечья перед верхней частью груди: левый кулак у правого плеча, правый — у левого. Локти ниже кулаков.'},
+ {pose:'upperTravel',caption:'Раскройте перекрещивание: левое предплечье поднимается перед лицом, правый кулак возвращается к поясу.'},
  {pose:'upperFinish',caption:'Завершение: левое предплечье над лбом под углом. Между рукой и головой остаётся пространство.'}
 ];
 const lowerSteps=[
@@ -42,8 +44,29 @@ const lowerSteps=[
  {pose:'lowerTravel',caption:'Ведите правое предплечье по диагонали вниз. Левый кулак возвращайте к поясу.'},
  {pose:'lowerFinish',caption:'Завершение: правый кулак перед правым бедром, локоть слегка согнут. Левый кулак у пояса.'}
 ];
-[...upperSteps,...lowerSteps].forEach((step,cell)=>{illustrationPoses[step.pose]={sheet:'blocks',cell,label:`${cell<4?'Верхний':'Нижний'} блок · шаг ${cell%4+1}`};});
+[...upperSteps,...lowerSteps].forEach((step,cell)=>{illustrationPoses[step.pose]={sheet:cell<4?'upperCross':'blocks',cell,label:`${cell<4?'Верхний':'Нижний'} блок · шаг ${cell%4+1}`};});
 const sequence=steps=>steps.map((item,i)=>({...item,step:i+1}));
+const kickSteps={
+ hiza:[
+  'Исходная боевая стойка: руки в защите, вес распределён устойчиво.',
+  'Поднимите левое колено перед собой, голень остаётся согнутой.',
+  'Направьте согнутое левое колено вперёд-вверх. Держите корпус устойчиво, не разгибайте ногу в удар стопой.',
+  'Опустите левую ногу под контролем и восстановите боевую стойку.'
+ ],
+ kin:[
+  'Исходная боевая стойка: руки в защите, опора на левую ногу.',
+  'Поднимите правое колено перед собой, сохраняя равновесие.',
+  'Выполните невысокий удар правой ногой по восходящей траектории. Носок вытянут, ударная поверхность — подъём стопы.',
+  'Согните колено и верните правую ногу в исходную стойку.'
+ ],
+ mae:[
+  'Исходная боевая стойка: руки в защите, корпус устойчив.',
+  'Поднимите правое колено перед собой. Подготовьте стопу: пальцы оттянуты на себя.',
+  'Разогните ногу вперёд без запирания колена. Ударная поверхность — подушечка стопы под пальцами.',
+  'Верните голень к поднятому колену, затем опустите ногу и восстановите стойку.'
+ ]
+};
+Object.entries(kickSteps).forEach(([kind,captions],row)=>{kickSteps[kind]=captions.map((caption,i)=>{const pose=`${kind}Step${i+1}`;illustrationPoses[pose]={sheet:'kicks',cell:row*4+i,label:`${{hiza:'Хидза-гэри',kin:'Кин-гэри',mae:'Маэ-гэри'}[kind]} · шаг ${i+1}`};return {pose,caption,step:i+1};});});
 const one=pose=>[{pose}];
 const termPoses={
  rei:one('bow'),dachi:one('fudo'),tsuki:one('middleAttack'),geri:one('maeGeri'),uke:sequence(upperSteps),
@@ -62,14 +85,16 @@ const termPoses={
 ['moroteHigh','moroteMiddle','moroteLow','oiHigh','oiMiddle','oiLow','age','gedan','hiza','kin'].forEach((pose,i)=>{termPoses[`p10-kihon-${i+1}`]=one(pose);});
 termPoses['p10-kihon-7']=sequence(upperSteps);
 termPoses['p10-kihon-8']=sequence(lowerSteps);
-const techniquePoses={zenkutsu:one('zenkutsu'),kiba:one('kiba'),seiken:one('middleAttack'),gedan:sequence(lowerSteps),age:sequence(upperSteps),maegeri:one('maeGeri')};
+termPoses['p10-kihon-9']=kickSteps.hiza;
+termPoses['p10-kihon-10']=kickSteps.kin;
+const techniquePoses={zenkutsu:one('zenkutsu'),kiba:one('kiba'),seiken:one('middleAttack'),gedan:sequence(lowerSteps),age:sequence(upperSteps),maegeri:kickSteps.mae,hizageri:kickSteps.hiza,kingeri:kickSteps.kin};
 export const illustrationForTerm=id=>termPoses[id]||[];
 export const illustrationForTechnique=id=>techniquePoses[id]||[];
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let unique=0;
 export function techniqueIllustration(items){
  if(!items.length)return '';
- return `<figure class="technique-illustration ${items[0].step?'block-sequence':''}" aria-label="${items[0].step?'Блок по шагам':'Иллюстрация положения'}"><div class="pose-row" style="--pose-count:${items.length}">${items.map(item=>{
+ return `<figure class="technique-illustration ${items[0].step?'block-sequence':''}" aria-label="${items[0].step?'Движение по шагам':'Иллюстрация положения'}"><div class="pose-row" style="--pose-count:${items.length}">${items.map(item=>{
   const pose=illustrationPoses[item.pose],sheet=sheets[pose.sheet];
   const cellWidth=sheet.width/sheet.columns,cellHeight=sheet.height/sheet.rows;
   const x=(pose.cell%sheet.columns)*cellWidth,y=Math.floor(pose.cell/sheet.columns)*cellHeight;
