@@ -10,3 +10,5 @@ data/
 .wrangler/
 .dev.vars
 .dev.vars.*
+
+__pycache__/

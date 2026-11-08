@@ -9,6 +9,7 @@ from pathlib import Path
 import cv2
 import mediapipe as mp
 import numpy as np
+from arm_mask import arm_mask,repair_short_gaps
 
 
 def arena(width, height):
@@ -36,6 +37,22 @@ def arena(width, height):
     return image
 
 
+def track_arms(source):
+    capture=cv2.VideoCapture(str(source));tracks=[]
+    with mp.solutions.pose.Pose(model_complexity=1,min_detection_confidence=.35,min_tracking_confidence=.35) as tracker:
+        while True:
+            ok,frame=capture.read()
+            if not ok:break
+            frame=cv2.resize(frame,(1280,720),interpolation=cv2.INTER_AREA)
+            result=tracker.process(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB))
+            joints=np.zeros((33,3),np.float32)
+            if result.pose_landmarks:
+                joints=np.array([[p.x,p.y,p.visibility] for p in result.pose_landmarks.landmark],np.float32)
+            tracks.append(joints)
+    capture.release()
+    return repair_short_gaps(np.array(tracks))
+
+
 def render(source,target):
     cap=cv2.VideoCapture(str(source))
     fps=float(Fraction(subprocess.check_output(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=r_frame_rate','-of','default=nw=1:nk=1',str(source)]).decode().strip()))
@@ -43,6 +60,9 @@ def render(source,target):
     total=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     width,height=1280,720
     base=arena(width,height)
+    print('Tracking arms before rendering',flush=True)
+    arm_tracks=track_arms(source)
+    print('Arm tracking complete',flush=True)
     previous_mask=None
     transform=None
     missed=0
@@ -77,30 +97,12 @@ def render(source,target):
                         mask=np.uint8(keep[labels])*255
                     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
                     previous_mask=mask.copy()
-                # Keep visible forearms/hands when the segmentation misses a fast punch.
-                # Joint positions come from this frame, never from blended future frames.
-                if result.pose_landmarks:
-                    landmarks=result.pose_landmarks.landmark
-                    arm_region=np.zeros_like(mask)
-                    sample={'time':index/fps,'reach':0}
-                    for shoulder,elbow,wrist in [(11,13,15),(12,14,16)]:
-                        joints=[landmarks[v] for v in [shoulder,elbow,wrist]]
-                        if min(v.visibility for v in joints)<.55:continue
-                        coords=[np.array([v.x*1280,v.y*720]) for v in joints]
-                        length=np.linalg.norm(coords[2]-coords[1])
-                        radius=int(np.clip(length*.095,5,14))
-                        for a,b in zip(coords,coords[1:]):
-                            cv2.line(arm_region,tuple(a.astype(int)),tuple(b.astype(int)),255,radius*2,cv2.LINE_AA)
-                        cv2.circle(arm_region,tuple(coords[2].astype(int)),radius+2,255,-1)
-                        upper=np.linalg.norm(coords[1]-coords[0]);fore=np.linalg.norm(coords[2]-coords[1])
-                        reach=np.linalg.norm(coords[2]-coords[0])/max(1,upper+fore)
-                        sample['reach']=max(sample['reach'],float(reach))
-                    hsv=cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
-                    clothing=(hsv[:,:,1]<100)&(hsv[:,:,2]>110)
-                    skin=(hsv[:,:,0]<30)&(hsv[:,:,1]>35)&(hsv[:,:,2]>65)
-                    support=(arm_region>0)&(clothing|skin)
-                    mask[support]=255
-                    motion.append(sample)
+                # Pose-supported coverage is not gated by brightness or skin colour.
+                # Short tracking gaps are repaired offline, without blended video pixels.
+                if index<len(arm_tracks):
+                    coverage=arm_mask(mask.shape,arm_tracks[index])
+                    mask=cv2.bitwise_or(mask,coverage)
+                    motion.append({'time':index/fps,'armCoveragePixels':int(np.count_nonzero(coverage))})
                 ys,xs=np.nonzero(mask)
                 if len(xs)<200:raise RuntimeError(f'Person mask too small at frame {index}')
                 top,bottom=ys.min(),ys.max()
