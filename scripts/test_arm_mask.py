@@ -1,7 +1,7 @@
 import unittest
 import cv2
 import numpy as np
-from arm_mask import arm_mask,repair_short_gaps,relaxed_person_mask
+from arm_mask import arm_mask,repair_short_gaps
 
 class ArmCoverageTests(unittest.TestCase):
     def test_extended_arm_is_connected_to_shoulder_including_wrist(self):
@@ -18,15 +18,5 @@ class ArmCoverageTests(unittest.TestCase):
         self.assertGreater(result[1,15,2],.35)
         self.assertAlmostEqual(float(result[1,15,0]),.4,places=5)
         self.assertEqual(result[8,15,2],0)
-
-    def test_uncertain_hand_pixels_are_kept_only_near_an_arm(self):
-        joints=np.zeros((33,3),np.float32)
-        joints[11]=[.2,.5,.9];joints[13]=[.4,.5,.9];joints[15]=[.6,.5,.9]
-        probability=np.zeros((300,400),np.float32)
-        probability[146:154,250:270]=.04
-        probability[10:20,370:380]=.04
-        mask=relaxed_person_mask(probability,joints)
-        self.assertGreater(mask[150,260],0)
-        self.assertEqual(mask[15,375],0)
 
 if __name__=='__main__':unittest.main()

@@ -35,13 +35,3 @@ def arm_mask(shape,joints):
             if np.linalg.norm(point-coords[2])<max(12,fore*.45):
                 cv2.line(mask,tuple(coords[2].astype(int)),tuple(point.astype(int)),255,max(5,radius),cv2.LINE_AA)
     return mask
-
-
-def relaxed_person_mask(probability,joints):
-    """Retain uncertain original pixels around arms instead of drawing new limbs."""
-    coverage=arm_mask(probability.shape,joints)
-    search=cv2.dilate(coverage,cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(91,91)))
-    body=np.uint8(probability>.18)*255
-    recovered=np.uint8((probability>.008)&(search>0))*255
-    recovered=cv2.morphologyEx(recovered,cv2.MORPH_CLOSE,np.ones((7,7),np.uint8))
-    return cv2.bitwise_or(body,recovered)

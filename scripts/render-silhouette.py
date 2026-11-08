@@ -9,7 +9,7 @@ from pathlib import Path
 import cv2
 import mediapipe as mp
 import numpy as np
-from arm_mask import arm_mask,repair_short_gaps,relaxed_person_mask
+from arm_mask import arm_mask,repair_short_gaps
 
 
 def arena(width, height):
@@ -84,16 +84,16 @@ def render(source,target):
                     if previous_mask is None:raise RuntimeError('No person found in first frame')
                     mask=previous_mask.copy()
                 else:
-                    mask=relaxed_person_mask(result.segmentation_mask,arm_tracks[index]) if index<len(arm_tracks) else np.uint8(result.segmentation_mask>.18)*255
+                    mask=np.uint8(result.segmentation_mask>.28)*255
                     count,labels,stats,_=cv2.connectedComponentsWithStats(mask)
                     if count>1:
                         largest=1+np.argmax(stats[1:,cv2.CC_STAT_AREA])
-                        keep=stats[:,cv2.CC_STAT_AREA]>8;keep[0]=False
+                        keep=stats[:,cv2.CC_STAT_AREA]>18;keep[0]=False
                         # Retain small disconnected hands/feet close to the main figure.
                         x,y,w,h,_=stats[largest]
                         for component in range(1,count):
                             cx,cy,cw,ch,_=stats[component]
-                            if cx+cw<x-65 or cx>x+w+65 or cy+ch<y-65 or cy>y+h+65:keep[component]=False
+                            if cx+cw<x-20 or cx>x+w+20 or cy+ch<y-20 or cy>y+h+20:keep[component]=False
                         mask=np.uint8(keep[labels])*255
                     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
                     previous_mask=mask.copy()
@@ -125,19 +125,13 @@ def render(source,target):
                 shadow=cv2.GaussianBlur(shadow,(31,15),7).astype(np.float32)/255
                 output*=1-shadow[:,:,None]*.7
 
-                border=np.maximum(0,edge.astype(np.float32)/255-alpha)*.7
+                border=np.maximum(0,edge.astype(np.float32)/255-alpha)
                 output=output*(1-border[:,:,None]) + np.array([243,219,79],np.float32)*border[:,:,None]
                 # Preserve real folds and overlapping limb boundaries from the source,
                 # rather than drawing inferred skeleton bones over the person.
                 smooth=cv2.bilateralFilter(frame,5,25,25)
                 gray=cv2.cvtColor(smooth,cv2.COLOR_BGR2GRAY)
-                lines=cv2.Canny(gray,85,165)
-                # Keep major folds and remove short, noisy fabric/hair strokes.
-                contours,_=cv2.findContours(lines,cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
-                major=np.zeros_like(lines)
-                for contour in contours:
-                    if cv2.arcLength(contour,False)>=18:cv2.drawContours(major,[contour],-1,255,1,cv2.LINE_AA)
-                lines=major
+                lines=cv2.Canny(gray,35,90)
                 inner=cv2.erode(mask,np.ones((5,5),np.uint8))
                 lines=cv2.bitwise_and(lines,inner)
                 # Keep the head anonymous: no eyes, nose or mouth in the silhouette.
@@ -146,14 +140,14 @@ def render(source,target):
                     head=np.array([[int(points[i].x*1280),int(points[i].y*720)] for i in range(11)])
                     hx,hy,hw,hh=cv2.boundingRect(head)
                     cv2.ellipse(lines,(hx+hw//2,hy+hh//2),(max(8,int(hw*.85)),max(12,int(hh*1.15))),0,0,360,0,-1)
-                # Do not thicken the retained major lines.
+                lines=cv2.dilate(lines,np.ones((2,2),np.uint8))
                 projected_lines=cv2.warpAffine(lines,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
                 projected_gray=cv2.warpAffine(gray,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
                 # Solid light body with restrained fabric shading and dark contour strokes.
                 fill=np.empty_like(output)
                 for channel,color in enumerate([246,249,241]):fill[:,:,channel]=color*(.86+.14*projected_gray)
                 contour_color=np.array([116,90,34],np.float32)
-                detail=projected_lines*.65
+                detail=projected_lines*.95
                 fill=fill*(1-detail[:,:,None])+contour_color*detail[:,:,None]
                 output=output*(1-alpha[:,:,None])+fill*alpha[:,:,None]
                 encoded=np.uint8(np.clip(output,0,255))
