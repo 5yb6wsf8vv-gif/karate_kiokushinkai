@@ -106,3 +106,20 @@ export const termIllustration=term=>techniqueIllustration(illustrationForTerm(te
 export const practiceIllustration=technique=>techniqueIllustration(illustrationForTechnique(technique.id));
 // Quiz pictures describe their purpose without giving away the movement name.
 export const questionIllustration=pose=>techniqueIllustration([{pose}]).replace(/aria-label="[^"]*"/g,'aria-label="Карточка движения"').replace(/<span class="pose-caption">[\s\S]*?<\/span>/g,'');
+
+const decodedSheets=new Map();
+export function preloadIllustrations(poses){
+ const urls=[...new Set(poses.map(pose=>sheets[illustrationPoses[pose].sheet].url))];
+ return Promise.all(urls.map(url=>{
+  if(!decodedSheets.has(url)){
+   const ready=new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>img.decode().then(()=>resolve(img),reject);
+    img.onerror=()=>reject(Error('Не удалось загрузить карточки.'));
+    img.src=url;
+   }).catch(error=>{decodedSheets.delete(url);throw error;});
+   decodedSheets.set(url,ready);
+  }
+  return decodedSheets.get(url);
+ }));
+}
