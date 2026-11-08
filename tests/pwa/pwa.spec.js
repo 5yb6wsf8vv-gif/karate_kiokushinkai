@@ -33,3 +33,16 @@ test('backend responses never enter offline cache',async({page,context})=>{
   await context.setOffline(true);expect(await page.evaluate(async url=>{try{await fetch(url);return false;}catch{return true;}},api)).toBe(true);
  }finally{server.closeAllConnections();await new Promise(r=>server.close(r));}
 });
+
+test('dedicated application page supports installation and reopening offline',async({page,context})=>{
+ await page.addInitScript(()=>localStorage.setItem('player-profile',JSON.stringify({name:'Анна',course:'2'})));
+ await page.goto(base+'#install');await cached(page);
+ await expect(page.getByRole('heading',{name:'Приложение KihonGo',exact:true})).toBeVisible();
+ await expect(page.getByRole('link',{name:'Приложение',exact:true})).toHaveAttribute('aria-current','page');
+ await page.evaluate(()=>{const event=new Event('beforeinstallprompt',{cancelable:true});event.prompt=async()=>{};event.userChoice=Promise.resolve({outcome:'accepted'});dispatchEvent(event);});
+ await page.getByRole('button',{name:'Установить приложение',exact:true}).click();
+ await expect(page.getByText('Установка подтверждена. Следуйте подсказкам устройства.',{exact:true})).toBeVisible();
+ await context.setOffline(true);await page.reload();
+ await expect(page.getByRole('heading',{name:'Приложение KihonGo',exact:true})).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
