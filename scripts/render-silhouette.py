@@ -4,6 +4,7 @@ The segmentation models ship with the pinned MediaPipe package.
 Usage: python render-silhouette.py input.mp4 output.mp4
 """
 import argparse, json, subprocess, tempfile
+from fractions import Fraction
 from pathlib import Path
 import cv2
 import mediapipe as mp
@@ -37,7 +38,7 @@ def arena(width, height):
 
 def render(source,target):
     cap=cv2.VideoCapture(str(source))
-    fps=cap.get(cv2.CAP_PROP_FPS)
+    fps=float(Fraction(subprocess.check_output(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=r_frame_rate','-of','default=nw=1:nk=1',str(source)]).decode().strip()))
     if not cap.isOpened() or fps<=0:raise RuntimeError('Cannot open input video')
     total=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     width,height=1280,720
@@ -45,17 +46,18 @@ def render(source,target):
     previous_mask=None
     transform=None
     missed=0
+    motion=[]
     with tempfile.TemporaryDirectory(prefix='kihongo-silhouette-') as temp:
         silent=Path(temp)/'silent.mp4'
-        process=subprocess.Popen(['ffmpeg','-hide_banner','-loglevel','error','-y','-f','rawvideo','-pix_fmt','bgr24','-s',f'{width}x{height}','-r',str(fps),'-i','pipe:0','-an','-c:v','libx264','-preset','fast','-crf','22','-pix_fmt','yuv420p',str(silent)],stdin=subprocess.PIPE)
-        with mp.solutions.pose.Pose(model_complexity=1,enable_segmentation=True,smooth_segmentation=True,min_detection_confidence=.35,min_tracking_confidence=.35) as pose:
+        process=subprocess.Popen(['ffmpeg','-hide_banner','-loglevel','error','-y','-f','rawvideo','-pix_fmt','bgr24','-s',f'{width}x{height}','-r',str(fps),'-i','pipe:0','-an','-c:v','libx264','-preset','fast','-crf','18','-pix_fmt','yuv420p',str(silent)],stdin=subprocess.PIPE)
+        with mp.solutions.pose.Pose(model_complexity=1,enable_segmentation=True,smooth_segmentation=False,min_detection_confidence=.35,min_tracking_confidence=.35) as pose:
             index=0
             first_frame=None
             last_frame=None
             while True:
                 ok,frame=cap.read()
                 if not ok:break
-                frame=cv2.resize(frame,(960,540),interpolation=cv2.INTER_AREA)
+                frame=cv2.resize(frame,(1280,720),interpolation=cv2.INTER_AREA)
                 result=pose.process(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB))
                 if result.segmentation_mask is None:
                     missed+=1
@@ -75,41 +77,65 @@ def render(source,target):
                         mask=np.uint8(keep[labels])*255
                     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
                     previous_mask=mask.copy()
+                # Keep visible forearms/hands when the segmentation misses a fast punch.
+                # Joint positions come from this frame, never from blended future frames.
+                if result.pose_landmarks:
+                    landmarks=result.pose_landmarks.landmark
+                    arm_region=np.zeros_like(mask)
+                    sample={'time':index/fps,'reach':0}
+                    for shoulder,elbow,wrist in [(11,13,15),(12,14,16)]:
+                        joints=[landmarks[v] for v in [shoulder,elbow,wrist]]
+                        if min(v.visibility for v in joints)<.55:continue
+                        coords=[np.array([v.x*1280,v.y*720]) for v in joints]
+                        length=np.linalg.norm(coords[2]-coords[1])
+                        radius=int(np.clip(length*.095,5,14))
+                        for a,b in zip(coords,coords[1:]):
+                            cv2.line(arm_region,tuple(a.astype(int)),tuple(b.astype(int)),255,radius*2,cv2.LINE_AA)
+                        cv2.circle(arm_region,tuple(coords[2].astype(int)),radius+2,255,-1)
+                        upper=np.linalg.norm(coords[1]-coords[0]);fore=np.linalg.norm(coords[2]-coords[1])
+                        reach=np.linalg.norm(coords[2]-coords[0])/max(1,upper+fore)
+                        sample['reach']=max(sample['reach'],float(reach))
+                    hsv=cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
+                    clothing=(hsv[:,:,1]<100)&(hsv[:,:,2]>110)
+                    skin=(hsv[:,:,0]<30)&(hsv[:,:,1]>35)&(hsv[:,:,2]>65)
+                    support=(arm_region>0)&(clothing|skin)
+                    mask[support]=255
+                    motion.append(sample)
                 ys,xs=np.nonzero(mask)
                 if len(xs)<200:raise RuntimeError(f'Person mask too small at frame {index}')
                 top,bottom=ys.min(),ys.max()
                 center=(xs.min()+xs.max())/2
                 if result.pose_landmarks:
                     lm=result.pose_landmarks.landmark
-                    center=(lm[23].x+lm[24].x)*480
+                    center=(lm[23].x+lm[24].x)*640
                 scale=450/max(1,bottom-top)
                 target_transform=np.array([scale,center,bottom],np.float32)
                 transform=target_transform if transform is None else transform*.7+target_transform*.3
                 scale,center,bottom=transform
                 matrix=np.float32([[scale,0,width*.5-center*scale],[0,scale,644-bottom*scale]])
                 projected=cv2.warpAffine(mask,matrix,(width,height),flags=cv2.INTER_LINEAR)
-                alpha=cv2.GaussianBlur(projected,(3,3),.6).astype(np.float32)/255
-                edge=cv2.dilate(projected,np.ones((7,7),np.uint8))
-                aura=cv2.GaussianBlur(edge,(31,31),8).astype(np.float32)/255
+                alpha=projected.astype(np.float32)/255
+                edge=cv2.dilate(projected,np.ones((3,3),np.uint8))
+                # No glow or temporally blended silhouettes around moving limbs.
                 output=base.astype(np.float32).copy()
                 shadow=np.zeros((height,width),np.uint8)
                 cv2.ellipse(shadow,(width//2,647),(145,12),0,0,360,120,-1,cv2.LINE_AA)
                 shadow=cv2.GaussianBlur(shadow,(31,15),7).astype(np.float32)/255
                 output*=1-shadow[:,:,None]*.7
-                output+=aura[:,:,None]*np.array([70,50,5],np.float32)
+
                 border=np.maximum(0,edge.astype(np.float32)/255-alpha)
                 output=output*(1-border[:,:,None]) + np.array([243,219,79],np.float32)*border[:,:,None]
                 # Preserve real folds and overlapping limb boundaries from the source,
                 # rather than drawing inferred skeleton bones over the person.
-                smooth=cv2.bilateralFilter(frame,7,45,45)
+                smooth=cv2.bilateralFilter(frame,5,25,25)
                 gray=cv2.cvtColor(smooth,cv2.COLOR_BGR2GRAY)
-                lines=cv2.Canny(gray,45,105)
+                lines=cv2.Canny(gray,35,90)
                 inner=cv2.erode(mask,np.ones((5,5),np.uint8))
                 lines=cv2.bitwise_and(lines,inner)
                 # Keep the head anonymous: no eyes, nose or mouth in the silhouette.
                 if result.pose_landmarks:
                     points=result.pose_landmarks.landmark
-                    head=np.array([[int(points[i].x*960),int(points[i].y*540)] for i in range(11)])
+                    head=np.array([[int(points[i].x*1280),int(points[i].y*720)] for i in range(11)])
                     hx,hy,hw,hh=cv2.boundingRect(head)
                     cv2.ellipse(lines,(hx+hw//2,hy+hh//2),(max(8,int(hw*.85)),max(12,int(hh*1.15))),0,0,360,0,-1)
                 lines=cv2.dilate(lines,np.ones((2,2),np.uint8))
@@ -119,7 +145,7 @@ def render(source,target):
                 fill=np.empty_like(output)
                 for channel,color in enumerate([246,249,241]):fill[:,:,channel]=color*(.86+.14*projected_gray)
                 contour_color=np.array([116,90,34],np.float32)
-                detail=projected_lines*.82
+                detail=projected_lines*.95
                 fill=fill*(1-detail[:,:,None])+contour_color*detail[:,:,None]
                 output=output*(1-alpha[:,:,None])+fill*alpha[:,:,None]
                 encoded=np.uint8(np.clip(output,0,255))
@@ -141,7 +167,8 @@ def render(source,target):
         cap.release();process.stdin.close()
         if process.wait()!=0:raise RuntimeError('Video encoding failed')
         target.parent.mkdir(parents=True,exist_ok=True)
-        subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(silent),'-i',str(source),'-map','0:v:0','-map','1:a:0?','-c:v','copy','-c:a','aac','-b:a','96k','-af','apad','-shortest','-map_metadata','-1','-movflags','+faststart',str(target)],check=True)
+        subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(silent),'-map','0:v:0','-c:v','copy','-an','-map_metadata','-1','-movflags','+faststart',str(target)],check=True)
+        target.with_suffix('.motion.json').write_text(json.dumps(motion))
         print(json.dumps({'frames':index,'fps':fps,'missing_masks':missed,'output':str(target)}),flush=True)
 
 if __name__=='__main__':
