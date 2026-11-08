@@ -99,3 +99,14 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .follow-track-card .pose-row{display:block}
 .follow-track-card .pose-picture{height:170px}
 @media(max-width:600px){.follow-track-card .pose-picture{height:120px}}
+
+.recognition-options,.picture-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.recognition-options button,.picture-options button{min-width:0;padding:10px}
+.recognition-task>.technique-illustration{max-width:360px;margin:18px auto}
+.recognition-task .pose-caption,.recognition-task figcaption,.exam-question .pose-caption,.exam-question figcaption{display:none}
+.picture-options .technique-illustration{margin:0;padding:5px;border:0;background:transparent}
+.picture-options .pose-picture{height:190px}
+.picture-options button.selected{border-color:#a4dcff;background:#264776}
+.relay-bank .technique-illustration,.relay-order .technique-illustration,.relay-study .technique-illustration{margin:0;padding:4px;border:0;background:transparent}
+.relay-bank .pose-caption,.relay-order .pose-caption,.relay-study .pose-caption,.relay-bank figcaption,.relay-order figcaption,.relay-study figcaption{display:none}
+@media(max-width:600px){.picture-options .pose-picture{height:145px}.recognition-options{gap:8px}}

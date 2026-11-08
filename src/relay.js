@@ -1,19 +1,16 @@
 import {changeXP} from './core.js';
 import {senpaiZhanna,setSensei,clearSensei} from './sensei.js';
-const names=['Сэйкэн цуки','Гэдан-барай','Агэ-укэ','Ути-укэ','Сото-укэ','Маэ-гэри','Хидза-гэри','Маэ-кэагэ','Шаг в дзэнкуцу-дати','Разворот с нижним блоком'];
+import {illustrationForTechnique,techniqueIllustration} from './technique-illustrations.js';
+const relayMovements=[['age','Агэ-укэ'],['gedan','Гэдан-барай'],['hizageri','Хидза гаммэн-гэри'],['kingeri','Кин-гэри'],['maegeri','Маэ-гэри']];
 export const relayTasks=Array.from({length:4},(_,stage)=>Array.from({length:10},(_,i)=>{
- const technique=(i+stage*2)%names.length;
- const leg=[5,6,7].includes(technique);
- const steps=stage===0?['Исходная стойка','Подготовка движения','Контролируемое действие']:stage===1?['Исходная стойка','Подготовка движения','Контролируемое действие','Возврат в стойку']:stage===2?['Подготовка движения','Контролируемое действие','Возврат в стойку']:['Исходная стойка','Подготовка движения','Контролируемое действие','Возврат в стойку'];
- return {id:`${stage+1}-${i+1}`,name:names[technique],technique,leg,steps:steps.map((label,j)=>({id:j,label,pose:label==='Исходная стойка'?0:label==='Подготовка движения'?1:label==='Контролируемое действие'?2:3}))};
+ const [technique,name]=relayMovements[(i+stage)%relayMovements.length];
+ const mirror=i>=5;
+ return {id:`${stage+1}-${i+1}`,name:name+(mirror?' · другая сторона':''),technique,leg:i%5>=2,mirror,steps:illustrationForTechnique(technique).map((step,j)=>({id:j,label:mirror?step.caption.replaceAll('лев','__SIDE__').replaceAll('прав','лев').replaceAll('__SIDE__','прав'):step.caption,pose:step.pose}))};
 }));
 export function relayPassed(results){return results.length===10&&results.filter(r=>r.correct).length>=7;}
 export function validRelayOrder(task,order){return order.length===task.steps.length&&order.every((id,i)=>id===i);}
 export function movementImage(task,step){
- const p=step.pose,leg=task.leg;
- const arms=p===0?'M48 67L31 90M72 67L89 90':p===1?'M48 67L36 75L52 54M72 67L82 85L64 87':p===2?(task.technique===2?'M48 67L43 41L79 34':task.technique===1?'M48 67L27 106M72 67L84 83':leg?'M48 67L31 84L43 92M72 67L89 82L78 92':'M48 67L20 66L8 65M72 67L82 85L63 87'):'M48 67L34 88M72 67L87 88';
- const legs=leg&&p===2?(task.technique===6?'M52 108L41 147M67 108L81 89L95 109': 'M52 108L43 147M67 108L86 111L112 87'):p===1&&leg?'M52 108L43 147M67 108L80 92L83 116':p===2?'M52 108L27 146M67 108L89 143':'M52 108L43 147M67 108L78 147';
- return `<svg viewBox="0 0 128 166" role="img" aria-label="${task.name}: ${step.label}"><path d="M12 153H116" stroke="#526787" stroke-width="2"/><circle cx="60" cy="33" r="16" fill="#edb58e"/><path d="M43 27Q60 3 77 27" fill="#283b57"/><path d="M47 57L73 57L80 105L40 105Z" fill="#e9f1ff" stroke="#8ca4cb" stroke-width="2"/><path d="M48 57L61 78L72 57" fill="none" stroke="#8ca4cb" stroke-width="2"/><path d="${arms}" stroke="#dbe7fc" stroke-width="12" fill="none" stroke-linecap="round"/><path d="${legs}" stroke="#dbe7fc" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M40 98H79M59 98L54 119M63 98L72 116" stroke="#172238" stroke-width="7" fill="none"/><circle cx="55" cy="32" r="1.5" fill="#263752"/><circle cx="65" cy="32" r="1.5" fill="#263752"/></svg>`;
+ return techniqueIllustration([{pose:step.pose,mirror:task.mirror}]);
 }
 export function createRelay(state,persist,render){
  state.course.relays??={};let stage=null,timer=null;

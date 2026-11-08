@@ -44,3 +44,20 @@ test('rooms expire absolutely after thirty minutes and alarms remove stored game
   now+=1000;await room.alarm();assert.ok(record.data.has('record'));now+=1800000;await room.alarm();assert.equal(record.data.size,0);assert.equal((await api(env,'/state?room='+a.code,null,a.token)).status,404);
  }finally{Date.now=original;}
 });
+
+test('Cloudflare persists recognition format across eviction and validates one selected choice',async()=>{
+ const original=Date.now;let now=1000;Date.now=()=>now;const env=environment();
+ try{
+  const a=(await api(env,'/rooms',{name:'A',format:'recognition-v1'})).body;
+  const b=(await api(env,'/join',{room:a.code,name:'B'})).body;
+  env.instances.clear();let s=(await api(env,'/state?room='+a.code,null,a.token)).body;
+  assert.equal(s.format,'recognition-v1');now=s.round.start;
+  // Round zero asks for the forward stance, independent of shuffled display order.
+  const wrong=s.round.cards.find(c=>c.piece===1).id,right=s.round.cards.find(c=>c.piece===0).id;
+  assert.equal((await api(env,'/answer',{room:a.code,round:s.round.id,order:[wrong]},a.token)).body.accepted,false);
+  env.instances.clear();
+  assert.equal((await api(env,'/answer',{room:a.code,round:s.round.id,order:[right]},a.token)).status,409);
+  assert.equal((await api(env,'/answer',{room:a.code,round:s.round.id,order:[right]},b.token)).body.accepted,true);
+  s=(await api(env,'/state?room='+a.code,null,b.token)).body;assert.equal(s.players[1].score,1);
+ }finally{Date.now=original;}
+});

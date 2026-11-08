@@ -1,6 +1,7 @@
 import {solveDojo} from './dojo-helper.js';
 import {test,expect} from './fixtures.js';
 import {lessons,examQuestions} from '../../src/curriculum.js';
+async function answer(page,q){await page.locator('[data-action="exam-answer:'+q.options.indexOf(q.answer)+'"]').click();}
 async function ready(page){await page.goto('/');await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'))||{version:1,terms:{},techniques:{},sessions:[],program:{organization:'Учебная программа',notes:'',enabled:[]}};s.course={lessons:Object.fromEntries(Array.from({length:32},(_,i)=>[i+1,{passed:true,reviewed:true}])),attempts:[],belt:null};localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();}
 test('complete 32 lessons once to unlock exam',async({page})=>{
  test.setTimeout(120000);
@@ -28,12 +29,12 @@ test('5-second deadline, failed block and retry with persisted belt',async({page
  await expect(page.locator('#countdown')).toHaveText('5');
  await page.clock.fastForward(5000);await expect(page.locator('.section-title')).toContainText('2 / 9');
  await page.clock.fastForward(5000);
- for(let i=2;i<9;i++)await page.getByRole('button',{name:examQuestions[i].answer,exact:true}).click();
+ for(let i=2;i<9;i++)await answer(page,examQuestions[i]);
  await expect(page.getByRole('heading',{name:'Продолжим тренироваться'})).toBeVisible();
  await expect(page.getByText('Время истекло',{exact:true})).toHaveCount(2);
  await expect(page.getByRole('heading',{name:'Твой оранжевый пояс',exact:true})).toHaveCount(0);
  await page.getByRole('button',{name:'Попробовать снова'}).click();
- for(const q of examQuestions)await page.getByRole('button',{name:q.answer,exact:true}).click();
+ for(const q of examQuestions)await answer(page,q);
  await expect(page.getByRole('heading',{name:'Твой оранжевый пояс',exact:true})).toBeVisible();
  await expect(page.getByText('Игровая награда · не присвоение 10 кю')).toBeVisible();
  await page.reload();await expect(page.getByText(/Виртуальный оранжевый пояс уже получен/)).toBeVisible();

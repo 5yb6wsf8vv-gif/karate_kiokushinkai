@@ -104,3 +104,5 @@ export function techniqueIllustration(items){
 }
 export const termIllustration=term=>techniqueIllustration(illustrationForTerm(term.id));
 export const practiceIllustration=technique=>techniqueIllustration(illustrationForTechnique(technique.id));
+// Quiz pictures describe their purpose without giving away the movement name.
+export const questionIllustration=pose=>techniqueIllustration([{pose}]).replace(/aria-label="[^"]*"/g,'aria-label="Карточка движения"').replace(/<span class="pose-caption">[\s\S]*?<\/span>/g,'');

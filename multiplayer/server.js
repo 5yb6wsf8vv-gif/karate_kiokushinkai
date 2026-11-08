@@ -16,7 +16,7 @@ export function createDuelServer({engine=new DuelEngine(),origins=['https://5yb6
   if(req.method==='OPTIONS'){send(204,{});return;}
   const url=new URL(req.url,'http://localhost');
   try{
-   if(req.method==='GET'&&url.pathname==='/health'){send(200,{ok:true,service:'kyokushin-duel',version:1});return;}
+   if(req.method==='GET'&&url.pathname==='/health'){send(200,{ok:true,service:'kyokushin-duel',version:2});return;}
    const forwarded=String(req.headers['x-forwarded-for']||'').split(',').at(-1).trim();
    const ip=trustProxy&&isIP(forwarded)?forwarded:req.socket.remoteAddress||'unknown';const now=Date.now();let rate=rates.get(ip);if(!rate||now-rate.at>60000){rate={at:now,n:0};rates.set(ip,rate);}if(++rate.n>600)throw new DuelError(429,'Слишком много запросов. Подождите минуту.');if(rates.size>10000)rates.clear();
    const key=(req.headers.authorization||'').replace(/^Bearer /,'');
@@ -32,7 +32,7 @@ export function createDuelServer({engine=new DuelEngine(),origins=['https://5yb6
    if(req.method!=='POST')throw new DuelError(404,'Не найдено.');
    let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>8192)throw new DuelError(413,'Слишком большой запрос.');}
    let body;try{body=JSON.parse(raw||'{}');}catch{throw new DuelError(400,'Неверный JSON.');}
-   if(url.pathname==='/rooms')send(201,engine.create(body.name,body.skinId));
+   if(url.pathname==='/rooms')send(201,engine.create(body.name,body.skinId,body.format));
    else if(url.pathname==='/join')send(200,engine.join(body.room,body.name,body.skinId));
    else if(url.pathname==='/answer')send(200,engine.answer(body.room,key,body.round,body.order));
    else if(url.pathname==='/leave')send(200,engine.leave(body.room,key));

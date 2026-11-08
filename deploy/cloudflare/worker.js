@@ -17,7 +17,7 @@ export default {
  async fetch(request,env){let headers={};try{
   headers=cors(request,env);const url=new URL(request.url),path=url.pathname;
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers});
-  if(request.method==='GET'&&path==='/health')return json({ok:true,service:'kyokushin-duel',version:1,pollIntervalMs:2500},200,headers);
+  if(request.method==='GET'&&path==='/health')return json({ok:true,service:'kyokushin-duel',version:2,pollIntervalMs:2500},200,headers);
   const get=request.method==='GET'&&path==='/state',post=request.method==='POST'&&['/rooms','/join','/answer','/leave'].includes(path);
   if(!get&&!post)fail(404,'Не найдено.');
   if(env.REQUEST_LIMITER){const result=await env.REQUEST_LIMITER.limit({key:request.headers.get('CF-Connecting-IP')||'local'});if(!result.success)fail(429,'Слишком много запросов. Подождите минуту.');}
@@ -43,7 +43,7 @@ export class DuelRoom {
    if(record&&now>=record.expiresAt){await this.ctx.storage.deleteAll();record=null;}
    if(path==='/create'){
     if(record)fail(409,'Комната уже существует.');
-    engine=new DuelEngine({roundWarmupMs:4000});const created=engine.create(body.name,body.skinId),room=engine.rooms.get(created.code);engine.rooms.clear();room.code=code;engine.rooms.set(code,room);
+    engine=new DuelEngine({roundWarmupMs:4000});const created=engine.create(body.name,body.skinId,body.format),room=engine.rooms.get(created.code);engine.rooms.clear();room.code=code;engine.rooms.set(code,room);
     record={room,createdAt:now,expiresAt:now+ROOM_LIFETIME};await this.ctx.storage.setAlarm(record.expiresAt);await this.ctx.storage.put('record',record);
     return json({code,token:created.token},201);
    }
