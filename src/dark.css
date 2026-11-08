@@ -75,3 +75,12 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .term .translation,.term-detail{white-space:normal;overflow-wrap:anywhere;line-height:1.8}
 .term-credits{margin:24px 0;font-size:14px;color:#b7c6db}
 #term-topic{max-width:520px}
+
+.technique-illustration{margin:22px 0;border:1px solid #344c6b;border-radius:18px;background:radial-gradient(ellipse at 50% 35%,#274766 0%,#142338 65%);padding:16px 12px}
+.pose-row{display:grid;grid-template-columns:repeat(var(--pose-count),minmax(0,1fr));gap:12px;align-items:end}
+.pose-panel{min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+.pose-picture{display:block;width:100%;height:250px;overflow:hidden}.pose-mirrored{transform:scaleX(-1)}
+.pose-caption{display:block;font-size:15px;line-height:1.5;color:#c5d9ef;overflow-wrap:anywhere}
+.technique-illustration>figcaption{margin-top:14px;font-size:12px;line-height:1.5;text-align:center;color:#9fb4ce}
+.pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:180px}
+@media(max-width:600px){.technique-illustration{padding:12px 8px}.pose-row{gap:7px}.pose-picture{height:220px}.pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:125px}.pose-caption{font-size:13px}}
