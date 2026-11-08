@@ -84,3 +84,10 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .technique-illustration>figcaption{margin-top:14px;font-size:12px;line-height:1.5;text-align:center;color:#9fb4ce}
 .pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:180px}
 @media(max-width:600px){.technique-illustration{padding:12px 8px}.pose-row{gap:7px}.pose-picture{height:220px}.pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:125px}.pose-caption{font-size:13px}}
+
+.block-sequence .pose-row{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:16px}
+.block-sequence .pose-panel{border:1px solid #3f5c7f;border-radius:14px;background:#122035;padding:12px;justify-content:flex-start}
+.block-sequence .pose-step{align-self:flex-start;font-size:14px;font-weight:800;color:#9ddcff}
+.block-sequence .pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:245px}
+.block-sequence .pose-caption{text-align:left;width:100%;font-size:15px}
+@media(max-width:600px){.block-sequence .pose-row{grid-template-columns:1fr}.block-sequence .pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:280px}}

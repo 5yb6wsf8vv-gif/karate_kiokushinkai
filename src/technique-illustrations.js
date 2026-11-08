@@ -1,4 +1,5 @@
 const sheets={
+ blocks:{url:new URL('./assets/technique-silhouettes/block-steps.png',import.meta.url).href,width:1536,height:1024,columns:4,rows:2},
  stances:{url:new URL('./assets/technique-silhouettes/stances.png',import.meta.url).href,width:1536,height:1024,columns:3,rows:2},
  kihon:{url:new URL('./assets/technique-silhouettes/kihon.png',import.meta.url).href,width:1254,height:1254,columns:3,rows:3},
  extras:{url:new URL('./assets/technique-silhouettes/extras.png',import.meta.url).href,width:1536,height:1024,columns:3,rows:2},
@@ -29,9 +30,23 @@ export const illustrationPoses={
  upperDefence:{sheet:'defence',cell:0,label:'Дзёдан-укэ · верхний блок в передней стойке'},
  lowerDefence:{sheet:'defence',cell:1,label:'Гэдан-барай · нижний блок в передней стойке'}
 };
+const upperSteps=[
+ {pose:'upperStart',caption:'Исходная стойка: стопы устойчивы, плечи опущены, кулаки у бёдер.'},
+ {pose:'upperPrepare',caption:'Подготовка: правая рука впереди, левая готовится к подъёму.'},
+ {pose:'upperTravel',caption:'Поднимайте левое предплечье перед лицом. Правый кулак возвращайте к поясу.'},
+ {pose:'upperFinish',caption:'Завершение: левое предплечье над лбом под углом. Между рукой и головой остаётся пространство.'}
+];
+const lowerSteps=[
+ {pose:'lowerStart',caption:'Исходная стойка: стопы устойчивы, плечи расслаблены, кулаки у бёдер.'},
+ {pose:'lowerPrepare',caption:'Подготовка: правый кулак у левого плеча, левая рука направлена вперёд-вниз.'},
+ {pose:'lowerTravel',caption:'Ведите правое предплечье по диагонали вниз. Левый кулак возвращайте к поясу.'},
+ {pose:'lowerFinish',caption:'Завершение: правый кулак перед правым бедром, локоть слегка согнут. Левый кулак у пояса.'}
+];
+[...upperSteps,...lowerSteps].forEach((step,cell)=>{illustrationPoses[step.pose]={sheet:'blocks',cell,label:`${cell<4?'Верхний':'Нижний'} блок · шаг ${cell%4+1}`};});
+const sequence=steps=>steps.map((item,i)=>({...item,step:i+1}));
 const one=pose=>[{pose}];
 const termPoses={
- rei:one('bow'),dachi:one('fudo'),tsuki:one('middleAttack'),geri:one('maeGeri'),uke:one('upperDefence'),
+ rei:one('bow'),dachi:one('fudo'),tsuki:one('middleAttack'),geri:one('maeGeri'),uke:sequence(upperSteps),
  'p10-greetings-4':one('bow'),
  'p10-commands-2':one('seiza'),'p10-commands-3':one('yoi'),'p10-commands-4':one('seiza'),'p10-commands-5':one('seiza'),'p10-commands-6':one('yoi'),'p10-commands-10':one('kamae'),'p10-commands-11':one('middleAttack'),'p10-commands-12':one('fudo'),
  'p10-vocabulary-3':one('moroteMiddle'),'p10-vocabulary-6':one('middleAttack'),'p10-vocabulary-7':one('hiza'),'p10-vocabulary-12':one('moroteHigh'),'p10-vocabulary-13':one('moroteMiddle'),'p10-vocabulary-14':one('moroteLow'),'p10-vocabulary-15':one('kin'),'p10-vocabulary-16':[{pose:'middleAttack',caption:'Хикитэ · возвращённый к поясу кулак'}],
@@ -45,19 +60,21 @@ const termPoses={
  'p10-kata-1':[{pose:'fudo',caption:'Начальное положение · полная форма показана в видео'}]
 };
 ['moroteHigh','moroteMiddle','moroteLow','oiHigh','oiMiddle','oiLow','age','gedan','hiza','kin'].forEach((pose,i)=>{termPoses[`p10-kihon-${i+1}`]=one(pose);});
-const techniquePoses={zenkutsu:one('zenkutsu'),kiba:one('kiba'),seiken:one('middleAttack'),gedan:one('lowerDefence'),age:one('upperDefence'),maegeri:one('maeGeri')};
+termPoses['p10-kihon-7']=sequence(upperSteps);
+termPoses['p10-kihon-8']=sequence(lowerSteps);
+const techniquePoses={zenkutsu:one('zenkutsu'),kiba:one('kiba'),seiken:one('middleAttack'),gedan:sequence(lowerSteps),age:sequence(upperSteps),maegeri:one('maeGeri')};
 export const illustrationForTerm=id=>termPoses[id]||[];
 export const illustrationForTechnique=id=>techniquePoses[id]||[];
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let unique=0;
 export function techniqueIllustration(items){
  if(!items.length)return '';
- return `<figure class="technique-illustration" aria-label="Иллюстрация положения"><div class="pose-row" style="--pose-count:${items.length}">${items.map(item=>{
+ return `<figure class="technique-illustration ${items[0].step?'block-sequence':''}" aria-label="${items[0].step?'Блок по шагам':'Иллюстрация положения'}"><div class="pose-row" style="--pose-count:${items.length}">${items.map(item=>{
   const pose=illustrationPoses[item.pose],sheet=sheets[pose.sheet];
   const cellWidth=sheet.width/sheet.columns,cellHeight=sheet.height/sheet.rows;
   const x=(pose.cell%sheet.columns)*cellWidth,y=Math.floor(pose.cell/sheet.columns)*cellHeight;
   const filter=`pose-cutout-${++unique}`;
-  return `<div class="pose-panel" data-pose="${item.pose}"><svg class="pose-picture ${item.mirror?'pose-mirrored':''}" viewBox="${x} ${y} ${cellWidth} ${cellHeight}" role="img" aria-label="${escape(pose.label)}"><defs><clipPath id="${filter}-clip"><rect x="${x}" y="${y}" width="${cellWidth}" height="${cellHeight}"/></clipPath><filter id="${filter}" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></defs><image href="${sheet.url}" x="0" y="0" width="${sheet.width}" height="${sheet.height}" filter="url(#${filter})" clip-path="url(#${filter}-clip)"/></svg><span class="pose-caption">${escape(item.caption||pose.label)}</span></div>`;
+  return `<div class="pose-panel" data-pose="${item.pose}">${item.step?`<span class="pose-step">Шаг ${item.step}</span>`:''}<svg class="pose-picture ${item.mirror?'pose-mirrored':''}" viewBox="${x} ${y} ${cellWidth} ${cellHeight}" role="img" aria-label="${escape(pose.label)}"><defs><clipPath id="${filter}-clip"><rect x="${x}" y="${y}" width="${cellWidth}" height="${cellHeight}"/></clipPath><filter id="${filter}" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></defs><image href="${sheet.url}" x="0" y="0" width="${sheet.width}" height="${sheet.height}" filter="url(#${filter})" clip-path="url(#${filter}-clip)"/></svg><span class="pose-caption">${escape(item.caption||pose.label)}</span></div>`;
  }).join('')}</div><figcaption>Схематичная иллюстрация положения</figcaption></figure>`;
 }
 export const termIllustration=term=>techniqueIllustration(illustrationForTerm(term.id));
