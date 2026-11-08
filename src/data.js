@@ -1,15 +1,18 @@
-export const terms = [
-{id:'osu',jp:'押忍',reading:'Ос',translation:'Приветствие и выражение уважения'},
-{id:'rei',jp:'礼',reading:'Рэй',translation:'Поклон'},
-{id:'hajime',jp:'始め',reading:'Хадзимэ',translation:'Начинайте'},
-{id:'yame',jp:'止め',reading:'Ямэ',translation:'Остановитесь'},
-{id:'dachi',jp:'立ち',reading:'Дати',translation:'Стойка'},
-{id:'tsuki',jp:'突き',reading:'Цуки',translation:'Прямой удар рукой'},
-{id:'geri',jp:'蹴り',reading:'Гэри',translation:'Удар ногой'},
-{id:'uke',jp:'受け',reading:'Укэ',translation:'Блок / приём защиты'},
-{id:'mae',jp:'前',reading:'Маэ',translation:'Вперёд'},
-{id:'dojo',jp:'道場',reading:'Додзё',translation:'Зал для занятий'}
+import {program10Cards} from './program10.js';
+import {mergeTermDeck} from './japanese-terms.js';
+const baseTerms = [
+{id:'osu',jp:'押忍',kana:'おす',reading:'Ос',translation:'Приветствие и выражение уважения'},
+{id:'rei',jp:'礼',kana:'れい',reading:'Рэй',translation:'Поклон'},
+{id:'hajime',jp:'始め',kana:'はじめ',reading:'Хадзимэ',translation:'Начинайте'},
+{id:'yame',jp:'止め',kana:'やめ',reading:'Ямэ',translation:'Остановитесь'},
+{id:'dachi',jp:'立ち',kana:'たち、だち',reading:'Дачи',translation:'Стойка. Отдельно: тати; в составных названиях: дачи.'},
+{id:'tsuki',jp:'突き',kana:'つき',reading:'Цуки',translation:'Прямой удар рукой'},
+{id:'geri',jp:'蹴り',kana:'けり、げり',reading:'Гэри',translation:'Удар ногой'},
+{id:'uke',jp:'受け',kana:'うけ',reading:'Укэ',translation:'Блок / приём защиты'},
+{id:'mae',jp:'前',kana:'まえ',reading:'Маэ',translation:'Вперёд'},
+{id:'dojo',jp:'道場',kana:'どうじょう',reading:'Додзё',translation:'Зал для занятий'}
 ];
+export const terms=mergeTermDeck(baseTerms,program10Cards);
 export const techniques = [
 {id:'zenkutsu',name:'Дзэнкуцу-дачи',category:'Стойки',jp:'前屈立ち',steps:['С тренером определите длину и ширину стойки.','Согните переднюю ногу, направляя колено по линии стопы.','Сохраняйте устойчивость и ровное положение корпуса.'],errors:['Сведение колена внутрь','Чрезмерное напряжение плеч']},
 {id:'kiba',name:'Киба-дачи',category:'Стойки',jp:'騎馬立ち',steps:['Поставьте стопы шире плеч в пределах комфортной подвижности.','Плавно согните колени по направлению носков.','Держите корпус вертикально, дышите свободно.'],errors:['Слишком глубокая стойка','Колени заваливаются внутрь']},

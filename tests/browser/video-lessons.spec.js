@@ -24,8 +24,8 @@ test('video lesson plays a local file with countdown and controls, without award
  await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
  await expect(page.getByRole('dialog')).toHaveCount(0);
  await page.getByRole('link',{name:'Термины',exact:true}).click();
- await page.getByLabel('Тема программы 10 кю').selectOption('kihon');
- for(let i=0;i<9;i++)await page.getByRole('button',{name:'Следующая карточка →',exact:true}).click();
+ await page.getByLabel('Тема карточек').selectOption('kihon');
+ for(let i=0;i<9;i++)await page.getByRole('button',{name:'Следующий →',exact:true}).click();
  await page.locator('[data-action="video-lesson:kihon-9"]').click();
  await expect(page.getByRole('dialog').getByRole('heading',{name:'Кин-гэри миги'})).toBeVisible();
  await page.evaluate(()=>location.hash='home');
@@ -34,7 +34,7 @@ test('video lesson plays a local file with countdown and controls, without award
 test('morote video is assigned to three levels and embeds only after countdown',async({page})=>{
  await page.route('https://www.youtube.com/embed/**',route=>route.fulfill({contentType:'text/html',body:'<p>Test player</p>'}));
  await page.goto('/#terms');
- await page.getByLabel('Тема программы 10 кю').selectOption('kihon');
+ await page.getByLabel('Тема карточек').selectOption('kihon');
  for(let i=0;i<3;i++){
   await page.locator(`[data-action="video-lesson:kihon-${i}"]`).click();
   const dialog=page.getByRole('dialog');
@@ -42,7 +42,7 @@ test('morote video is assigned to three levels and embeds only after countdown',
   await expect(dialog.locator('iframe')).toHaveCount(0);
   if(i===0){await dialog.getByRole('button',{name:'Начать · 3, 2, 1'}).click();await expect(dialog.locator('iframe')).toHaveAttribute('src',/youtube.com\/embed\/y4r1qAHXHwI\?autoplay=1/,{timeout:6000});}
   await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
-  if(i<2)await page.getByRole('button',{name:'Следующая карточка →',exact:true}).click();
+  if(i<2)await page.getByRole('button',{name:'Следующий →',exact:true}).click();
  }
 });
 test('uploaded training clip plays with seek-synchronized cues and no completion reward',async({page})=>{

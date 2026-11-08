@@ -70,3 +70,8 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .program-flashcard .translation{font-size:19px;line-height:1.8;margin:20px 0;white-space:normal}
 .program-flashcard .secondary,.program-flashcard .primary{margin:6px 8px 6px 0}
 .program-flashcard .card-footer{flex-wrap:wrap;gap:8px}.program-flashcard .ratings{margin-top:18px}
+.term .japanese{overflow-wrap:anywhere;font-size:clamp(28px,6vw,64px);line-height:1.35}
+.term .kana{font-size:22px;line-height:1.6;color:#a8c5ff;overflow-wrap:anywhere}
+.term .translation,.term-detail{white-space:normal;overflow-wrap:anywhere;line-height:1.8}
+.term-credits{margin:24px 0;font-size:14px;color:#b7c6db}
+#term-topic{max-width:520px}

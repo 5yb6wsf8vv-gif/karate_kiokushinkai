@@ -10,8 +10,12 @@ test('production PWA installs under repository path and reopens offline with pro
  await cached(page);expect(await page.evaluate(async()=>new URL((await navigator.serviceWorker.ready).scope).pathname)).toBe(base);
  await profile(page);await page.getByRole('link',{name:'Термины',exact:true}).click();await page.getByRole('button',{name:'Вспомнил(а) — открыть ответ'}).click();await page.getByRole('button',{name:'Легко',exact:true}).click();
  await context.setOffline(true);await page.reload();await expect(page.getByRole('heading',{name:'Японские термины'})).toBeVisible();await expect(page.getByText('Вы без интернета.',{exact:false})).toBeVisible();
+ await page.evaluate(()=>{const NativeAudio=window.Audio;window.Audio=class extends NativeAudio{constructor(src){super(src);window.offlineJapanesePlayer=this;}};});
+ await page.getByRole('button',{name:'◖)) Прослушать',exact:true}).click();
+ await expect.poll(()=>page.evaluate(()=>window.offlineJapanesePlayer?.readyState)).toBeGreaterThanOrEqual(2);
+ expect(await page.evaluate(()=>window.offlineJapanesePlayer.duration)).toBeGreaterThan(.2);
  await page.getByRole('link',{name:'История',exact:true}).click();await expect(page.getByRole('heading',{name:'История киокушинкай',exact:true})).toBeVisible();await expect(page.locator('.history-topic')).toHaveCount(8);await page.reload();await expect(page.getByRole('heading',{name:'История киокушинкай',exact:true})).toBeVisible();
- await page.getByRole('link',{name:'Прогресс',exact:true}).click();await expect(page.locator('.stats')).toContainText('1 / 10');await page.getByRole('link',{name:'Мой аккаунт',exact:true}).click();await expect(page.getByLabel('Имя',{exact:true})).toHaveValue('Анна');await expect(page.getByLabel('Курс обучения')).toHaveValue('2');
+ await page.getByRole('link',{name:'Прогресс',exact:true}).click();await expect(page.locator('.stats')).toContainText('1 / 79');await page.getByRole('link',{name:'Мой аккаунт',exact:true}).click();await expect(page.getByLabel('Имя',{exact:true})).toHaveValue('Анна');await expect(page.getByLabel('Курс обучения')).toHaveValue('2');
  await expect(page.getByText('Учебные материалы сохранены для работы без интернета.',{exact:false})).toBeVisible();
  await page.getByRole('link',{name:'Скины',exact:true}).click();const art=page.locator('.skin-art').first();const imageUrl=await art.evaluate(el=>getComputedStyle(el).backgroundImage.slice(5,-2));expect(await page.evaluate(async url=>(await fetch(url)).ok,imageUrl)).toBe(true);
  expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth)).toBe(true);

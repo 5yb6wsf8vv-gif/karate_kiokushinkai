@@ -6,7 +6,7 @@ test('navigation, learning, program and persistence',async({page})=>{
  await page.getByRole('button',{name:'Вспомнил(а) — открыть ответ'}).click();
  await page.getByRole('button',{name:'Легко',exact:true}).click();
  await page.reload();await page.getByRole('link',{name:'Прогресс',exact:true}).click();
- await expect(page.locator('.stats')).toContainText('1 / 10');
+ await expect(page.locator('.stats')).toContainText('1 / 79');
  await page.getByRole('link',{name:'Техника',exact:true}).click();
  await page.getByRole('button',{name:'Блоки',exact:true}).click();
  await expect(page.locator('.video')).toHaveCount(2);
@@ -23,7 +23,7 @@ test('navigation, learning, program and persistence',async({page})=>{
  await expect(page.locator('body')).toHaveJSProperty('scrollWidth',await page.evaluate(()=>document.documentElement.clientWidth));
  expect(errors).toEqual([]);
 });
-test('lesson completion counted once and missing audio explicit',async({page})=>{
+test('lesson completion counted once and Japanese listening mode available',async({page})=>{
  await page.goto('/');await page.getByRole('button',{name:'Занятие на 10 минут →'}).click();
  for(let i=0;i<4;i++){await page.getByRole('button',{name:'Вспомнил(а) — открыть ответ'}).click();await page.getByRole('button',{name:'С трудом',exact:true}).click();}
  await expect(page.getByRole('heading',{name:'Одна техническая тема'})).toBeVisible();
@@ -32,9 +32,9 @@ test('lesson completion counted once and missing audio explicit',async({page})=>
  await expect(page.getByText(/Занятие ·/)).toHaveCount(1);await page.reload();
  await expect(page.getByText(/Занятие ·/)).toHaveCount(1);
  await page.getByRole('link',{name:'Термины',exact:true}).click();
- await expect(page.getByText(/Аудио недоступно/)).toBeVisible();
+ await expect(page.getByText(/Японская озвучка · синтез речи/)).toBeVisible();
  await page.getByRole('button',{name:'На слух',exact:true}).click();
- await expect(page.getByText(/Упражнение на слух недоступно/)).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Что вы услышали?'})).toBeVisible();
 });
 test('choice feedback, recall deadline and browser back navigation',async({page})=>{
  await page.clock.install({time:new Date('2026-10-16T12:00:00Z')});

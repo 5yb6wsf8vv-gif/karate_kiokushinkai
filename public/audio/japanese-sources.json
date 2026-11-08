@@ -1,0 +1,1390 @@
+{
+  "dictionary": "JMdict via jamdict-data 1.5",
+  "dictionaryURL": "https://www.edrdg.org/jmdict/j_jmdict.html",
+  "packageURL": "https://pypi.org/project/jamdict-data/1.5/",
+  "voice": "Mei / MMDAgent / Nagoya Institute of Technology",
+  "engine": "pyopenjtalk-plus 0.4.1.post10",
+  "terms": [
+    {
+      "id": "osu",
+      "jp": "押忍",
+      "kana": "おす",
+      "dictionaryMatches": [
+        {
+          "form": "押忍",
+          "entry": 1180540,
+          "readings": [
+            "おっす",
+            "おす"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "rei",
+      "jp": "礼",
+      "kana": "れい",
+      "dictionaryMatches": [
+        {
+          "form": "礼",
+          "entry": 1557450,
+          "readings": [
+            "れい"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "hajime",
+      "jp": "始め",
+      "kana": "はじめ",
+      "dictionaryMatches": [
+        {
+          "form": "始め",
+          "entry": 1342540,
+          "readings": [
+            "はじめ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "yame",
+      "jp": "止め",
+      "kana": "やめ",
+      "dictionaryMatches": [
+        {
+          "form": "止め",
+          "entry": 1310660,
+          "readings": [
+            "とどめ"
+          ]
+        },
+        {
+          "form": "止め",
+          "entry": 1552690,
+          "readings": [
+            "とめ"
+          ]
+        },
+        {
+          "form": "止め",
+          "entry": 2124420,
+          "readings": [
+            "どめ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "dachi",
+      "jp": "立ち",
+      "kana": "たち、だち",
+      "dictionaryMatches": [
+        {
+          "form": "立ち",
+          "entry": 1551240,
+          "readings": [
+            "たち"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "tsuki",
+      "jp": "突き",
+      "kana": "つき",
+      "dictionaryMatches": [
+        {
+          "form": "突き",
+          "entry": 1456590,
+          "readings": [
+            "つき"
+          ]
+        },
+        {
+          "form": "突き",
+          "entry": 2827047,
+          "readings": [
+            "つつき"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "geri",
+      "jp": "蹴り",
+      "kana": "けり、げり",
+      "dictionaryMatches": [
+        {
+          "form": "蹴り",
+          "entry": 2089560,
+          "readings": [
+            "けり"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "uke",
+      "jp": "受け",
+      "kana": "うけ",
+      "dictionaryMatches": [
+        {
+          "form": "受け",
+          "entry": 1659120,
+          "readings": [
+            "うけ",
+            "ウケ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "mae",
+      "jp": "前",
+      "kana": "まえ",
+      "dictionaryMatches": [
+        {
+          "form": "前",
+          "entry": 1387210,
+          "readings": [
+            "さき"
+          ]
+        },
+        {
+          "form": "前",
+          "entry": 1392570,
+          "readings": [
+            "ぜん"
+          ]
+        },
+        {
+          "form": "前",
+          "entry": 1392580,
+          "readings": [
+            "まえ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "dojo",
+      "jp": "道場",
+      "kana": "どうじょう",
+      "dictionaryMatches": [
+        {
+          "form": "道場",
+          "entry": 1454220,
+          "readings": [
+            "どうじょう"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-1",
+      "jp": "空手・空手道",
+      "kana": "からて、からてどう",
+      "dictionaryMatches": [
+        {
+          "form": "空手",
+          "entry": 1245620,
+          "readings": [
+            "からて"
+          ]
+        },
+        {
+          "form": "空手道",
+          "entry": 2451430,
+          "readings": [
+            "からてどう"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-2",
+      "jp": "極真会",
+      "kana": "きょくしんかい",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-glossary-4",
+      "jp": "武道",
+      "kana": "ぶどう",
+      "dictionaryMatches": [
+        {
+          "form": "武道",
+          "entry": 1498880,
+          "readings": [
+            "ぶどう"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-5",
+      "jp": "武士道",
+      "kana": "ぶしどう",
+      "dictionaryMatches": [
+        {
+          "form": "武士道",
+          "entry": 1498620,
+          "readings": [
+            "ぶしどう"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-6",
+      "jp": "範士",
+      "kana": "はんし",
+      "dictionaryMatches": [
+        {
+          "form": "範士",
+          "entry": 2530020,
+          "readings": [
+            "はんし"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-7",
+      "jp": "師範",
+      "kana": "しはん",
+      "dictionaryMatches": [
+        {
+          "form": "師範",
+          "entry": 1308990,
+          "readings": [
+            "しはん"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-8",
+      "jp": "先生",
+      "kana": "せんせい",
+      "dictionaryMatches": [
+        {
+          "form": "先生",
+          "entry": 1387990,
+          "readings": [
+            "せんせい"
+          ]
+        },
+        {
+          "form": "先生",
+          "entry": 2727400,
+          "readings": [
+            "シーサン"
+          ]
+        },
+        {
+          "form": "先生",
+          "entry": 2841735,
+          "readings": [
+            "せんじょう",
+            "せんしょう",
+            "ぜんじょう"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-9",
+      "jp": "先輩",
+      "kana": "せんぱい",
+      "dictionaryMatches": [
+        {
+          "form": "先輩",
+          "entry": 1388410,
+          "readings": [
+            "せんぱい"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-10",
+      "jp": "後輩",
+      "kana": "こうはい",
+      "dictionaryMatches": [
+        {
+          "form": "後輩",
+          "entry": 1270010,
+          "readings": [
+            "こうはい"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-11",
+      "jp": "取り",
+      "kana": "とり",
+      "dictionaryMatches": [
+        {
+          "form": "取り",
+          "entry": 2451270,
+          "readings": [
+            "とり"
+          ]
+        },
+        {
+          "form": "取り",
+          "entry": 2762480,
+          "readings": [
+            "どり"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-12",
+      "jp": "受け",
+      "kana": "うけ",
+      "dictionaryMatches": [
+        {
+          "form": "受け",
+          "entry": 1659120,
+          "readings": [
+            "うけ",
+            "ウケ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-glossary-13",
+      "jp": "道場訓",
+      "kana": "どうじょうくん",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-greetings-2",
+      "jp": "気合",
+      "kana": "きあい",
+      "dictionaryMatches": [
+        {
+          "form": "気合",
+          "entry": 1591030,
+          "readings": [
+            "きあい"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-greetings-4",
+      "jp": "ありがとうございました",
+      "kana": "ありがとうございました",
+      "dictionaryMatches": [
+        {
+          "form": "ありがとうございました",
+          "entry": 2845468,
+          "readings": [
+            "ありがとうございました"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-commands-2",
+      "jp": "正座",
+      "kana": "せいざ",
+      "dictionaryMatches": [
+        {
+          "form": "正座",
+          "entry": 1377150,
+          "readings": [
+            "しょうざ"
+          ]
+        },
+        {
+          "form": "正座",
+          "entry": 1595990,
+          "readings": [
+            "せいざ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-commands-3",
+      "jp": "立て",
+      "kana": "たて",
+      "dictionaryMatches": [
+        {
+          "form": "立て",
+          "entry": 2081610,
+          "readings": [
+            "たて"
+          ]
+        },
+        {
+          "form": "立て",
+          "entry": 2609800,
+          "readings": [
+            "だて"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-commands-4",
+      "jp": "黙想",
+      "kana": "もくそう",
+      "dictionaryMatches": [
+        {
+          "form": "黙想",
+          "entry": 1773480,
+          "readings": [
+            "もくそう"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-commands-5",
+      "jp": "黙想止め",
+      "kana": "もくそうやめ",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-commands-6",
+      "jp": "用意",
+      "kana": "ようい",
+      "dictionaryMatches": [
+        {
+          "form": "用意",
+          "entry": 1546220,
+          "readings": [
+            "ようい"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-stances-1",
+      "jp": "不動立ち",
+      "kana": "ふどうだち",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-commands-10",
+      "jp": "構えて",
+      "kana": "かまえて",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-commands-11",
+      "jp": "無号令、始め",
+      "kana": "むごうれい、はじめ",
+      "dictionaryMatches": [
+        {
+          "form": "始め",
+          "entry": 1342540,
+          "readings": [
+            "はじめ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-commands-12",
+      "jp": "直れ",
+      "kana": "なおれ",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-commands-13",
+      "jp": "分かった？",
+      "kana": "わかった",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-count-1",
+      "jp": "一",
+      "kana": "いち",
+      "dictionaryMatches": [
+        {
+          "form": "一",
+          "entry": 1160790,
+          "readings": [
+            "いち"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 1160820,
+          "readings": [
+            "ひとつ"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 2747940,
+          "readings": [
+            "イー"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 2821440,
+          "readings": [
+            "いっち"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 2821500,
+          "readings": [
+            "ひと",
+            "ひ",
+            "ひい"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 2843147,
+          "readings": [
+            "いつ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-count-2",
+      "jp": "二",
+      "kana": "に",
+      "dictionaryMatches": [
+        {
+          "form": "二",
+          "entry": 1461140,
+          "readings": [
+            "に",
+            "ふた",
+            "ふ",
+            "ふう"
+          ]
+        },
+        {
+          "form": "二",
+          "entry": 2728160,
+          "readings": [
+            "アル"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-count-3",
+      "jp": "三",
+      "kana": "さん",
+      "dictionaryMatches": [
+        {
+          "form": "三",
+          "entry": 1579350,
+          "readings": [
+            "さん",
+            "み"
+          ]
+        },
+        {
+          "form": "三",
+          "entry": 2747950,
+          "readings": [
+            "サン"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-count-4",
+      "jp": "四",
+      "kana": "し",
+      "dictionaryMatches": [
+        {
+          "form": "四",
+          "entry": 1579470,
+          "readings": [
+            "し",
+            "よん",
+            "よ"
+          ]
+        },
+        {
+          "form": "四",
+          "entry": 2747960,
+          "readings": [
+            "スー"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-count-5",
+      "jp": "五",
+      "kana": "ご",
+      "dictionaryMatches": [
+        {
+          "form": "五",
+          "entry": 1268060,
+          "readings": [
+            "ご",
+            "いつ",
+            "い"
+          ]
+        },
+        {
+          "form": "五",
+          "entry": 2747970,
+          "readings": [
+            "ウー"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-count-6",
+      "jp": "六",
+      "kana": "ろく",
+      "dictionaryMatches": [
+        {
+          "form": "六",
+          "entry": 1585310,
+          "readings": [
+            "ろく",
+            "む",
+            "むう"
+          ]
+        },
+        {
+          "form": "六",
+          "entry": 2747980,
+          "readings": [
+            "リュー"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-count-7",
+      "jp": "七",
+      "kana": "しち",
+      "dictionaryMatches": [
+        {
+          "form": "七",
+          "entry": 1319210,
+          "readings": [
+            "しち",
+            "なな",
+            "ひち",
+            "な"
+          ]
+        },
+        {
+          "form": "七",
+          "entry": 2747990,
+          "readings": [
+            "チー"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-count-8",
+      "jp": "八",
+      "kana": "はち",
+      "dictionaryMatches": [
+        {
+          "form": "八",
+          "entry": 1583090,
+          "readings": [
+            "はち",
+            "や"
+          ]
+        },
+        {
+          "form": "八",
+          "entry": 2748000,
+          "readings": [
+            "パー"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-count-9",
+      "jp": "九",
+      "kana": "きゅう",
+      "dictionaryMatches": [
+        {
+          "form": "九",
+          "entry": 1578150,
+          "readings": [
+            "きゅう",
+            "く",
+            "ここの",
+            "この",
+            "ここ"
+          ]
+        },
+        {
+          "form": "九",
+          "entry": 2748010,
+          "readings": [
+            "チュー"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-count-10",
+      "jp": "十",
+      "kana": "じゅう",
+      "dictionaryMatches": [
+        {
+          "form": "十",
+          "entry": 1579840,
+          "readings": [
+            "じゅう",
+            "とお",
+            "と"
+          ]
+        },
+        {
+          "form": "十",
+          "entry": 2748020,
+          "readings": [
+            "シー"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-1",
+      "jp": "右",
+      "kana": "みぎ",
+      "dictionaryMatches": [
+        {
+          "form": "右",
+          "entry": 1171010,
+          "readings": [
+            "みぎ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-2",
+      "jp": "左",
+      "kana": "ひだり",
+      "dictionaryMatches": [
+        {
+          "form": "左",
+          "entry": 1290800,
+          "readings": [
+            "ひだり"
+          ]
+        },
+        {
+          "form": "左",
+          "entry": 2261470,
+          "readings": [
+            "さ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-3",
+      "jp": "諸手",
+      "kana": "もろて",
+      "dictionaryMatches": [
+        {
+          "form": "諸手",
+          "entry": 2839967,
+          "readings": [
+            "もろて",
+            "もろで",
+            "そうしゅ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-5",
+      "jp": "顔面",
+      "kana": "がんめん",
+      "dictionaryMatches": [
+        {
+          "form": "顔面",
+          "entry": 1217860,
+          "readings": [
+            "がんめん"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-6",
+      "jp": "正拳",
+      "kana": "せいけん",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-vocabulary-7",
+      "jp": "膝",
+      "kana": "ひざ",
+      "dictionaryMatches": [
+        {
+          "form": "膝",
+          "entry": 1487320,
+          "readings": [
+            "ひざ",
+            "ヒザ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-10",
+      "jp": "正面・前",
+      "kana": "しょうめん、まえ",
+      "dictionaryMatches": [
+        {
+          "form": "正面",
+          "entry": 1378030,
+          "readings": [
+            "しょうめん"
+          ]
+        },
+        {
+          "form": "正面",
+          "entry": 1378040,
+          "readings": [
+            "まとも"
+          ]
+        },
+        {
+          "form": "前",
+          "entry": 1387210,
+          "readings": [
+            "さき"
+          ]
+        },
+        {
+          "form": "前",
+          "entry": 1392570,
+          "readings": [
+            "ぜん"
+          ]
+        },
+        {
+          "form": "前",
+          "entry": 1392580,
+          "readings": [
+            "まえ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-11",
+      "jp": "下がり・後ろ",
+      "kana": "さがり、うしろ",
+      "dictionaryMatches": [
+        {
+          "form": "下がり",
+          "entry": 1609810,
+          "readings": [
+            "さがり"
+          ]
+        },
+        {
+          "form": "後ろ",
+          "entry": 1269410,
+          "readings": [
+            "うしろ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-12",
+      "jp": "上段",
+      "kana": "じょうだん",
+      "dictionaryMatches": [
+        {
+          "form": "上段",
+          "entry": 1353870,
+          "readings": [
+            "じょうだん"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-13",
+      "jp": "中段",
+      "kana": "ちゅうだん",
+      "dictionaryMatches": [
+        {
+          "form": "中段",
+          "entry": 1424910,
+          "readings": [
+            "ちゅうだん"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-14",
+      "jp": "下段",
+      "kana": "げだん",
+      "dictionaryMatches": [
+        {
+          "form": "下段",
+          "entry": 1576950,
+          "readings": [
+            "げだん",
+            "かだん"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-15",
+      "jp": "金的",
+      "kana": "きんてき",
+      "dictionaryMatches": [
+        {
+          "form": "金的",
+          "entry": 1682170,
+          "readings": [
+            "きんてき"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-vocabulary-16",
+      "jp": "引き手",
+      "kana": "ひきて",
+      "dictionaryMatches": [
+        {
+          "form": "引き手",
+          "entry": 1601730,
+          "readings": [
+            "ひきて"
+          ]
+        },
+        {
+          "form": "引き手",
+          "entry": 2522610,
+          "readings": [
+            "ひきで"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-stances-2",
+      "jp": "内八字立ち",
+      "kana": "うちはちじだち",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-stances-3",
+      "jp": "用意立ち",
+      "kana": "よういだち",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-stances-4",
+      "jp": "前屈立ち",
+      "kana": "ぜんくつだち",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-stances-5",
+      "jp": "構え",
+      "kana": "かまえ",
+      "dictionaryMatches": [
+        {
+          "form": "構え",
+          "entry": 1279690,
+          "readings": [
+            "かまえ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-methods-1",
+      "jp": "基本",
+      "kana": "きほん",
+      "dictionaryMatches": [
+        {
+          "form": "基本",
+          "entry": 1219190,
+          "readings": [
+            "きほん"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-methods-2",
+      "jp": "基本型",
+      "kana": "きほんかた",
+      "dictionaryMatches": [
+        {
+          "form": "基本型",
+          "entry": 2546560,
+          "readings": [
+            "きほんけい",
+            "きほんがた"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-methods-3",
+      "jp": "組手",
+      "kana": "くみて",
+      "dictionaryMatches": [
+        {
+          "form": "組手",
+          "entry": 1697020,
+          "readings": [
+            "くみて"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-methods-4",
+      "jp": "一本組手",
+      "kana": "いっぽんくみて",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-methods-5",
+      "jp": "試し割り",
+      "kana": "ためしわり",
+      "dictionaryMatches": [
+        {
+          "form": "試し割り",
+          "entry": 2006030,
+          "readings": [
+            "ためしわり"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-kihon-1",
+      "jp": "正拳諸手突き上段",
+      "kana": "せいけん、もろてづき、じょうだん",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-kihon-2",
+      "jp": "正拳諸手突き中段",
+      "kana": "せいけん、もろてづき、ちゅうだん",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-kihon-3",
+      "jp": "正拳諸手突き下段",
+      "kana": "せいけん、もろてづき、げだん",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "p10-kihon-4",
+      "jp": "正拳追い突き上段・右",
+      "kana": "せいけん、おいづき、じょうだん、みぎ",
+      "dictionaryMatches": [
+        {
+          "form": "右",
+          "entry": 1171010,
+          "readings": [
+            "みぎ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-kihon-5",
+      "jp": "正拳追い突き中段・左",
+      "kana": "せいけん、おいづき、ちゅうだん、ひだり",
+      "dictionaryMatches": [
+        {
+          "form": "左",
+          "entry": 1290800,
+          "readings": [
+            "ひだり"
+          ]
+        },
+        {
+          "form": "左",
+          "entry": 2261470,
+          "readings": [
+            "さ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-kihon-6",
+      "jp": "正拳追い突き下段・右",
+      "kana": "せいけん、おいづき、げだん、みぎ",
+      "dictionaryMatches": [
+        {
+          "form": "右",
+          "entry": 1171010,
+          "readings": [
+            "みぎ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-kihon-7",
+      "jp": "正拳上段受け・左",
+      "kana": "せいけん、じょうだんうけ、ひだり",
+      "dictionaryMatches": [
+        {
+          "form": "左",
+          "entry": 1290800,
+          "readings": [
+            "ひだり"
+          ]
+        },
+        {
+          "form": "左",
+          "entry": 2261470,
+          "readings": [
+            "さ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-kihon-8",
+      "jp": "正拳前下段払い・右",
+      "kana": "せいけん、まえげだんばらい、みぎ",
+      "dictionaryMatches": [
+        {
+          "form": "右",
+          "entry": 1171010,
+          "readings": [
+            "みぎ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-kihon-9",
+      "jp": "膝顔面蹴り・左",
+      "kana": "ひざ、がんめんげり、ひだり",
+      "dictionaryMatches": [
+        {
+          "form": "左",
+          "entry": 1290800,
+          "readings": [
+            "ひだり"
+          ]
+        },
+        {
+          "form": "左",
+          "entry": 2261470,
+          "readings": [
+            "さ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-kihon-10",
+      "jp": "金的蹴り・右",
+      "kana": "きんてきげり、みぎ",
+      "dictionaryMatches": [
+        {
+          "form": "右",
+          "entry": 1171010,
+          "readings": [
+            "みぎ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-ippon-1",
+      "jp": "一本組手・一",
+      "kana": "いっぽんくみて、いち",
+      "dictionaryMatches": [
+        {
+          "form": "一",
+          "entry": 1160790,
+          "readings": [
+            "いち"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 1160820,
+          "readings": [
+            "ひとつ"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 2747940,
+          "readings": [
+            "イー"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 2821440,
+          "readings": [
+            "いっち"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 2821500,
+          "readings": [
+            "ひと",
+            "ひ",
+            "ひい"
+          ]
+        },
+        {
+          "form": "一",
+          "entry": 2843147,
+          "readings": [
+            "いつ"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-ippon-2",
+      "jp": "一本組手・二",
+      "kana": "いっぽんくみて、に",
+      "dictionaryMatches": [
+        {
+          "form": "二",
+          "entry": 1461140,
+          "readings": [
+            "に",
+            "ふた",
+            "ふ",
+            "ふう"
+          ]
+        },
+        {
+          "form": "二",
+          "entry": 2728160,
+          "readings": [
+            "アル"
+          ]
+        }
+      ],
+      "composedOrInflected": false
+    },
+    {
+      "id": "p10-kata-1",
+      "jp": "太極その一",
+      "kana": "たいきょくそのいち",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    }
+  ]
+}

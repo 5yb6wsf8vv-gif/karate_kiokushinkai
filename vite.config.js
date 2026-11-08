@@ -8,5 +8,5 @@ export default defineConfig({plugins:[VitePWA({
   {src:'icons/karate-512.png',sizes:'512x512',type:'image/png',purpose:'any'},
   {src:'icons/karate-maskable-512.png',sizes:'512x512',type:'image/png',purpose:'maskable'}
  ]},
- workbox:{globPatterns:['**/*.{js,css,html,png,svg,webmanifest}'],maximumFileSizeToCacheInBytes:3*1024*1024,cleanupOutdatedCaches:true,clientsClaim:true,navigateFallback:'index.html',navigateFallbackDenylist:[/\/auth\//,/\/health$/,/\/state$/,/\/rooms$/,/\/join$/,/\/answer$/,/\/leave$/]}
+ workbox:{globPatterns:['**/*.{js,css,html,png,svg,webmanifest,mp3,txt,json}'],maximumFileSizeToCacheInBytes:3*1024*1024,cleanupOutdatedCaches:true,clientsClaim:true,navigateFallback:'index.html',navigateFallbackDenylist:[/\/auth\//,/\/health$/,/\/state$/,/\/rooms$/,/\/join$/,/\/answer$/,/\/leave$/]}
 })]});

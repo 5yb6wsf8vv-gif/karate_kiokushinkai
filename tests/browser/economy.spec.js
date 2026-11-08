@@ -18,12 +18,12 @@ test('lesson penalty once, no replay reward, one checkmark, memory separate',asy
 });
 test('ten correct review answers give 5 XP, mistakes cost 1, saved across reload',async({page})=>{
  await page.goto('/#review');await page.getByRole('button',{name:'Начать повторение',exact:true}).click();
- let question=await page.locator('.repetition h2').textContent();let t=terms.find(t=>question.startsWith(t.jp));
+ let question=await page.locator('.repetition h2').textContent();let t=terms.find(t=>question.startsWith(t.jp+' · '));
  const wrong=terms.find(other=>other.translation!==t.translation&&other.translation===terms[(terms.indexOf(t)+1)%terms.length].translation);
  await page.getByRole('button',{name:wrong.translation,exact:true}).click();expect((await stored(page)).economy.xp).toBe(-1);
  await page.getByRole('button',{name:'Следующее задание →'}).click();
  for(let i=1;i<=10;i++){
-  question=await page.locator('.repetition h2').textContent();t=terms.find(t=>question.startsWith(t.jp));
+  question=await page.locator('.repetition h2').textContent();t=terms.find(t=>question.startsWith(t.jp+' · '));
   const answer=page.getByRole('button',{name:t.translation,exact:true});await answer.click();
   await answer.dispatchEvent('click');
   const e=(await stored(page)).economy;expect(e.reviewCorrect).toBe(i);expect(e.xp).toBe(i<10?-1:4);
