@@ -110,3 +110,21 @@ body{position:relative;isolation:isolate}body:before{content:'';position:fixed;i
 .relay-bank .technique-illustration,.relay-order .technique-illustration,.relay-study .technique-illustration{margin:0;padding:4px;border:0;background:transparent}
 .relay-bank .pose-caption,.relay-order .pose-caption,.relay-study .pose-caption,.relay-bank figcaption,.relay-order figcaption,.relay-study figcaption{display:none}
 @media(max-width:600px){.picture-options .pose-picture{height:145px}.recognition-options{gap:8px}}
+
+/* Larger reading and control text throughout the application. */
+body{font-size:20px;line-height:1.65}
+button,input,select,textarea,summary{font-size:18px}
+h1{font-size:36px;line-height:1.25}h2{font-size:28px;line-height:1.35}h3{font-size:23px;line-height:1.4}
+.reading,.intro,.term-detail,.term .translation,.history-topic p,.history-topic li{font-size:20px;line-height:1.85}
+.sensei p,.pose-caption,.block-sequence .pose-caption,.muted,.term-credits{font-size:18px}
+.eyebrow,.path-step small,.path-step p,.pills span,.app-topbar,.badge,small{font-size:16px}
+.path-step h3{font-size:22px}.brand small{font-size:14px}nav a{font-size:16px}
+button,input,select,textarea{max-width:100%;overflow-wrap:anywhere}
+@media(max-width:600px){
+ body{font-size:18px}h1,.exam-question h1{font-size:30px}h2{font-size:25px}h3{font-size:21px}
+ .reading,.intro,.term-detail,.term .translation,.history-topic p,.history-topic li{font-size:18px}
+ .sensei p,.pose-caption,.block-sequence .pose-caption,.muted{font-size:17px}
+ .path-step h3{font-size:20px}.path-step small,.path-step p,.eyebrow,.pills span,.app-topbar,small{font-size:15px}
+ nav a{font-size:13px}.brand small{font-size:13px}.follow-track-card{font-size:16px}
+}
+.sensei .eyebrow{font-size:15px;letter-spacing:1px}

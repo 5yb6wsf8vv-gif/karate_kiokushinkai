@@ -100,7 +100,7 @@ export function techniqueIllustration(items){
   const x=(pose.cell%sheet.columns)*cellWidth,y=Math.floor(pose.cell/sheet.columns)*cellHeight;
   const filter=`pose-cutout-${++unique}`;
   return `<div class="pose-panel" data-pose="${item.pose}">${item.step?`<span class="pose-step">Шаг ${item.step}</span>`:''}<svg class="pose-picture ${item.mirror?'pose-mirrored':''}" viewBox="${x} ${y} ${cellWidth} ${cellHeight}" role="img" aria-label="${escape(pose.label)}"><defs><clipPath id="${filter}-clip"><rect x="${x}" y="${y}" width="${cellWidth}" height="${cellHeight}"/></clipPath><filter id="${filter}" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></defs><image href="${sheet.url}" x="0" y="0" width="${sheet.width}" height="${sheet.height}" filter="url(#${filter})" clip-path="url(#${filter}-clip)"/></svg><span class="pose-caption">${escape(item.caption||pose.label)}</span></div>`;
- }).join('')}</div><figcaption>Схематичная иллюстрация положения</figcaption></figure>`;
+ }).join('')}</div></figure>`;
 }
 export const termIllustration=term=>techniqueIllustration(illustrationForTerm(term.id));
 export const practiceIllustration=technique=>techniqueIllustration(illustrationForTechnique(technique.id));

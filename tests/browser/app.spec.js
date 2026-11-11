@@ -1,5 +1,5 @@
 import {test,expect} from './fixtures.js';
-test('navigation, learning, program and persistence',async({page})=>{
+test('navigation, learning and persistence without program settings',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');
  await expect(page.getByRole('heading',{name:/Твой путь/})).toBeVisible();
  await page.getByRole('link',{name:'Термины',exact:true}).click();
@@ -12,14 +12,10 @@ test('navigation, learning, program and persistence',async({page})=>{
  await expect(page.locator('.video')).toHaveCount(2);
  await page.getByRole('button',{name:'Отметить «Повторено»'}).first().click();
  await page.getByRole('link',{name:'Повторение',exact:true}).click();
- await expect(page.getByRole('heading',{name:'План техники · 5'})).toBeVisible();
- await page.getByRole('link',{name:'Программа',exact:true}).click();
- await page.getByLabel('Организация или клуб').fill('Мой додзё');
- await page.getByLabel('Маэ-гэри',{exact:true}).check();
- await page.getByRole('button',{name:'Сохранить программу'}).click();await page.reload();
- await expect(page.getByLabel('Организация или клуб')).toHaveValue('Мой додзё');
+ await expect(page.getByRole('heading',{name:'План техники · 7'})).toBeVisible();
+ await expect(page.getByRole('link',{name:'Программа',exact:true})).toHaveCount(0);
  await page.getByRole('link',{name:'Техника',exact:true}).click();await page.getByRole('button',{name:'Все',exact:true}).click();
- await expect(page.locator('.video')).toHaveCount(1);
+ await expect(page.locator('.video')).toHaveCount(8);
  await expect(page.locator('body')).toHaveJSProperty('scrollWidth',await page.evaluate(()=>document.documentElement.clientWidth));
  expect(errors).toEqual([]);
 });
@@ -32,7 +28,7 @@ test('lesson completion counted once and Japanese listening mode available',asyn
  await expect(page.getByText(/Занятие ·/)).toHaveCount(1);await page.reload();
  await expect(page.getByText(/Занятие ·/)).toHaveCount(1);
  await page.getByRole('link',{name:'Термины',exact:true}).click();
- await expect(page.getByText(/Японская озвучка · синтез речи/)).toBeVisible();
+ await expect(page.getByText(/Японская озвучка · синтез речи/)).toHaveCount(0);
  await page.getByRole('button',{name:'На слух',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Что вы услышали?'})).toBeVisible();
 });
