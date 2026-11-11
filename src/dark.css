@@ -128,3 +128,6 @@ button,input,select,textarea{max-width:100%;overflow-wrap:anywhere}
  nav a{font-size:13px}.brand small{font-size:13px}.follow-track-card{font-size:16px}
 }
 .sensei .eyebrow{font-size:15px;letter-spacing:1px}
+
+.term .term-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:24px 0 0;padding-top:20px;border-top:1px solid #344c6b}
+.term .term-modes button{font-size:22px;font-weight:700;line-height:1.35;min-height:60px;padding:14px 16px;white-space:normal}
