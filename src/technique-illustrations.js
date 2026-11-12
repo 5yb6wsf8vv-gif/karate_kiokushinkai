@@ -92,18 +92,19 @@ export const illustrationForTerm=id=>termPoses[id]||[];
 export const illustrationForTechnique=id=>techniquePoses[id]||[];
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let unique=0;
-export function techniqueIllustration(items){
+export function techniqueIllustration(items,{compact=false}={}){
+ compact=compact&&items.length>1;
  if(!items.length)return '';
- return `<figure class="technique-illustration ${items[0].step?'block-sequence':''}" aria-label="${items[0].step?'Движение по шагам':'Иллюстрация положения'}"><div class="pose-row" style="--pose-count:${items.length}">${items.map(item=>{
+ return `<figure class="technique-illustration ${compact?'step-carousel':''} ${items[0].step?'block-sequence':''}" aria-label="${items[0].step?'Движение по шагам':'Иллюстрация положения'}"><div class="pose-row" style="--pose-count:${items.length}">${items.map((item,index)=>{
   const pose=illustrationPoses[item.pose],sheet=sheets[pose.sheet];
   const cellWidth=sheet.width/sheet.columns,cellHeight=sheet.height/sheet.rows;
   const x=(pose.cell%sheet.columns)*cellWidth,y=Math.floor(pose.cell/sheet.columns)*cellHeight;
   const filter=`pose-cutout-${++unique}`;
-  return `<div class="pose-panel" data-pose="${item.pose}">${item.step?`<span class="pose-step">Шаг ${item.step}</span>`:''}<svg class="pose-picture ${item.mirror?'pose-mirrored':''}" viewBox="${x} ${y} ${cellWidth} ${cellHeight}" role="img" aria-label="${escape(pose.label)}"><defs><clipPath id="${filter}-clip"><rect x="${x}" y="${y}" width="${cellWidth}" height="${cellHeight}"/></clipPath><filter id="${filter}" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></defs><image href="${sheet.url}" x="0" y="0" width="${sheet.width}" height="${sheet.height}" filter="url(#${filter})" clip-path="url(#${filter}-clip)"/></svg><span class="pose-caption">${escape(item.caption||pose.label)}</span></div>`;
- }).join('')}</div></figure>`;
+  return `<div class="pose-panel" data-pose="${item.pose}" ${compact&&index>0?'hidden':''}>${!compact&&item.step?`<span class="pose-step">Шаг ${item.step}</span>`:''}${compact?'<button type="button" class="step-card" data-step-next aria-label="Показать следующий шаг">':''}<svg class="pose-picture ${item.mirror?'pose-mirrored':''}" viewBox="${x} ${y} ${cellWidth} ${cellHeight}" role="img" aria-label="${escape(pose.label)}"><defs><clipPath id="${filter}-clip"><rect x="${x}" y="${y}" width="${cellWidth}" height="${cellHeight}"/></clipPath><filter id="${filter}" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></defs><image href="${sheet.url}" x="0" y="0" width="${sheet.width}" height="${sheet.height}" filter="url(#${filter})" clip-path="url(#${filter}-clip)"/></svg>${compact?'</button>':''}<span class="pose-caption">${escape(item.caption||pose.label)}</span></div>`;
+ }).join('')}</div>${compact?`<div class="step-controls"><button type="button" class="secondary" data-step-prev disabled aria-label="Предыдущий шаг">←</button><span class="step-progress" role="status" aria-live="polite">Шаг 1 из ${items.length}</span><button type="button" class="secondary" data-step-next>Далее →</button></div>`:''}</figure>`;
 }
-export const termIllustration=term=>techniqueIllustration(illustrationForTerm(term.id));
-export const practiceIllustration=technique=>techniqueIllustration(illustrationForTechnique(technique.id));
+export const termIllustration=term=>techniqueIllustration(illustrationForTerm(term.id),{compact:true});
+export const practiceIllustration=technique=>techniqueIllustration(illustrationForTechnique(technique.id),{compact:true});
 // Quiz pictures describe their purpose without giving away the movement name.
 export const questionIllustration=pose=>techniqueIllustration([{pose}]).replace(/aria-label="[^"]*"/g,'aria-label="Карточка движения"').replace(/<span class="pose-caption">[\s\S]*?<\/span>/g,'');
 
@@ -122,4 +123,19 @@ export function preloadIllustrations(poses){
   }
   return decodedSheets.get(url);
  }));
+}
+
+export function handleIllustrationStep(event){
+ const button=event.target.closest('[data-step-next],[data-step-prev]');
+ if(!button)return false;
+ const carousel=button.closest('.step-carousel');if(!carousel)return false;
+ event.preventDefault();
+ const panels=[...carousel.querySelectorAll('.pose-panel')],current=panels.findIndex(panel=>!panel.hidden);
+ const next=button.hasAttribute('data-step-prev')?Math.max(0,current-1):(current+1)%panels.length;
+ panels.forEach((panel,index)=>panel.hidden=index!==next);
+ carousel.querySelector('.step-progress').textContent=`Шаг ${next+1} из ${panels.length}`;
+ carousel.querySelector('[data-step-prev]').disabled=next===0;
+ carousel.querySelector('.step-controls [data-step-next]').textContent=next===panels.length-1?'Сначала ↺':'Далее →';
+ if(button.classList.contains('step-card'))panels[next].querySelector('.step-card').focus({preventScroll:true});
+ return true;
 }

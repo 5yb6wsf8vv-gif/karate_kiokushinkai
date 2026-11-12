@@ -131,3 +131,17 @@ button,input,select,textarea{max-width:100%;overflow-wrap:anywhere}
 
 .term .term-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:24px 0 0;padding-top:20px;border-top:1px solid #344c6b}
 .term .term-modes button{font-size:22px;font-weight:700;line-height:1.35;min-height:60px;padding:14px 16px;white-space:normal}
+
+.step-carousel .pose-row{display:block}
+.step-carousel .pose-panel{padding:0;border:0;background:transparent}
+.step-carousel .pose-panel[hidden]{display:none}
+.step-carousel .pose-row .pose-panel .pose-picture{height:250px}
+.step-card{display:block;width:100%;padding:0;border:0;border-radius:12px;background:transparent;box-shadow:none;cursor:pointer}
+.step-card:hover{background:#ffffff08}.step-card:focus-visible{outline:3px solid #8bcaff;outline-offset:3px}
+.step-carousel .pose-caption{min-height:5em;text-align:left;font-size:18px;line-height:1.65}
+.step-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}
+.step-controls button{min-height:48px;padding:10px 14px;font-size:18px}
+.step-progress{font-size:17px;white-space:nowrap}
+@media(max-width:600px){.step-carousel .pose-row .pose-panel .pose-picture{height:220px}.step-carousel .pose-caption{font-size:17px}.step-controls button{padding:10px;font-size:17px}.step-progress{font-size:16px}}
+.step-carousel.block-sequence .pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:250px}
+@media(max-width:600px){.step-carousel.block-sequence .pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:220px}}
