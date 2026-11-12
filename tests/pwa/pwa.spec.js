@@ -46,3 +46,29 @@ test('dedicated application page supports installation and reopening offline',as
  await expect(page.getByRole('heading',{name:'Приложение KihonGo',exact:true})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+test('download button opens native installation when browser prompt is available',async({page})=>{
+ await page.addInitScript(()=>localStorage.setItem('player-profile',JSON.stringify({name:'Анна',course:'2'})));
+ await page.goto(base);await cached(page);
+ await expect(page.getByRole('button',{name:'Скачать приложение',exact:true})).toBeVisible();
+ await page.evaluate(()=>{const event=new Event('beforeinstallprompt',{cancelable:true});event.prompt=async()=>{window.installPromptCalls=(window.installPromptCalls||0)+1;};event.userChoice=Promise.resolve({outcome:'accepted'});dispatchEvent(event);});
+ await page.getByRole('button',{name:'Скачать приложение',exact:true}).click();
+ await expect.poll(()=>page.evaluate(()=>window.installPromptCalls)).toBe(1);
+ await page.evaluate(()=>dispatchEvent(new Event('appinstalled')));
+ await expect(page.getByRole('button',{name:'Скачать приложение',exact:true})).toHaveCount(0);
+});
+test('download remains functional on iPhone without browser installation prompt',async({page})=>{
+ await page.addInitScript(()=>{
+  localStorage.setItem('player-profile',JSON.stringify({name:'Анна',course:'2'}));
+  Object.defineProperty(navigator,'userAgent',{get:()=> 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1'});
+  addEventListener('beforeinstallprompt',event=>event.stopImmediatePropagation(),{capture:true});
+ });
+ await page.goto(base);await cached(page);
+ const before=await page.evaluate(()=>localStorage.getItem('kyokushin-v1'));
+ await page.getByRole('button',{name:'Скачать приложение',exact:true}).click();
+ const dialog=page.getByRole('dialog',{name:'Установка приложения'});
+ await expect(dialog).toBeVisible();await expect(dialog).toContainText('Safari');await expect(dialog).toContainText('На экран Домой');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await dialog.getByRole('button',{name:'Понятно',exact:true}).click();await expect(dialog).toHaveCount(0);
+ expect(await page.evaluate(()=>localStorage.getItem('kyokushin-v1'))).toBe(before);
+});

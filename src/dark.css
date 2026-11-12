@@ -145,3 +145,11 @@ button,input,select,textarea{max-width:100%;overflow-wrap:anywhere}
 @media(max-width:600px){.step-carousel .pose-row .pose-panel .pose-picture{height:220px}.step-carousel .pose-caption{font-size:17px}.step-controls button{padding:10px;font-size:17px}.step-progress{font-size:16px}}
 .step-carousel.block-sequence .pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:250px}
 @media(max-width:600px){.step-carousel.block-sequence .pose-row:has(>.pose-panel:nth-child(2)) .pose-picture{height:220px}}
+
+.pwa-download{font-size:18px;padding:10px 14px;min-height:48px}
+.app-topbar{flex-wrap:wrap;gap:12px}
+.pwa-help-dialog{width:min(520px,calc(100vw - 32px));max-height:85dvh;overflow:auto;padding:24px;border:2px solid #45638a;border-radius:20px;background:#162338;color:#e8effb}
+.pwa-help-dialog::backdrop{background:#000b}
+.pwa-help-dialog p{font-size:20px;line-height:1.75}
+.pwa-help-dialog button{width:100%;margin-top:12px;font-size:20px}
+@media(max-width:600px){.pwa-download{font-size:17px}.pwa-help-dialog{padding:18px}.pwa-help-dialog p{font-size:18px}}

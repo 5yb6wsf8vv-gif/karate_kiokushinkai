@@ -4,9 +4,17 @@ export function createPWA(isBusy=()=>false){
  const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
  const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
  let installed=standalone(),reloading=false;
- function installContent(){return `<h2>Приложение на вашем устройстве</h2><p>${installed?'Приложение установлено. Открывайте его с иконки на устройстве.':'Установите тренажёр: он будет открываться в отдельном окне.'}</p>${!installed&&prompt?`<button class="primary" data-action="pwa-install" ${installing?'disabled':''}>Установить приложение</button>`:''}${!installed?`<p class="muted">${ios?'В Safari нажмите «Поделиться» → «На экран Домой» → «Добавить».':'Chrome / Edge: меню браузера → «Установить приложение». На Mac в Safari: «Файл» → «Добавить в Dock». Если пункта установки нет, откройте сайт в Chrome или Edge.'}</p>`:''}<p class="muted">${ready?'Учебные материалы сохранены для работы без интернета.':error?'Офлайн-копию пока не удалось сохранить. Откройте приложение с интернетом и попробуйте позже.':'При первом открытии с интернетом дождитесь сохранения материалов. После этого уроки, термины, повторение и скины будут доступны офлайн.'} Онлайн-кумитэ нужен интернет и работающий сервер.</p>${message?`<p role="status">${message}</p>`:''}`;}
+ function installContent(){return `<h2>Приложение на вашем устройстве</h2><p>${installed?'Приложение установлено. Открывайте его с иконки на устройстве.':'Установите тренажёр: он будет открываться в отдельном окне.'}</p>${!installed?`<button class="primary" data-action="pwa-install" ${installing?'disabled':''}>Установить приложение</button>`:''}${!installed?`<p class="muted">${ios?'В Safari нажмите «Поделиться» → «На экран Домой» → «Добавить».':'Chrome / Edge: меню браузера → «Установить приложение». На Mac в Safari: «Файл» → «Добавить в Dock». Если пункта установки нет, откройте сайт в Chrome или Edge.'}</p>`:''}<p class="muted">${ready?'Учебные материалы сохранены для работы без интернета.':error?'Офлайн-копию пока не удалось сохранить. Откройте приложение с интернетом и попробуйте позже.':'При первом открытии с интернетом дождитесь сохранения материалов. После этого уроки, термины, повторение и скины будут доступны офлайн.'} Онлайн-кумитэ нужен интернет и работающий сервер.</p>${message?`<p role="status">${message}</p>`:''}`;}
  function bannerContent(){return `${!navigator.onLine?'<p class="notice pwa-offline" role="status">Вы без интернета. Сохранённые уроки и повторение доступны; кумитэ — после подключения.</p>':''}${needsUpdate?`<section class="notice pwa-update" role="status"><b>Доступна новая версия приложения</b><p>Прогресс сохранится. ${isBusy()?'Завершите занятие или выйдите из кумитэ перед обновлением.':'Нажмите кнопку, чтобы перезапустить приложение.'}</p><button class="secondary" data-action="pwa-update" ${isBusy()?'disabled':''}>Обновить приложение</button></section>`:''}`;}
- function refresh(){document.querySelectorAll('[data-pwa-install]').forEach(el=>{el.innerHTML=installContent();});document.querySelectorAll('[data-pwa-status]').forEach(el=>{el.innerHTML=bannerContent();});}
+ function installShortcut(){return installed?'':`<button type="button" class="secondary pwa-download" data-action="pwa-install" ${installing?'disabled':''}>Скачать приложение</button>`;}
+ function showInstallHelp(){
+  const existing=document.querySelector('.pwa-help-dialog');if(existing){existing.focus();return;}
+  const dialog=document.createElement('dialog');dialog.className='pwa-help-dialog';dialog.setAttribute('aria-label','Установка приложения');
+  dialog.innerHTML=`<h2>Как установить приложение</h2><p>${ios?'Откройте сайт в Safari. Нажмите «Поделиться» → «На экран Домой» → «Добавить».':'В Chrome или Edge откройте меню браузера → «Установить приложение» или «Добавить на главный экран». На Mac в Safari выберите «Файл» → «Добавить в Dock».'}</p><button type="button" class="primary">Понятно</button>`;
+  dialog.querySelector('button').addEventListener('click',()=>dialog.close());
+  dialog.addEventListener('close',()=>dialog.remove(),{once:true});document.body.append(dialog);dialog.showModal();
+ }
+ function refresh(){document.querySelectorAll('[data-pwa-shortcut]').forEach(el=>{el.innerHTML=installShortcut();});document.querySelectorAll('[data-pwa-install]').forEach(el=>{el.innerHTML=installContent();});document.querySelectorAll('[data-pwa-status]').forEach(el=>{el.innerHTML=bannerContent();});}
  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();prompt=event;refresh();});
  window.addEventListener('appinstalled',()=>{installed=true;prompt=null;refresh();});
  window.addEventListener('online',refresh);window.addEventListener('offline',refresh);
@@ -19,9 +27,9 @@ export function createPWA(isBusy=()=>false){
   // A reopened offline app already has its cached shell even if no new install event fires.
   navigator.serviceWorker.ready.then(registration=>{if(registration.active&&navigator.serviceWorker.controller){ready=true;refresh();}}).catch(()=>{});
  }
- return {start,view:()=>`<section class="card pwa-install" data-pwa-install>${installContent()}</section>`,banner:()=>`<div data-pwa-status>${bannerContent()}</div>`,handle(action){
+ return {start,shortcut:()=>`<span data-pwa-shortcut>${installShortcut()}</span>`,view:()=>`<section class="card pwa-install" data-pwa-install>${installContent()}</section>`,banner:()=>`<div data-pwa-status>${bannerContent()}</div>`,handle(action){
   if(action==='pwa-install'){
-   if(!prompt||installing)return true;const event=prompt;prompt=null;installing=true;message='';refresh();
+   if(installing||installed)return true;if(!prompt){showInstallHelp();return true;}const event=prompt;prompt=null;installing=true;message='';refresh();
    (async()=>{try{await event.prompt();const choice=await event.userChoice;message=choice.outcome==='accepted'?'Установка подтверждена. Следуйте подсказкам устройства.':'Установку можно выполнить позже через меню браузера.';}catch{message='Установите приложение через меню браузера.';}finally{installing=false;refresh();}})();return true;
   }
   if(action==='pwa-update'){
