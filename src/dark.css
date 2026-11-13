@@ -157,3 +157,10 @@ button,input,select,textarea{max-width:100%;overflow-wrap:anywhere}
 .theme-toggle{font-size:17px;line-height:1.4;padding:10px 14px;min-height:48px;white-space:normal}
 .setup-brand{flex-wrap:wrap}.setup-brand [data-theme-control]{margin-left:auto}
 @media(max-width:600px){.theme-toggle{font-size:16px;padding:10px}.setup-brand [data-theme-control]{margin-left:0}}
+
+.app-topbar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-areas:"theme account install" "stats stats stats";align-items:center;gap:12px 16px}
+.app-topbar>[data-theme-control]{grid-area:theme;justify-self:start;min-width:0}
+.app-topbar>.account-link{grid-area:account;justify-self:center;text-align:center;white-space:nowrap}
+.app-topbar>[data-pwa-shortcut]{grid-area:install;justify-self:end;min-width:0}
+.app-topbar>.topbar-stats{grid-area:stats;justify-self:end;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:760px){.app-topbar{grid-template-areas:"theme account ." "install install install" "stats stats stats";gap:10px}.app-topbar .theme-toggle{max-width:100%}.app-topbar>.topbar-stats{justify-self:center;justify-content:center}}

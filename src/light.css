@@ -67,3 +67,4 @@
 /* A soft contour separates the white gi from the light page without a frame. */
 :root[data-theme="light"] .sensei>.sensei-portrait{filter:drop-shadow(0 0 1px #315b91a6) drop-shadow(0 5px 5px #315b9133)}
 :root[data-theme="light"] .sensei.sensei-compact>.sensei-portrait{filter:drop-shadow(0 0 1px #315b918c) drop-shadow(0 3px 3px #315b912b)}
+:root[data-theme="light"] .app-topbar .account-link{color:#2b5ca8}
