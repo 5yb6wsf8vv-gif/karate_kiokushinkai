@@ -63,3 +63,7 @@ progress,.journey-hero progress::-webkit-progress-bar,progress::-webkit-progress
 body.account-setup{background:radial-gradient(ellipse at top,#e4eeff 0,#f4f7fc 70%)}
 .setup-brand small{color:#627a9b}.pwa-update b{color:#2d548c}
 .history-hero .pills span{background:#ffffffc7;border-color:#b9cdea;color:#365a8c}
+
+/* A soft contour separates the white gi from the light page without a frame. */
+.sensei>.sensei-portrait{filter:drop-shadow(0 0 1px #315b91a6) drop-shadow(0 5px 5px #315b9133)}
+.sensei.sensei-compact>.sensei-portrait{filter:drop-shadow(0 0 1px #315b918c) drop-shadow(0 3px 3px #315b912b)}
