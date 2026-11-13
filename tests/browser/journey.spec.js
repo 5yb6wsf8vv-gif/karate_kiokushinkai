@@ -1,3 +1,4 @@
+import {navigate} from '../navigation.js';
 import {solveDojo} from './dojo-helper.js';
 import {test,expect} from './fixtures.js';
 import {lessons,examQuestions} from '../../src/curriculum.js';
@@ -48,7 +49,7 @@ test('5-second deadline, failed block and retry with persisted belt',async({page
 test('sensei on every section, mobile layout and interrupted exam',async({page})=>{
  await ready(page);await page.getByRole('button',{name:'Начать кю-тест'}).click();
  for(const name of ['Термины','Техника','Повторение','Прогресс','Приложение','Мой путь']){
-  await page.getByRole('link',{name,exact:true}).click();
+  await navigate(page,name);
   await expect(page.getByRole('img',{name:/Сенсей Дмитрий:/})).toBeVisible();
   expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth)).toBe(true);
  }

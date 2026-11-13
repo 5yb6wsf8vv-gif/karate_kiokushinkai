@@ -1,3 +1,4 @@
+import {navigate} from '../navigation.js';
 import {test,expect} from './fixtures.js';
 test('theme switching preserves form drafts, updates browser color and persists after reload',async({page})=>{
  await page.goto('/#account');
@@ -11,7 +12,7 @@ test('theme switching preserves form drafts, updates browser color and persists 
  expect(await page.evaluate(()=>localStorage.getItem('player-profile'))).toBe(before);
  expect(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor)).toBe('rgb(16, 23, 32)');
  await page.reload();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
- await page.getByRole('link',{name:'Техника',exact:true}).click();
+ await navigate(page,'Техника');
  await page.getByRole('button',{name:'Включить светлую тему',exact:true}).click();
  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content','#eaf1fc');
  expect(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor)).toBe('rgb(234, 241, 252)');

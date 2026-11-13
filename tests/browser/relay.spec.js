@@ -1,3 +1,4 @@
+import {navigate} from '../navigation.js';
 import {test,expect} from './fixtures.js';
 import {relayTasks} from '../../src/relay.js';
 async function setup(page){await page.clock.install({time:new Date('2026-10-27T10:00:00Z')});await page.goto('/');await expect(page.locator('.relay-gate')).toHaveCount(4);await expect(page.locator('.relay-gate').first().getByRole('button')).toBeDisabled();await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'));s.course.lessons=Object.fromEntries(Array.from({length:32},(_,i)=>[i+1,{passed:true}]));localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();}
@@ -46,8 +47,8 @@ test('Zhanna has full-body transparent emotions in relay, Dmitry stays elsewhere
  await page.getByRole('button',{name:'Начать эстафету',exact:true}).click();
  await expect(page.getByRole('img',{name:'Сенпай Жанна: Строгость'})).toBeVisible();
  await solve(page,1,0);await expect(page.locator('[data-mascot="zhanna"]')).toBeVisible();await expect(page.locator('[data-mascot="dmitry"]')).toHaveCount(0);
- await page.getByRole('link',{name:'Термины',exact:true}).click();await expect(page.getByRole('img',{name:/Сенсей Дмитрий:/})).toBeVisible();
- await page.getByRole('link',{name:'Мой путь',exact:true}).click();await open(page,1);await expect(page.getByRole('heading',{name:'Эстафета прервана',exact:true})).toBeVisible();
+ await navigate(page,'Термины');await expect(page.getByRole('img',{name:/Сенсей Дмитрий:/})).toBeVisible();
+ await navigate(page,'Мой путь');await open(page,1);await expect(page.getByRole('heading',{name:'Эстафета прервана',exact:true})).toBeVisible();
 });
 
 test('slow image loading never consumes relay time and timed cards have no captions',async({page})=>{

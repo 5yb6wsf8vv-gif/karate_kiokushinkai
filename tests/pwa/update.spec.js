@@ -1,3 +1,4 @@
+import {navigate} from '../navigation.js';
 import {test,expect} from '@playwright/test';
 import http from 'node:http';
 import {readFile} from 'node:fs/promises';
@@ -14,7 +15,7 @@ test('new version waits for consent and cannot interrupt a lesson; update preser
   await page.goto('http://127.0.0.1:'+server.address().port+'/karate_kiokushinkai/');await page.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(r=>navigator.serviceWorker.addEventListener('controllerchange',r,{once:true}));});
   await page.getByLabel('Имя',{exact:true}).fill('Анна');await page.getByLabel('Курс обучения').selectOption('2');await page.getByRole('button',{name:'Начать обучение'}).click();await page.getByRole('button',{name:/Урок 1:/}).click();
   revision=2;await page.evaluate(async()=>{await (await navigator.serviceWorker.ready).update();});await expect(page.getByRole('button',{name:'Обновить приложение',exact:true})).toBeDisabled();await expect(page.locator('.reading')).toBeVisible();
-  await page.getByRole('link',{name:'Мой аккаунт',exact:true}).click();await expect(page.getByRole('button',{name:'Обновить приложение',exact:true})).toBeEnabled();
+  await navigate(page,'Мой аккаунт');await expect(page.getByRole('button',{name:'Обновить приложение',exact:true})).toBeEnabled();
   await Promise.all([page.waitForEvent('load'),page.getByRole('button',{name:'Обновить приложение',exact:true}).click()]);await expect(page.getByLabel('Имя',{exact:true})).toHaveValue('Анна');await expect(page.getByLabel('Курс обучения')).toHaveValue('2');await expect(page.getByRole('button',{name:'Обновить приложение',exact:true})).toHaveCount(0);
  }finally{server.closeAllConnections();await new Promise(r=>server.close(r));}
 });

@@ -1,3 +1,4 @@
+import {navigate} from '../navigation.js';
 import {movementQuiz,movementById,correctMovementPiece} from '../../shared/movement-quiz.js';
 import {test,expect} from './fixtures.js';
 import {DuelEngine} from '../../multiplayer/engine.js';
@@ -23,7 +24,7 @@ test('two browsers join one room and complete ten competitive rounds with one wi
  test.setTimeout(90000);const a=await browser.newContext({baseURL:'http://127.0.0.1:5173',viewport:testInfo.project.use.viewport,isMobile:testInfo.project.use.isMobile,hasTouch:testInfo.project.use.hasTouch}),b=await browser.newContext({baseURL:'http://127.0.0.1:5173',viewport:testInfo.project.use.viewport,isMobile:testInfo.project.use.isMobile,hasTouch:testInfo.project.use.hasTouch});try{const p=await a.newPage(),q=await b.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));q.on('pageerror',e=>errors.push(e.message));
  await enter(p,'Алиса');
  await p.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'));s.economy.xp=100;localStorage.setItem('kyokushin-v1',JSON.stringify(s));});
- await p.getByRole('link',{name:'Скины',exact:true}).click();await p.reload();await p.getByRole('button',{name:'Купить за 50 XP',exact:true}).click();await p.getByRole('link',{name:'Кумитэ',exact:true}).click();
+ await navigate(p,'Скины');await p.reload();await p.getByRole('button',{name:'Купить за 50 XP',exact:true}).click();await navigate(p,'Кумитэ');
  await p.getByLabel('HTTPS-адрес сервера кумитэ').fill(serverURL);await p.getByLabel('Ваше имя').fill('Алиса');
  await p.getByRole('button',{name:'Создать комнату',exact:true}).click();await expect(p.getByRole('heading',{name:'Ждём второго игрока'})).toBeVisible();
  const code=await p.locator('#duel-room-code').textContent();await enter(q,'Борис');await q.getByLabel('Код комнаты').fill(code);await q.getByRole('button',{name:'Войти по коду',exact:true}).click();

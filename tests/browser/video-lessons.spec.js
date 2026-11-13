@@ -1,3 +1,4 @@
+import {navigate} from '../navigation.js';
 import {test,expect} from './fixtures.js';
 import {readFileSync} from 'node:fs';
 const clip=readFileSync(new URL('../fixtures/technique-player.webm',import.meta.url));
@@ -23,7 +24,7 @@ test('video lesson plays a local file with countdown and controls, without award
  expect(await page.evaluate(()=>localStorage.getItem('kyokushin-v1'))).toBe(before);
  await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
  await expect(page.getByRole('dialog')).toHaveCount(0);
- await page.getByRole('link',{name:'Термины',exact:true}).click();
+ await navigate(page,'Термины');
  await page.getByLabel('Тема карточек').selectOption('kihon');
  for(let i=0;i<9;i++)await page.getByRole('button',{name:'Следующий →',exact:true}).click();
  await page.locator('[data-action="video-lesson:kihon-9"]').click();

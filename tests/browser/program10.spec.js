@@ -1,3 +1,4 @@
+import {navigate} from '../navigation.js';
 import {test,expect} from './fixtures.js';
 test('one Japanese deck merges duplicate progress and includes every 10 kyu topic',async({page})=>{
  await page.addInitScript(()=>{
@@ -29,7 +30,7 @@ test('one Japanese deck merges duplicate progress and includes every 10 kyu topi
  await expect(page.locator('.term h2')).toHaveText('Тайкиоку соно ичи');
  await page.getByRole('button',{name:'На слух',exact:true}).click();await expect(page.getByRole('heading',{name:'Что вы услышали?'})).toBeVisible();
  await expect(page.locator('.term .japanese[lang=ja]')).toHaveCount(0);
- await page.getByRole('link',{name:'Техника',exact:true}).click();await expect(page.getByRole('button',{name:'✓ Повторено · отметить ещё раз'})).toHaveCount(1);
+ await navigate(page,'Техника');await expect(page.getByRole('button',{name:'✓ Повторено · отметить ещё раз'})).toHaveCount(1);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 test('bundled Japanese MP3 decodes and plays without a system Japanese voice',async({page})=>{

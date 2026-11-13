@@ -1,3 +1,4 @@
+import {navigate} from '../navigation.js';
 import {test,expect} from './fixtures.js';
 test('movement cards show complete pose sequences without revealing listening answers',async({page})=>{
  await page.goto('/#terms');
@@ -62,7 +63,7 @@ test('compact movement card advances by image or controls, reverses and loops wi
  await expect(card.locator('.step-progress')).toHaveText('Шаг 4 из 4');
  await card.getByRole('button',{name:'Сначала ↺',exact:true}).click();
  await expect(card.locator('.pose-panel:visible')).toHaveAttribute('data-pose','lowerStart');
- await page.getByRole('link',{name:'Термины',exact:true}).click();await page.getByLabel('Тема карточек').selectOption('kihon');
+ await navigate(page,'Термины');await page.getByLabel('Тема карточек').selectOption('kihon');
  for(let i=0;i<6;i++)await page.getByRole('button',{name:'Следующий →',exact:true}).click();
  const term=page.locator('.term .step-carousel');await term.locator('.pose-panel:visible .step-card').press('Enter');
  await expect(term.locator('.step-progress')).toHaveText('Шаг 2 из 4');

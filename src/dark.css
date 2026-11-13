@@ -164,3 +164,17 @@ button,input,select,textarea{max-width:100%;overflow-wrap:anywhere}
 .app-topbar>.account-link{grid-area:account;justify-self:center;text-align:center;white-space:nowrap}
 .app-topbar>.topbar-stats{grid-area:stats;justify-self:end;flex-wrap:wrap;justify-content:flex-end;min-width:0}
 @media(max-width:760px){.app-topbar{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-areas:"actions actions actions" ". account ." "stats stats stats";gap:10px}.app-topbar>.topbar-actions{justify-content:flex-start;flex-wrap:nowrap}.topbar-actions button{font-size:16px;padding:10px;max-width:100%}.app-topbar>.topbar-stats{justify-self:end}}
+
+/* Phone navigation only; larger screens retain their existing layout. */
+.mobile-nav-toggle{display:none}
+@media(max-width:600px){
+ header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:14px 18px;overflow:visible}
+ .mobile-nav-toggle{display:block;font-size:17px;line-height:1.3;padding:12px;min-height:48px}
+ header nav{display:none;position:static;inset:auto;grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 0 2px;margin:0;border:0;z-index:auto}
+ header.mobile-menu-open nav{display:grid}
+ header nav a{flex-direction:row;justify-content:flex-start;gap:10px;font-size:17px;line-height:1.4;padding:13px 10px;min-height:52px;text-transform:none;letter-spacing:0}
+ header nav a:before{width:24px;min-width:24px;font-size:21px}
+ footer{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+ main{padding-bottom:32px}
+ body.relay-running main{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+}
