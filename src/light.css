@@ -1,69 +1,69 @@
 /* Light dojo palette; layout and interaction styles are shared with the app. */
-:root{color-scheme:light;color:#233650;background:#f4f7fc}
-body{background:#f4f7fc;color:#233650}
-body:before{background:radial-gradient(ellipse at 85% 12%,#dceaff88,transparent 48%),repeating-linear-gradient(135deg,transparent 0 46px,#7199c708 46px 47px)}
-body:after{color:#668fbd10}
-header,nav,.app-topbar{background:#fff;border-color:#d6e1ef}
-.brand{color:#233650}.brand small,.sidebar-note{color:#61738d}.sidebar-note>span{color:#c2d2e6}
-nav a{color:#526780}nav a:before{color:#6682aa}nav a:hover{background:#f0f5fd}
-nav a[aria-current]{background:#e8f0ff;border-color:#a8c0eb;color:#254f99}nav a[aria-current]:before{color:#3768b4}
-.app-topbar,.app-topbar>div{color:#365681}.app-topbar .belt-status{background:#edf3fc;border-color:#c9d9ee;color:#2f4d75}
-.card,.reading,.stats,.exam-gate,.pwa-help-dialog,.video-lesson-dialog{background:#fff;border-color:#d1deee;color:#233650;box-shadow:0 3px 0 #e1e9f4}
-.card h2,.card h3,.exam-gate h2,.path-step h3,.history-timeline h3{color:#233650}
-.muted,.intro,.section-title span,.section-title>span,.path-step small,.path-step p,.term-credits{color:#566b85}
-main>.eyebrow,.eyebrow,.sensei-bubble .eyebrow,.sensei .eyebrow{color:#4d6c99}
-.journey-hero,.history-hero,.history-entry{background:linear-gradient(130deg,#e4efff,#f1edff);border-color:#cbdcf3;color:#233650;box-shadow:0 4px 0 #d9e5f5}
-.journey-hero h1,.history-hero h1,.journey-hero>p,.history-hero>p,.hero-next>span{color:#263f64}
-.journey-hero .eyebrow,.history-hero .eyebrow{color:#486b9e}.journey-hero:after,.history-hero:after{color:#8aa9d13d}
-.history-hero:before{border-color:#7499ca25;border-right-color:transparent}
-.pills span{background:#ffffffb8;color:#355988;border-color:#c5d6ee}
-.hero-next .primary,.history-entry .primary,.primary,.selected{background:#3569cf;border-color:#3569cf;color:#fff;box-shadow:0 3px 0 #244f9f}
-.secondary{background:#edf3fd;border-color:#c5d5eb;color:#2d4e80;box-shadow:0 3px 0 #dbe5f3}
-.secondary:hover{background:#e1ecfc}.text,.advice-button,details a,.history-page a{color:#2b5ca8}
-.answers button:hover:not(:disabled){background:#dbe9ff;border-color:#87a8d9;color:#244a84}
-button:focus-visible,a:focus-visible,summary:focus-visible{outline-color:#376dcb}
-.sensei>.sensei-bubble{background:#fff;border-color:#ccdaed;box-shadow:0 4px 0 #e1e9f5}.sensei p{color:#344e71}
-.emotion-picker{border-color:#d4dfee}.emotion-picker summary{color:#4f6789}.emotion-picker button{background:#eef4fd;border-color:#c7d8f0;color:#355580}
-.emotion-picker button[aria-pressed=true]{background:#dce9ff;color:#234c90;border-color:#82a5db}
-.notice,.feedback{background:#eaf2ff;border-color:#c4d6f1;color:#304e7a}
-.unit{background:#e5eefc;border-color:#bdd0ec;box-shadow:0 4px 0 #d6e2f3;color:#345b93}.unit small{color:#294b7b}
-.path-step.active-step h3{color:#285aa7}.path-step.complete button{background:#5a79a7;border-color:#e6effd;box-shadow:0 6px 0 #3d5b85}
-.path-step button:disabled,.locked{background:#e5ebf4;border-color:#d4deed;color:#677a95;box-shadow:0 4px 0 #d2ddeb}
-.path-step.active-step button{outline-color:#c4d6f2}.active-step button:before{background:#e4eeff;color:#325f9e;border-color:#a4bce0}
-.japanese{color:#2d5eac}.video,.badge{background:#edf3fc;color:#59708f}
-.stats div{color:#526984}.stats b,.duel-score b,.shop-wallet b{color:#2c5ca7}.stats div+div,.row{border-color:#d7e2f0}
-.countdown{background:#e4eeff;color:#2a5598;border-color:#a3bfe8;box-shadow:0 4px 0 #d3e0f4}
-.belt-award{background:linear-gradient(#eff5ff,#fff)}
-input:not([type=checkbox]),textarea,select{background:#fff;border-color:#b9cbe3;color:#233650}
-input::placeholder,textarea::placeholder{color:#697d98}.check input{accent-color:#3569cf}
-footer{color:#5f7492;border-color:#c8d9ef}#storage,.video-error{color:#9e3d32}
-.dojo-section>h2{color:#31598e}.dojo-reference{background:#edf4ff}.dojo-order li{background:#edf3fd;border-color:#c5d5ec;color:#2d4c77}
-.dojo-order .dojo-wrong{background:#fff0ed;border-color:#d9968b;color:#8e3d32}.dojo-order .dojo-correct{background:#e8f6ef;border-color:#92c7af;color:#286448}.dojo-empty{color:#5e7697;border-color:#b9cce6}
-progress,.journey-hero progress::-webkit-progress-bar,progress::-webkit-progress-bar{background:#d8e4f5}progress::-webkit-progress-value{background:#5485dd}
-.relay-gate,.relay-order,.duel-order{border-color:#abc3e4}.relay-order b,#duel-timer{color:#315e9d}
-.shop-wallet{background:#eaf2ff;border-color:#c0d4f0}.shop-wallet span{color:#58718f}.skin-placeholder{background:#eff5fd;border-color:#bbcee8}.skin-placeholder>span:last-child{color:#5b7293}
-.history-date,.history-recall-card p{color:#315fa0}.history-timeline{border-color:#b9cfea}.history-timeline li:before{border-color:#f4f7fc;background:#6d99da;box-shadow:0 0 0 2px #b3c9e8}
-.history-timeline p,.history-topic p,.history-entry p,.history-closing p{color:#425c7d}
-.history-topic summary:after{color:#4e71a0}.history-topic .history-takeaway{background:#edf4ff;border-color:#87a9da;color:#315480}
-.history-topic-stamp{background:#eff5ff;border-color:#bed2ed;color:#6485b0}.history-closing{background:linear-gradient(130deg,#fff,#eaf2ff);border-color:#9cb9e1}
-.dojo-values{border-color:#bdcfe8}.dojo-values>span,.dojo-values small{color:#4d6c96}
-.duel-bank button,.duel-order button{background:linear-gradient(#f2f7ff,#e4eefc);border-color:#b3cae9;color:#2c4e7f}
-.kumite-kind,.kumite-exercise-name{color:#34567f}.kumite-round-bar{background:#fff;border-color:#bed0e9}
-.recognition-options button.selected{background:#d9e8ff;border-color:#729bd6;color:#254d88}
-.video-lesson-dialog::backdrop,.pwa-help-dialog::backdrop{background:#22365080}
-.follow-cues li{background:#edf4ff;color:#34527b}.follow-empty{background:linear-gradient(#e6efff,#f7faff);color:#2d4a73}
-.follow-track-card{background:#f0f5fd;border-color:#c7d8ee;color:#2c4d7b}.follow-track-card small{color:#587394}
-.follow-track-card.is-current{background:#e5f5ed;border-color:#7fb69d;color:#245e43}
-.technique-illustration{background:radial-gradient(ellipse at 50% 35%,#dceaff,#b6cde7);border-color:#acc6e5}
-.pose-caption,.pose-step,.block-sequence .pose-step{color:#2e4d76}.block-sequence .pose-panel{background:#e8f0fb;border-color:#b4cbe8}
-.step-carousel .pose-panel{background:transparent;border:0}.step-card:hover{background:#ffffff36}
-.step-progress{color:#355680}.step-controls button{border-color:#abc2e3}
-.follow-track-card .technique-illustration{background:transparent}
-@media(max-width:760px){header,header nav,.app-topbar{background:#fff;border-color:#d6e1ef}nav a[aria-current]{background:#e8f0ff}}
-body.account-setup{background:radial-gradient(ellipse at top,#e4eeff 0,#f4f7fc 70%)}
-.setup-brand small{color:#627a9b}.pwa-update b{color:#2d548c}
-.history-hero .pills span{background:#ffffffc7;border-color:#b9cdea;color:#365a8c}
+:root[data-theme="light"]{color-scheme:light;color:#233650;background:#f4f7fc}
+:root[data-theme="light"] body{background:#f4f7fc;color:#233650}
+:root[data-theme="light"] body:before{background:radial-gradient(ellipse at 85% 12%,#dceaff88,transparent 48%),repeating-linear-gradient(135deg,transparent 0 46px,#7199c708 46px 47px)}
+:root[data-theme="light"] body:after{color:#668fbd10}
+:root[data-theme="light"] header,:root[data-theme="light"] nav,:root[data-theme="light"] .app-topbar{background:#fff;border-color:#d6e1ef}
+:root[data-theme="light"] .brand{color:#233650}:root[data-theme="light"] .brand small,:root[data-theme="light"] .sidebar-note{color:#61738d}:root[data-theme="light"] .sidebar-note>span{color:#c2d2e6}
+:root[data-theme="light"] nav a{color:#526780}:root[data-theme="light"] nav a:before{color:#6682aa}:root[data-theme="light"] nav a:hover{background:#f0f5fd}
+:root[data-theme="light"] nav a[aria-current]{background:#e8f0ff;border-color:#a8c0eb;color:#254f99}:root[data-theme="light"] nav a[aria-current]:before{color:#3768b4}
+:root[data-theme="light"] .app-topbar,:root[data-theme="light"] .app-topbar>div{color:#365681}:root[data-theme="light"] .app-topbar .belt-status{background:#edf3fc;border-color:#c9d9ee;color:#2f4d75}
+:root[data-theme="light"] .card,:root[data-theme="light"] .reading,:root[data-theme="light"] .stats,:root[data-theme="light"] .exam-gate,:root[data-theme="light"] .pwa-help-dialog,:root[data-theme="light"] .video-lesson-dialog{background:#fff;border-color:#d1deee;color:#233650;box-shadow:0 3px 0 #e1e9f4}
+:root[data-theme="light"] .card h2,:root[data-theme="light"] .card h3,:root[data-theme="light"] .exam-gate h2,:root[data-theme="light"] .path-step h3,:root[data-theme="light"] .history-timeline h3{color:#233650}
+:root[data-theme="light"] .muted,:root[data-theme="light"] .intro,:root[data-theme="light"] .section-title span,:root[data-theme="light"] .section-title>span,:root[data-theme="light"] .path-step small,:root[data-theme="light"] .path-step p,:root[data-theme="light"] .term-credits{color:#566b85}
+:root[data-theme="light"] main>.eyebrow,:root[data-theme="light"] .eyebrow,:root[data-theme="light"] .sensei-bubble .eyebrow,:root[data-theme="light"] .sensei .eyebrow{color:#4d6c99}
+:root[data-theme="light"] .journey-hero,:root[data-theme="light"] .history-hero,:root[data-theme="light"] .history-entry{background:linear-gradient(130deg,#e4efff,#f1edff);border-color:#cbdcf3;color:#233650;box-shadow:0 4px 0 #d9e5f5}
+:root[data-theme="light"] .journey-hero h1,:root[data-theme="light"] .history-hero h1,:root[data-theme="light"] .journey-hero>p,:root[data-theme="light"] .history-hero>p,:root[data-theme="light"] .hero-next>span{color:#263f64}
+:root[data-theme="light"] .journey-hero .eyebrow,:root[data-theme="light"] .history-hero .eyebrow{color:#486b9e}:root[data-theme="light"] .journey-hero:after,:root[data-theme="light"] .history-hero:after{color:#8aa9d13d}
+:root[data-theme="light"] .history-hero:before{border-color:#7499ca25;border-right-color:transparent}
+:root[data-theme="light"] .pills span{background:#ffffffb8;color:#355988;border-color:#c5d6ee}
+:root[data-theme="light"] .hero-next .primary,:root[data-theme="light"] .history-entry .primary,:root[data-theme="light"] .primary,:root[data-theme="light"] .selected{background:#3569cf;border-color:#3569cf;color:#fff;box-shadow:0 3px 0 #244f9f}
+:root[data-theme="light"] .secondary{background:#edf3fd;border-color:#c5d5eb;color:#2d4e80;box-shadow:0 3px 0 #dbe5f3}
+:root[data-theme="light"] .secondary:hover{background:#e1ecfc}:root[data-theme="light"] .text,:root[data-theme="light"] .advice-button,:root[data-theme="light"] details a,:root[data-theme="light"] .history-page a{color:#2b5ca8}
+:root[data-theme="light"] .answers button:hover:not(:disabled){background:#dbe9ff;border-color:#87a8d9;color:#244a84}
+:root[data-theme="light"] button:focus-visible,:root[data-theme="light"] a:focus-visible,:root[data-theme="light"] summary:focus-visible{outline-color:#376dcb}
+:root[data-theme="light"] .sensei>.sensei-bubble{background:#fff;border-color:#ccdaed;box-shadow:0 4px 0 #e1e9f5}:root[data-theme="light"] .sensei p{color:#344e71}
+:root[data-theme="light"] .emotion-picker{border-color:#d4dfee}:root[data-theme="light"] .emotion-picker summary{color:#4f6789}:root[data-theme="light"] .emotion-picker button{background:#eef4fd;border-color:#c7d8f0;color:#355580}
+:root[data-theme="light"] .emotion-picker button[aria-pressed=true]{background:#dce9ff;color:#234c90;border-color:#82a5db}
+:root[data-theme="light"] .notice,:root[data-theme="light"] .feedback{background:#eaf2ff;border-color:#c4d6f1;color:#304e7a}
+:root[data-theme="light"] .unit{background:#e5eefc;border-color:#bdd0ec;box-shadow:0 4px 0 #d6e2f3;color:#345b93}:root[data-theme="light"] .unit small{color:#294b7b}
+:root[data-theme="light"] .path-step.active-step h3{color:#285aa7}:root[data-theme="light"] .path-step.complete button{background:#5a79a7;border-color:#e6effd;box-shadow:0 6px 0 #3d5b85}
+:root[data-theme="light"] .path-step button:disabled,:root[data-theme="light"] .locked{background:#e5ebf4;border-color:#d4deed;color:#677a95;box-shadow:0 4px 0 #d2ddeb}
+:root[data-theme="light"] .path-step.active-step button{outline-color:#c4d6f2}:root[data-theme="light"] .active-step button:before{background:#e4eeff;color:#325f9e;border-color:#a4bce0}
+:root[data-theme="light"] .japanese{color:#2d5eac}:root[data-theme="light"] .video,:root[data-theme="light"] .badge{background:#edf3fc;color:#59708f}
+:root[data-theme="light"] .stats div{color:#526984}:root[data-theme="light"] .stats b,:root[data-theme="light"] .duel-score b,:root[data-theme="light"] .shop-wallet b{color:#2c5ca7}:root[data-theme="light"] .stats div+div,:root[data-theme="light"] .row{border-color:#d7e2f0}
+:root[data-theme="light"] .countdown{background:#e4eeff;color:#2a5598;border-color:#a3bfe8;box-shadow:0 4px 0 #d3e0f4}
+:root[data-theme="light"] .belt-award{background:linear-gradient(#eff5ff,#fff)}
+:root[data-theme="light"] input:not([type=checkbox]),:root[data-theme="light"] textarea,:root[data-theme="light"] select{background:#fff;border-color:#b9cbe3;color:#233650}
+:root[data-theme="light"] input::placeholder,:root[data-theme="light"] textarea::placeholder{color:#697d98}:root[data-theme="light"] .check input{accent-color:#3569cf}
+:root[data-theme="light"] footer{color:#5f7492;border-color:#c8d9ef}:root[data-theme="light"] #storage,:root[data-theme="light"] .video-error{color:#9e3d32}
+:root[data-theme="light"] .dojo-section>h2{color:#31598e}:root[data-theme="light"] .dojo-reference{background:#edf4ff}:root[data-theme="light"] .dojo-order li{background:#edf3fd;border-color:#c5d5ec;color:#2d4c77}
+:root[data-theme="light"] .dojo-order .dojo-wrong{background:#fff0ed;border-color:#d9968b;color:#8e3d32}:root[data-theme="light"] .dojo-order .dojo-correct{background:#e8f6ef;border-color:#92c7af;color:#286448}:root[data-theme="light"] .dojo-empty{color:#5e7697;border-color:#b9cce6}
+:root[data-theme="light"] progress,:root[data-theme="light"] .journey-hero progress::-webkit-progress-bar,:root[data-theme="light"] progress::-webkit-progress-bar{background:#d8e4f5}:root[data-theme="light"] progress::-webkit-progress-value{background:#5485dd}
+:root[data-theme="light"] .relay-gate,:root[data-theme="light"] .relay-order,:root[data-theme="light"] .duel-order{border-color:#abc3e4}:root[data-theme="light"] .relay-order b,:root[data-theme="light"] #duel-timer{color:#315e9d}
+:root[data-theme="light"] .shop-wallet{background:#eaf2ff;border-color:#c0d4f0}:root[data-theme="light"] .shop-wallet span{color:#58718f}:root[data-theme="light"] .skin-placeholder{background:#eff5fd;border-color:#bbcee8}:root[data-theme="light"] .skin-placeholder>span:last-child{color:#5b7293}
+:root[data-theme="light"] .history-date,:root[data-theme="light"] .history-recall-card p{color:#315fa0}:root[data-theme="light"] .history-timeline{border-color:#b9cfea}:root[data-theme="light"] .history-timeline li:before{border-color:#f4f7fc;background:#6d99da;box-shadow:0 0 0 2px #b3c9e8}
+:root[data-theme="light"] .history-timeline p,:root[data-theme="light"] .history-topic p,:root[data-theme="light"] .history-entry p,:root[data-theme="light"] .history-closing p{color:#425c7d}
+:root[data-theme="light"] .history-topic summary:after{color:#4e71a0}:root[data-theme="light"] .history-topic .history-takeaway{background:#edf4ff;border-color:#87a9da;color:#315480}
+:root[data-theme="light"] .history-topic-stamp{background:#eff5ff;border-color:#bed2ed;color:#6485b0}:root[data-theme="light"] .history-closing{background:linear-gradient(130deg,#fff,#eaf2ff);border-color:#9cb9e1}
+:root[data-theme="light"] .dojo-values{border-color:#bdcfe8}:root[data-theme="light"] .dojo-values>span,:root[data-theme="light"] .dojo-values small{color:#4d6c96}
+:root[data-theme="light"] .duel-bank button,:root[data-theme="light"] .duel-order button{background:linear-gradient(#f2f7ff,#e4eefc);border-color:#b3cae9;color:#2c4e7f}
+:root[data-theme="light"] .kumite-kind,:root[data-theme="light"] .kumite-exercise-name{color:#34567f}:root[data-theme="light"] .kumite-round-bar{background:#fff;border-color:#bed0e9}
+:root[data-theme="light"] .recognition-options button.selected{background:#d9e8ff;border-color:#729bd6;color:#254d88}
+:root[data-theme="light"] .video-lesson-dialog::backdrop,:root[data-theme="light"] .pwa-help-dialog::backdrop{background:#22365080}
+:root[data-theme="light"] .follow-cues li{background:#edf4ff;color:#34527b}:root[data-theme="light"] .follow-empty{background:linear-gradient(#e6efff,#f7faff);color:#2d4a73}
+:root[data-theme="light"] .follow-track-card{background:#f0f5fd;border-color:#c7d8ee;color:#2c4d7b}:root[data-theme="light"] .follow-track-card small{color:#587394}
+:root[data-theme="light"] .follow-track-card.is-current{background:#e5f5ed;border-color:#7fb69d;color:#245e43}
+:root[data-theme="light"] .technique-illustration{background:radial-gradient(ellipse at 50% 35%,#dceaff,#b6cde7);border-color:#acc6e5}
+:root[data-theme="light"] .pose-caption,:root[data-theme="light"] .pose-step,:root[data-theme="light"] .block-sequence .pose-step{color:#2e4d76}:root[data-theme="light"] .block-sequence .pose-panel{background:#e8f0fb;border-color:#b4cbe8}
+:root[data-theme="light"] .step-carousel .pose-panel{background:transparent;border:0}:root[data-theme="light"] .step-card:hover{background:#ffffff36}
+:root[data-theme="light"] .step-progress{color:#355680}:root[data-theme="light"] .step-controls button{border-color:#abc2e3}
+:root[data-theme="light"] .follow-track-card .technique-illustration{background:transparent}
+@media(max-width:760px){:root[data-theme="light"] header,:root[data-theme="light"] header nav,:root[data-theme="light"] .app-topbar{background:#fff;border-color:#d6e1ef}:root[data-theme="light"] nav a[aria-current]{background:#e8f0ff}}
+:root[data-theme="light"] body.account-setup{background:radial-gradient(ellipse at top,#e4eeff 0,#f4f7fc 70%)}
+:root[data-theme="light"] .setup-brand small{color:#627a9b}:root[data-theme="light"] .pwa-update b{color:#2d548c}
+:root[data-theme="light"] .history-hero .pills span{background:#ffffffc7;border-color:#b9cdea;color:#365a8c}
 
 /* A soft contour separates the white gi from the light page without a frame. */
-.sensei>.sensei-portrait{filter:drop-shadow(0 0 1px #315b91a6) drop-shadow(0 5px 5px #315b9133)}
-.sensei.sensei-compact>.sensei-portrait{filter:drop-shadow(0 0 1px #315b918c) drop-shadow(0 3px 3px #315b912b)}
+:root[data-theme="light"] .sensei>.sensei-portrait{filter:drop-shadow(0 0 1px #315b91a6) drop-shadow(0 5px 5px #315b9133)}
+:root[data-theme="light"] .sensei.sensei-compact>.sensei-portrait{filter:drop-shadow(0 0 1px #315b918c) drop-shadow(0 3px 3px #315b912b)}

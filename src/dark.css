@@ -153,3 +153,7 @@ button,input,select,textarea{max-width:100%;overflow-wrap:anywhere}
 .pwa-help-dialog p{font-size:20px;line-height:1.75}
 .pwa-help-dialog button{width:100%;margin-top:12px;font-size:20px}
 @media(max-width:600px){.pwa-download{font-size:17px}.pwa-help-dialog{padding:18px}.pwa-help-dialog p{font-size:18px}}
+
+.theme-toggle{font-size:17px;line-height:1.4;padding:10px 14px;min-height:48px;white-space:normal}
+.setup-brand{flex-wrap:wrap}.setup-brand [data-theme-control]{margin-left:auto}
+@media(max-width:600px){.theme-toggle{font-size:16px;padding:10px}.setup-brand [data-theme-control]{margin-left:0}}
