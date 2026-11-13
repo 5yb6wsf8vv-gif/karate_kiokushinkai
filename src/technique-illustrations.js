@@ -1,4 +1,5 @@
 const sheets={
+ mawashi:{url:new URL('./assets/technique-silhouettes/mawashi-steps.png',import.meta.url).href,width:2172,height:724,columns:4,rows:1},
  upperCross:{url:new URL('./assets/technique-silhouettes/upper-cross.png',import.meta.url).href,width:2172,height:724,columns:4,rows:1},
  kicks:{url:new URL('./assets/technique-silhouettes/kick-steps.png',import.meta.url).href,width:1254,height:1254,columns:4,rows:3},
  blocks:{url:new URL('./assets/technique-silhouettes/block-steps.png',import.meta.url).href,width:1536,height:1024,columns:4,rows:2},
@@ -67,9 +68,16 @@ const kickSteps={
  ]
 };
 Object.entries(kickSteps).forEach(([kind,captions],row)=>{kickSteps[kind]=captions.map((caption,i)=>{const pose=`${kind}Step${i+1}`;illustrationPoses[pose]={sheet:'kicks',cell:row*4+i,label:`${{hiza:'Хидза-гэри',kin:'Кин-гэри',mae:'Маэ-гэри'}[kind]} · шаг ${i+1}`};return {pose,caption,step:i+1};});});
+const mawashiSteps=[
+ {pose:'mawashiStart',step:1,caption:'Боевая стойка: руки в защите, корпус устойчив.'},
+ {pose:'mawashiPrepare',step:2,caption:'Вынесите правое колено в сторону. Разверните опорную левую стопу и таз по направлению удара.'},
+ {pose:'mawashiStrike',step:3,caption:'Направьте правую голень по круговой траектории на средний уровень. Удар наносится подъёмом стопы; руки остаются в защите.'},
+ {pose:'mawashiRecover',step:4,caption:'Согните правую ногу обратно к вынесенному колену, затем опустите её и восстановите стойку.'}
+];
+mawashiSteps.forEach((item,cell)=>{illustrationPoses[item.pose]={sheet:'mawashi',cell,label:`Маваси-гэри · шаг ${cell+1}`,...(cell===2?{bounds:[1060,0,620,724]}:cell===3?{bounds:[1710,0,462,724]}:{})};});
 const one=pose=>[{pose}];
 const termPoses={
- rei:one('bow'),dachi:one('fudo'),tsuki:one('middleAttack'),geri:one('maeGeri'),uke:sequence(upperSteps),
+ mawashi:mawashiSteps,rei:one('bow'),dachi:one('fudo'),tsuki:one('middleAttack'),geri:one('maeGeri'),uke:sequence(upperSteps),
  'p10-greetings-4':one('bow'),
  'p10-commands-2':one('seiza'),'p10-commands-3':one('yoi'),'p10-commands-4':one('seiza'),'p10-commands-5':one('seiza'),'p10-commands-6':one('yoi'),'p10-commands-10':one('kamae'),'p10-commands-11':one('middleAttack'),'p10-commands-12':one('fudo'),
  'p10-vocabulary-3':one('moroteMiddle'),'p10-vocabulary-6':one('middleAttack'),'p10-vocabulary-7':one('hiza'),'p10-vocabulary-12':one('moroteHigh'),'p10-vocabulary-13':one('moroteMiddle'),'p10-vocabulary-14':one('moroteLow'),'p10-vocabulary-15':one('kin'),'p10-vocabulary-16':[{pose:'middleAttack',caption:'Хикитэ · возвращённый к поясу кулак'}],
@@ -87,7 +95,7 @@ termPoses['p10-kihon-7']=sequence(upperSteps);
 termPoses['p10-kihon-8']=sequence(lowerSteps);
 termPoses['p10-kihon-9']=kickSteps.hiza;
 termPoses['p10-kihon-10']=kickSteps.kin;
-const techniquePoses={zenkutsu:one('zenkutsu'),kiba:one('kiba'),seiken:one('middleAttack'),gedan:sequence(lowerSteps),age:sequence(upperSteps),maegeri:kickSteps.mae,hizageri:kickSteps.hiza,kingeri:kickSteps.kin};
+const techniquePoses={mawashigeri:mawashiSteps,zenkutsu:one('zenkutsu'),kiba:one('kiba'),seiken:one('middleAttack'),gedan:sequence(lowerSteps),age:sequence(upperSteps),maegeri:kickSteps.mae,hizageri:kickSteps.hiza,kingeri:kickSteps.kin};
 export const illustrationForTerm=id=>termPoses[id]||[];
 export const illustrationForTechnique=id=>techniquePoses[id]||[];
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -97,8 +105,8 @@ export function techniqueIllustration(items,{compact=false}={}){
  if(!items.length)return '';
  return `<figure class="technique-illustration ${compact?'step-carousel':''} ${items[0].step?'block-sequence':''}" aria-label="${items[0].step?'Движение по шагам':'Иллюстрация положения'}"><div class="pose-row" style="--pose-count:${items.length}">${items.map((item,index)=>{
   const pose=illustrationPoses[item.pose],sheet=sheets[pose.sheet];
-  const cellWidth=sheet.width/sheet.columns,cellHeight=sheet.height/sheet.rows;
-  const x=(pose.cell%sheet.columns)*cellWidth,y=Math.floor(pose.cell/sheet.columns)*cellHeight;
+  let cellWidth=sheet.width/sheet.columns,cellHeight=sheet.height/sheet.rows;
+  let x=(pose.cell%sheet.columns)*cellWidth,y=Math.floor(pose.cell/sheet.columns)*cellHeight;if(pose.bounds)[x,y,cellWidth,cellHeight]=pose.bounds;
   const filter=`pose-cutout-${++unique}`;
   return `<div class="pose-panel" data-pose="${item.pose}" ${compact&&index>0?'hidden':''}>${!compact&&item.step?`<span class="pose-step">Шаг ${item.step}</span>`:''}${compact?'<button type="button" class="step-card" data-step-next aria-label="Показать следующий шаг">':''}<svg class="pose-picture ${item.mirror?'pose-mirrored':''}" viewBox="${x} ${y} ${cellWidth} ${cellHeight}" role="img" aria-label="${escape(pose.label)}"><defs><clipPath id="${filter}-clip"><rect x="${x}" y="${y}" width="${cellWidth}" height="${cellHeight}"/></clipPath><filter id="${filter}" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></defs><image href="${sheet.url}" x="0" y="0" width="${sheet.width}" height="${sheet.height}" filter="url(#${filter})" clip-path="url(#${filter}-clip)"/></svg>${compact?'</button>':''}<span class="pose-caption">${escape(item.caption||pose.label)}</span></div>`;
  }).join('')}</div>${compact?`<div class="step-controls"><button type="button" class="secondary" data-step-prev disabled aria-label="Предыдущий шаг">←</button><span class="step-progress" role="status" aria-live="polite">Шаг 1 из ${items.length}</span><button type="button" class="secondary" data-step-next>Далее →</button></div>`:''}</figure>`;

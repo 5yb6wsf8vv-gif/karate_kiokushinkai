@@ -17,7 +17,7 @@ export default {
  async fetch(request,env){let headers={};try{
   headers=cors(request,env);const url=new URL(request.url),path=url.pathname;
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers});
-  if(request.method==='GET'&&path==='/health')return json({ok:true,service:'kyokushin-duel',version:2,pollIntervalMs:2500},200,headers);
+  if(request.method==='GET'&&path==='/health')return json({ok:true,service:'kyokushin-duel',version:3,pollIntervalMs:2500},200,headers);
   const get=request.method==='GET'&&path==='/state',post=request.method==='POST'&&['/rooms','/join','/answer','/leave'].includes(path);
   if(!get&&!post)fail(404,'Не найдено.');
   if(env.REQUEST_LIMITER){const result=await env.REQUEST_LIMITER.limit({key:request.headers.get('CF-Connecting-IP')||'local'});if(!result.success)fail(429,'Слишком много запросов. Подождите минуту.');}

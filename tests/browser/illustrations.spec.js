@@ -39,7 +39,7 @@ test('both practice blocks have four ordered movement cards',async({page})=>{
 test('10 kyu kicks have four phases and age uke explicitly crosses arms',async({page})=>{
  await page.goto('/#tech');
  await page.getByRole('button',{name:'Удары ногами',exact:true}).click();
- await expect(page.locator('.block-sequence')).toHaveCount(3);
+ await expect(page.locator('.block-sequence')).toHaveCount(4);
  await expect(page.getByRole('heading',{name:'Хидза гаммэн-гэри · левая',exact:true})).toBeVisible();
  await expect(page.getByRole('heading',{name:'Кин-гэри · правая',exact:true})).toBeVisible();
  for(const sequence of await page.locator('.block-sequence').all()){await expect(sequence.locator('.step-progress')).toHaveText('Шаг 1 из 4');await expect(sequence.locator('.pose-panel:visible')).toHaveCount(1);}
@@ -69,4 +69,22 @@ test('compact movement card advances by image or controls, reverses and loops wi
  await expect(term.locator('.step-progress')).toHaveText('Шаг 2 из 4');
  await expect(term.locator('.pose-panel:visible .pose-caption')).toContainText('Перекрестите предплечья');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test('mawashi roundhouse card has four clickable steps and bundled Japanese audio',async({page})=>{
+ await page.goto('/#tech');await page.getByRole('button',{name:'Удары ногами',exact:true}).click();
+ const card=page.locator('.grid>article').filter({has:page.getByRole('heading',{name:'Маваси-гэри',exact:true})});
+ await expect(card).toBeVisible();
+ for(const [i,pose] of ['mawashiStart','mawashiPrepare','mawashiStrike','mawashiRecover'].entries()){
+  await expect(card.locator('.pose-panel:visible')).toHaveAttribute('data-pose',pose);
+  await expect(card.locator('.step-progress')).toHaveText(`Шаг ${i+1} из 4`);
+  if(i<3)await card.locator('.step-controls [data-step-next]').click();
+ }
+ await navigate(page,'Термины');await page.getByLabel('Тема карточек').selectOption('vocabulary');
+ for(let i=0;i<20&&await page.locator('.term h2').textContent()!=='Маваси-гэри';i++)await page.getByRole('button',{name:'Следующий →',exact:true}).click();
+ await expect(page.locator('.term h2')).toHaveText('Маваси-гэри');await expect(page.locator('.term .step-progress')).toHaveText('Шаг 1 из 4');
+ await page.addScriptTag({content:`{const NativeAudio=window.Audio;window.Audio=class extends NativeAudio{constructor(src){super(src);window.mawashiPlayer=this;}};}`});
+ await page.getByRole('button',{name:'◖)) Прослушать',exact:true}).click();
+ await expect.poll(()=>page.evaluate(()=>window.mawashiPlayer?.readyState)).toBeGreaterThanOrEqual(2);
+ expect(await page.evaluate(()=>window.mawashiPlayer.duration)).toBeGreaterThan(.2);
 });

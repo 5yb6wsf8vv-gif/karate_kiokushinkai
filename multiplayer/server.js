@@ -16,7 +16,7 @@ export function createDuelServer({engine=new DuelEngine(),origins=['https://5yb6
   if(req.method==='OPTIONS'){send(204,{});return;}
   const url=new URL(req.url,'http://localhost');
   try{
-   if(req.method==='GET'&&url.pathname==='/health'){send(200,{ok:true,service:'kyokushin-duel',version:2});return;}
+   if(req.method==='GET'&&url.pathname==='/health'){send(200,{ok:true,service:'kyokushin-duel',version:3});return;}
    const forwarded=String(req.headers['x-forwarded-for']||'').split(',').at(-1).trim();
    const ip=trustProxy&&isIP(forwarded)?forwarded:req.socket.remoteAddress||'unknown';const now=Date.now();let rate=rates.get(ip);if(!rate||now-rate.at>60000){rate={at:now,n:0};rates.set(ip,rate);}if(++rate.n>600)throw new DuelError(429,'Слишком много запросов. Подождите минуту.');if(rates.size>10000)rates.clear();
    const key=(req.headers.authorization||'').replace(/^Bearer /,'');

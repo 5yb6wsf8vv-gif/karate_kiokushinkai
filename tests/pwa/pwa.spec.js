@@ -16,7 +16,7 @@ test('production PWA installs under repository path and reopens offline with pro
  await expect.poll(()=>page.evaluate(()=>window.offlineJapanesePlayer?.readyState)).toBeGreaterThanOrEqual(2);
  expect(await page.evaluate(()=>window.offlineJapanesePlayer.duration)).toBeGreaterThan(.2);
  await navigate(page,'История');await expect(page.getByRole('heading',{name:'История киокушинкай',exact:true})).toBeVisible();await expect(page.locator('.history-topic')).toHaveCount(8);await page.reload();await expect(page.getByRole('heading',{name:'История киокушинкай',exact:true})).toBeVisible();
- await navigate(page,'Прогресс');await expect(page.locator('.stats')).toContainText('1 / 79');await navigate(page,'Мой аккаунт');await expect(page.getByLabel('Имя',{exact:true})).toHaveValue('Анна');await expect(page.getByLabel('Курс обучения')).toHaveValue('2');
+ await navigate(page,'Прогресс');await expect(page.locator('.stats')).toContainText('1 / 80');await navigate(page,'Мой аккаунт');await expect(page.getByLabel('Имя',{exact:true})).toHaveValue('Анна');await expect(page.getByLabel('Курс обучения')).toHaveValue('2');
  await expect(page.getByText('Учебные материалы сохранены для работы без интернета.',{exact:false})).toBeVisible();
  await navigate(page,'Скины');const art=page.locator('.skin-art').first();const imageUrl=await art.evaluate(el=>getComputedStyle(el).backgroundImage.slice(5,-2));expect(await page.evaluate(async url=>(await fetch(url)).ok,imageUrl)).toBe(true);
  expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth)).toBe(true);

@@ -1,11 +1,11 @@
 import {changeXP} from './core.js';
 import {senpaiZhanna,setSensei,clearSensei} from './sensei.js';
 import {illustrationForTechnique,techniqueIllustration,preloadIllustrations} from './technique-illustrations.js';
-const relayMovements=[['age','Агэ-укэ'],['gedan','Гэдан-барай'],['hizageri','Хидза гаммэн-гэри'],['kingeri','Кин-гэри'],['maegeri','Маэ-гэри']];
+const relayMovements=[['age','Агэ-укэ'],['gedan','Гэдан-барай'],['hizageri','Хидза гаммэн-гэри'],['kingeri','Кин-гэри'],['maegeri','Маэ-гэри'],['mawashigeri','Маваси-гэри']];
 export const relayTasks=Array.from({length:4},(_,stage)=>Array.from({length:10},(_,i)=>{
  const [technique,name]=relayMovements[(i+stage)%relayMovements.length];
  const mirror=i>=5;
- return {id:`${stage+1}-${i+1}`,name:name+(mirror?' · другая сторона':''),technique,leg:i%5>=2,mirror,steps:illustrationForTechnique(technique).map((step,j)=>({id:j,label:mirror?step.caption.replaceAll('лев','__SIDE__').replaceAll('прав','лев').replaceAll('__SIDE__','прав'):step.caption,pose:step.pose}))};
+ return {id:`${stage+1}-${i+1}`,name:name+(mirror?' · другая сторона':''),technique,leg:['hizageri','kingeri','maegeri','mawashigeri'].includes(technique),mirror,steps:illustrationForTechnique(technique).map((step,j)=>({id:j,label:mirror?step.caption.replaceAll('лев','__SIDE__').replaceAll('прав','лев').replaceAll('__SIDE__','прав'):step.caption,pose:step.pose}))};
 }));
 export function relayPassed(results){return results.length===10&&results.filter(r=>r.correct).length>=7;}
 export function validRelayOrder(task,order){return order.length===task.steps.length&&order.every((id,i)=>id===i);}

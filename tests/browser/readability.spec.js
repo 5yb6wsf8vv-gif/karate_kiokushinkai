@@ -11,7 +11,7 @@ test('larger text, no program settings and old topic filters do not hide techniq
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  }
  await page.goto('/#tech');
- await expect(page.locator('.grid>article')).toHaveCount(8);
+ await expect(page.locator('.grid>article')).toHaveCount(9);
  await expect(page.getByText('Черновик · требуется проверка тренером',{exact:true})).toHaveCount(0);
  await expect(page.getByText('Схематичная иллюстрация положения',{exact:true})).toHaveCount(0);
 });

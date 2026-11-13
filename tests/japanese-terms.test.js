@@ -4,7 +4,7 @@ import {existsSync,readFileSync} from 'node:fs';
 import {terms} from '../src/data.js';
 import {migrateTermProgress,termAliases} from '../src/japanese-terms.js';
 test('unified deck preserves base IDs, covers all program IDs and has bundled Japanese audio',()=>{
- assert.equal(terms.length,79);assert.equal(new Set(terms.map(t=>t.id)).size,79);
+ assert.equal(terms.length,80);assert.equal(new Set(terms.map(t=>t.id)).size,80);
  assert.deepEqual(terms.slice(0,10).map(t=>t.id),['osu','rei','hajime','yame','dachi','tsuki','geri','uke','mae','dojo']);
  for(const term of terms){assert.match(term.jp,/[\u3040-\u30ff\u4e00-\u9fff]/);assert.match(term.kana,/^[\u3040-\u309f、ー]+$/);assert.ok(existsSync(new URL(`../public/audio/ja/${term.id}.mp3`,import.meta.url)));}
  for(const [id,target]of Object.entries(termAliases)){assert.ok(!terms.some(t=>t.id===id));assert.ok(terms.some(t=>t.id===target));}

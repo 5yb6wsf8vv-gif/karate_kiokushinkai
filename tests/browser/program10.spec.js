@@ -9,7 +9,7 @@ test('one Japanese deck merges duplicate progress and includes every 10 kyu topi
  await expect(page.locator('.term')).toHaveCount(1);
  await expect(page.getByRole('heading',{name:'Базовые карточки',exact:true})).toHaveCount(0);
  await expect(page.getByRole('heading',{name:'Программа 10 кю',exact:true})).toHaveCount(0);
- await expect(page.getByText('Изучено 2 из 79 карточек.',{exact:true})).toBeVisible();
+ await expect(page.getByText('Изучено 2 из 80 карточек.',{exact:true})).toBeVisible();
  const progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('kyokushin-v1')).terms);
  expect(progress.osu.reviews).toBe(3);expect(progress['p10-greetings-1']).toBeUndefined();
  await page.getByLabel('Тема карточек').selectOption('count');
@@ -23,7 +23,7 @@ test('one Japanese deck merges duplicate progress and includes every 10 kyu topi
  await page.getByRole('button',{name:'◖)) Прослушать',exact:true}).click();
  expect(await page.evaluate(()=>window.lastJapaneseAudio)).toContain('/audio/ja/p10-count-1.mp3');
  await page.getByRole('button',{name:'Вспомнил(а) — открыть ответ'}).click();await page.getByRole('button',{name:'Легко',exact:true}).click();
- await page.reload();await expect(page.getByText('Изучено 2 из 79 карточек.',{exact:true})).toBeVisible();
+ await page.reload();await expect(page.getByText('Изучено 2 из 80 карточек.',{exact:true})).toBeVisible();
  for(const topic of ['glossary','greetings','commands','vocabulary','stances','methods','kihon','ippon','kata']){
   await page.getByLabel('Тема карточек').selectOption(topic);await expect(page.locator('.term h2')).not.toBeEmpty();await expect(page.locator('.term .japanese')).not.toBeEmpty();await expect(page.locator('.term .kana')).not.toBeEmpty();
  }
