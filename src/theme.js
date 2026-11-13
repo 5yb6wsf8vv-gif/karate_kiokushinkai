@@ -4,7 +4,7 @@ export function createTheme(){
  function button(){const next=current==='light'?'тёмную':'светлую';return `<button type="button" class="secondary theme-toggle" data-action="theme-toggle" aria-label="Включить ${next} тему">${current==='light'?'☾ Тёмная тема':'☀ Светлая тема'}</button>`;}
  function apply(value){
   current=value==='dark'?'dark':'light';document.documentElement.dataset.theme=current;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',current==='dark'?'#101720':'#f4f7fc');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',current==='dark'?'#101720':'#eaf1fc');
   document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')?.setAttribute('content',current==='dark'?'black-translucent':'default');
   document.querySelectorAll('[data-theme-control]').forEach(el=>el.innerHTML=button());
  }
