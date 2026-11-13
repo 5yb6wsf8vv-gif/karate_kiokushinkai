@@ -14,7 +14,7 @@ test('lesson penalty once, no replay reward, one checkmark, memory separate',asy
  await expect(page.getByRole('button',{name:/Урок 1:/}).locator('span')).toHaveText('✓');
  await page.getByRole('button',{name:/Урок 1:/}).click();await expect(page.getByRole('button',{name:'К заданиям →'})).toHaveCount(0);
  await page.reload();expect((await stored(page)).economy.xp).toBe(19);
- await page.getByRole('link',{name:'Заучивание',exact:true}).click();await expect(page.getByRole('heading',{name:'Заучивание',exact:true})).toBeVisible();
+ await expect(page.getByRole('link',{name:'Заучивание',exact:true})).toHaveCount(0);await page.goto('/#memory');await expect(page.getByRole('heading',{name:/Твой путь/})).toBeVisible();
 });
 test('ten correct review answers give 5 XP, mistakes cost 1, saved across reload',async({page})=>{
  await page.goto('/#review');await page.getByRole('button',{name:'Начать повторение',exact:true}).click();
