@@ -8,6 +8,7 @@ import {setSensei,handleSensei} from './sensei.js';
 import {createJourney,sensei} from './journey.js';
 import './style.css';
 import './dark.css';
+import './light.css';
 import {terms,techniques} from './data.js';
 import {termIllustration,practiceIllustration,handleIllustrationStep} from './technique-illustrations.js';
 import {program10Groups} from './program10.js';
