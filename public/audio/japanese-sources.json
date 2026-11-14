@@ -1392,6 +1392,34 @@
       "kana": "まわしげり",
       "dictionaryMatches": [],
       "composedOrInflected": true
+    },
+    {
+      "id": "maekeage",
+      "jp": "前蹴上げ",
+      "kana": "まえけあげ",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "yokokeage",
+      "jp": "横蹴上げ",
+      "kana": "よこけあげ",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "sotomawashikeage",
+      "jp": "外回し蹴上げ",
+      "kana": "そとまわしけあげ",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
+    },
+    {
+      "id": "uchimawashikeage",
+      "jp": "内回し蹴上げ",
+      "kana": "うちまわしけあげ",
+      "dictionaryMatches": [],
+      "composedOrInflected": true
     }
   ]
 }

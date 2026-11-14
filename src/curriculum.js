@@ -1,3 +1,4 @@
+import {basicKicks} from '../shared/basic-kicks.js';
 import {historyLessonNotes} from './history.js';
 // Учебный маршрут, не норматив конкретной федерации.
 const rows = [
@@ -37,7 +38,7 @@ const rows = [
 export const lessons=rows.map((r,i)=>({id:i+1,title:r[0],group:r[1],body:[r[2],r[3],...(historyLessonNotes[i+1]||[])],question:r[4],options:r.slice(5),answer:r[5]}));
 export const examQuestions=[
 {block:'Японские термины',question:'Как называется показанная стойка?',image:'zenkutsu',options:['Дзэнкуцу-дачи','Киба-дачи','Боевая стойка','Фудо-дачи'],answer:'Дзэнкуцу-дачи'},
-{block:'Японские термины',question:'Выберите карточку: Кин-гэри',imageOptions:['kinStep3','hizaStep3','maeStep3','middleAttack'],options:['Кин-гэри','Хидза гаммэн-гэри','Маэ-гэри','Сэйкэн цуки'],answer:'Кин-гэри'},
+{block:'Японские термины',question:'Выберите карточку: Маэ-кэагэ',imageOptions:['maekeageStep3','yokokeageStep3','sotomawashikeageStep3','uchimawashikeageStep3'],options:basicKicks.map(k=>k.name),answer:'Маэ-кэагэ'},
 {block:'Японские термины',question:'Как называется показанный круговой удар?',image:'mawashiStrike',options:['Маваси-гэри','Кин-гэри','Маэ-гэри','Хидза гаммэн-гэри'],answer:'Маваси-гэри'},
 {block:'Ката',question:'Что такое эмбусэн?',options:['Схема перемещений','Ударная поверхность','Приветствие'],answer:'Схема перемещений'},
 {block:'Ката',question:'Начальная форма во многих программах — …',options:['Тайкёку соно ити','Любая импровизация','Только кумитэ'],answer:'Тайкёку соно ити'},

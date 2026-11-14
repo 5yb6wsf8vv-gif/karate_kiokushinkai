@@ -178,3 +178,4 @@ button,input,select,textarea{max-width:100%;overflow-wrap:anywhere}
  main{padding-bottom:32px}
  body.relay-running main{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
 }
+.motion-arrow{stroke:#83bdff}

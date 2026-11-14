@@ -39,7 +39,7 @@ test('both practice blocks have four ordered movement cards',async({page})=>{
 test('10 kyu kicks have four phases and age uke explicitly crosses arms',async({page})=>{
  await page.goto('/#tech');
  await page.getByRole('button',{name:'Удары ногами',exact:true}).click();
- await expect(page.locator('.block-sequence')).toHaveCount(4);
+ await expect(page.locator('.block-sequence')).toHaveCount(8);
  await expect(page.getByRole('heading',{name:'Хидза гаммэн-гэри · левая',exact:true})).toBeVisible();
  await expect(page.getByRole('heading',{name:'Кин-гэри · правая',exact:true})).toBeVisible();
  for(const sequence of await page.locator('.block-sequence').all()){await expect(sequence.locator('.step-progress')).toHaveText('Шаг 1 из 4');await expect(sequence.locator('.pose-panel:visible')).toHaveCount(1);}
@@ -87,4 +87,20 @@ test('mawashi roundhouse card has four clickable steps and bundled Japanese audi
  await page.getByRole('button',{name:'◖)) Прослушать',exact:true}).click();
  await expect.poll(()=>page.evaluate(()=>window.mawashiPlayer?.readyState)).toBeGreaterThanOrEqual(2);
  expect(await page.evaluate(()=>window.mawashiPlayer.duration)).toBeGreaterThan(.2);
+});
+
+test('new basic leg raises have compact steps, direction arrows and no light-theme gradients',async({page})=>{
+ await page.goto('/#tech');await page.getByRole('button',{name:'Удары ногами',exact:true}).click();
+ for(const name of ['Маэ-кэагэ','Ёко-кэагэ','Сото-маваси-кэагэ','Ути-маваси-кэагэ']){
+  const card=page.locator('.grid>article').filter({has:page.getByRole('heading',{name,exact:true})});
+  await expect(card.locator('.step-progress')).toHaveText('Шаг 1 из 4');
+  for(let i=0;i<2;i++)await card.locator('.step-controls [data-step-next]').click();
+  await expect(card.locator('.pose-panel:visible .motion-arrow')).toHaveCount(1);
+  expect(await card.locator('.technique-illustration').evaluate(el=>getComputedStyle(el).backgroundImage)).toBe('none');
+ }
+ await navigate(page,'Термины');await page.getByLabel('Тема карточек').selectOption('vocabulary');
+ for(let i=0;i<30&&await page.locator('.term h2').textContent()!=='Маэ-кэагэ';i++)await page.getByRole('button',{name:'Следующий →',exact:true}).click();
+ await expect(page.locator('.term h2')).toHaveText('Маэ-кэагэ');
+ await expect(page.locator('.term .step-progress')).toHaveText('Шаг 1 из 4');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

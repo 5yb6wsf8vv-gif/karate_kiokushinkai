@@ -1,4 +1,7 @@
+import {basicKicks} from '../shared/basic-kicks.js';
 const sheets={
+ keageStraight:{url:new URL('./assets/technique-silhouettes/keage-straight.png',import.meta.url).href,width:1536,height:1024,columns:4,rows:2},
+ keageCrescent:{url:new URL('./assets/technique-silhouettes/keage-crescent.png',import.meta.url).href,width:1536,height:1024,columns:4,rows:2},
  mawashi:{url:new URL('./assets/technique-silhouettes/mawashi-steps.png',import.meta.url).href,width:2172,height:724,columns:4,rows:1},
  upperCross:{url:new URL('./assets/technique-silhouettes/upper-cross.png',import.meta.url).href,width:2172,height:724,columns:4,rows:1},
  kicks:{url:new URL('./assets/technique-silhouettes/kick-steps.png',import.meta.url).href,width:1254,height:1254,columns:4,rows:3},
@@ -96,10 +99,28 @@ termPoses['p10-kihon-8']=sequence(lowerSteps);
 termPoses['p10-kihon-9']=kickSteps.hiza;
 termPoses['p10-kihon-10']=kickSteps.kin;
 const techniquePoses={mawashigeri:mawashiSteps,zenkutsu:one('zenkutsu'),kiba:one('kiba'),seiken:one('middleAttack'),gedan:sequence(lowerSteps),age:sequence(upperSteps),maegeri:kickSteps.mae,hizageri:kickSteps.hiza,kingeri:kickSteps.kin};
+for(const kick of basicKicks){
+ const items=kick.steps.map((caption,i)=>{
+  const pose=`${kick.id}Step${i+1}`;
+  illustrationPoses[pose]={sheet:kick.sheet,cell:kick.row*4+i,label:`${kick.name} · шаг ${i+1}`,...(i===2?{motion:kick.motion}:{})};
+  return {pose,caption,step:i+1};
+ });
+ termPoses[kick.id]=items;techniquePoses[kick.id]=items;
+}
 export const illustrationForTerm=id=>termPoses[id]||[];
 export const illustrationForTechnique=id=>techniquePoses[id]||[];
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let unique=0;
+function motionArrow(motion,x,y,width,height){
+ if(!motion)return '';
+ const paths={
+  inward:'M45 205Q192 80 340 205 M326 188L340 205L319 202',
+  outward:'M340 205Q192 80 45 205 M66 202L45 205L59 188',
+  'front-rise':'M345 320L345 165 M336 181L345 165L354 181',
+  'side-rise':'M105 355Q38 310 32 210 M25 228L32 210L43 227'
+ };
+ return `<g transform="translate(${x} ${y}) scale(${width/384} ${height/512})" aria-hidden="true"><path class="motion-arrow" d="${paths[motion]}" fill="none" stroke="#1c56aa" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+}
 export function techniqueIllustration(items,{compact=false}={}){
  compact=compact&&items.length>1;
  if(!items.length)return '';
@@ -108,7 +129,7 @@ export function techniqueIllustration(items,{compact=false}={}){
   let cellWidth=sheet.width/sheet.columns,cellHeight=sheet.height/sheet.rows;
   let x=(pose.cell%sheet.columns)*cellWidth,y=Math.floor(pose.cell/sheet.columns)*cellHeight;if(pose.bounds)[x,y,cellWidth,cellHeight]=pose.bounds;
   const filter=`pose-cutout-${++unique}`;
-  return `<div class="pose-panel" data-pose="${item.pose}" ${compact&&index>0?'hidden':''}>${!compact&&item.step?`<span class="pose-step">Шаг ${item.step}</span>`:''}${compact?'<button type="button" class="step-card" data-step-next aria-label="Показать следующий шаг">':''}<svg class="pose-picture ${item.mirror?'pose-mirrored':''}" viewBox="${x} ${y} ${cellWidth} ${cellHeight}" role="img" aria-label="${escape(pose.label)}"><defs><clipPath id="${filter}-clip"><rect x="${x}" y="${y}" width="${cellWidth}" height="${cellHeight}"/></clipPath><filter id="${filter}" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></defs><image href="${sheet.url}" x="0" y="0" width="${sheet.width}" height="${sheet.height}" filter="url(#${filter})" clip-path="url(#${filter}-clip)"/></svg>${compact?'</button>':''}<span class="pose-caption">${escape(item.caption||pose.label)}</span></div>`;
+  return `<div class="pose-panel" data-pose="${item.pose}" ${compact&&index>0?'hidden':''}>${!compact&&item.step?`<span class="pose-step">Шаг ${item.step}</span>`:''}${compact?'<button type="button" class="step-card" data-step-next aria-label="Показать следующий шаг">':''}<svg class="pose-picture ${item.mirror?'pose-mirrored':''}" viewBox="${x} ${y} ${cellWidth} ${cellHeight}" role="img" aria-label="${escape(pose.label)}"><defs><clipPath id="${filter}-clip"><rect x="${x}" y="${y}" width="${cellWidth}" height="${cellHeight}"/></clipPath><filter id="${filter}" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></defs><image href="${sheet.url}" x="0" y="0" width="${sheet.width}" height="${sheet.height}" filter="url(#${filter})" clip-path="url(#${filter}-clip)"/>${motionArrow(pose.motion,x,y,cellWidth,cellHeight)}</svg>${compact?'</button>':''}<span class="pose-caption">${escape(item.caption||pose.label)}</span></div>`;
  }).join('')}</div>${compact?`<div class="step-controls"><button type="button" class="secondary" data-step-prev disabled aria-label="Предыдущий шаг">←</button><span class="step-progress" role="status" aria-live="polite">Шаг 1 из ${items.length}</span><button type="button" class="secondary" data-step-next>Далее →</button></div>`:''}</figure>`;
 }
 export const termIllustration=term=>techniqueIllustration(illustrationForTerm(term.id),{compact:true});

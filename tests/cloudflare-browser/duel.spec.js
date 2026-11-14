@@ -1,9 +1,9 @@
-import {movementQuiz,movementById} from '../../shared/movement-quiz.js';
+import {movementQuizPool as movementQuiz,movementById} from '../../shared/movement-quiz.js';
 import {test,expect} from '@playwright/test';
 async function signup(page,name){await expect(page.getByRole('heading',{name:'Настройка аккаунта'})).toBeVisible();await page.getByLabel('Имя',{exact:true}).fill(name);await page.getByLabel('Курс обучения').selectOption('2');await page.getByRole('button',{name:'Начать обучение'}).click();}
 async function solve(page,wrong=false){
  await expect(page.locator('#duel-timer')).toContainText('сек',{timeout:15000});
- const index=Number((await page.locator('.section-title').innerText()).match(/Задание (\d+)/)[1])-1;
+ const index=Number(await page.locator('.recognition-task').getAttribute('data-quiz-task'));
  const q=movementQuiz[index],target=wrong?q.options.find(id=>id!==q.target):q.target;
  if(q.mode==='image-to-name')await page.getByRole('button',{name:movementById(target).name,exact:true}).click();
  else await page.locator('.recognition-options button').filter({has:page.locator(`[data-pose="${movementById(target).pose}"]`)}).click();

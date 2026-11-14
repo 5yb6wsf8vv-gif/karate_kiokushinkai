@@ -1,5 +1,5 @@
 import {navigate} from '../navigation.js';
-import {movementQuiz,movementById,correctMovementPiece} from '../../shared/movement-quiz.js';
+import {movementQuizPool as movementQuiz,movementById,correctMovementPiece} from '../../shared/movement-quiz.js';
 import {test,expect} from './fixtures.js';
 import {DuelEngine} from '../../multiplayer/engine.js';
 import {createDuelServer} from '../../multiplayer/server.js';
@@ -9,7 +9,7 @@ test.afterAll(async()=>{server.closeAllConnections();await new Promise(r=>server
 async function enter(page,name){await page.addInitScript(()=>{if(localStorage.getItem('player-profile')===null)localStorage.setItem('player-profile',JSON.stringify({name:'Игрок',course:'1'}));});await page.goto('/#duel');await page.getByLabel('HTTPS-адрес сервера кумитэ').fill(serverURL);await page.getByLabel('Ваше имя').fill(name);}
 async function pick(page,correct=true){
  await expect(page.locator('#duel-timer')).toContainText('сек');
- const index=Number((await page.locator('.section-title').innerText()).match(/Задание (\d+)/)[1])-1;
+ const index=Number(await page.locator('.recognition-task').getAttribute('data-quiz-task'));
  const q=movementQuiz[index],target=correct?q.target:q.options.find(id=>id!==q.target);
  if(q.mode==='image-to-name')await page.getByRole('button',{name:movementById(target).name,exact:true}).click();
  else {

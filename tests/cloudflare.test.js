@@ -61,3 +61,18 @@ test('Cloudflare persists recognition format across eviction and validates one s
   s=(await api(env,'/state?room='+a.code,null,b.token)).body;assert.equal(s.players[1].score,1);
  }finally{Date.now=original;}
 });
+
+test('expanded recognition room keeps its selected questions after object recreation',async()=>{
+ const original=Date.now;let now=1000;Date.now=()=>now;const env=environment();
+ try{
+  const {quizForFormat}=await import('../shared/movement-quiz.js');
+  const a=(await api(env,'/rooms',{name:'A',format:'recognition-v3'})).body;
+  await api(env,'/join',{room:a.code,name:'B'});
+  let s=(await api(env,'/state?room='+a.code,null,a.token)).body;
+  const task=s.round.task;env.instances.clear();s=(await api(env,'/state?room='+a.code,null,a.token)).body;
+  assert.equal(s.round.task,task);assert.equal(s.format,'recognition-v3');now=s.round.start;
+  const q=quizForFormat(s.format)[task],piece=q.options.indexOf(q.target),id=s.round.cards.find(c=>c.piece===piece).id;
+  assert.equal((await api(env,'/answer',{room:a.code,round:s.round.id,order:[id]},a.token)).body.accepted,true);
+  env.instances.clear();s=(await api(env,'/state?room='+a.code,null,a.token)).body;assert.equal(s.players[0].score,1);
+ }finally{Date.now=original;}
+});
