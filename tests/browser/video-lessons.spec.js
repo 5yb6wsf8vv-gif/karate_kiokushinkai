@@ -5,9 +5,14 @@ const clip=readFileSync(new URL('../fixtures/technique-player.webm',import.meta.
 test('video lesson plays a local file with countdown and controls, without awarding progress',async({page})=>{
  await page.goto('/#tech');
  const before=await page.evaluate(()=>localStorage.getItem('kyokushin-v1'));
- await page.locator('[data-action="video-lesson:zenkutsu"]').click();
+ await expect(page.locator('main article.card .video-lesson-open')).toHaveCount(0);
+ await expect(page.getByText('Материал готовится',{exact:true})).toHaveCount(0);
+ await navigate(page,'Термины');
+ await page.getByLabel('Тема карточек').selectOption('kihon');
+ for(let i=0;i<9;i++)await page.getByRole('button',{name:'Следующий →',exact:true}).click();
+ await page.locator('[data-action="video-lesson:kihon-9"]').click();
  const dialog=page.getByRole('dialog');
- await expect(dialog.getByRole('heading',{name:'Дзэнкуцу-дачи'})).toBeVisible();
+ await expect(dialog.getByRole('heading',{name:'Кин-гэри миги'})).toBeVisible();
  await expect(dialog.getByText('Видео ещё не подключено')).toBeVisible();
  await expect(dialog.getByRole('button',{name:'Начать · 3, 2, 1'})).toBeDisabled();
  await dialog.getByLabel('Видео с устройства').setInputFiles({name:'clip.webm',mimeType:'video/webm',buffer:clip});
