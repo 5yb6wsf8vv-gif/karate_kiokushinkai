@@ -13,7 +13,7 @@ export const trainingVideos = [
 ];
 export const lessonMedia = {'kihon-0':moroteVideo,'kihon-1':moroteVideo,'kihon-2':moroteVideo,...Object.fromEntries(trainingVideos.map(item=>[item.id,item]))};
 const escape = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const lesson = id => lessonMedia[id]?.url?lessonMedia[id]:id.startsWith('kihon-')
+const lesson = id => lessonMedia[id]?.url?lessonMedia[id]:/^kihon-\d+$/.test(id)
  ? (()=>{const row=kihon10[Number(id.slice(6))];return row&&{name:row[0],steps:[row[1],`Рабочая сторона: ${row[2].toLowerCase()}.`,'Вернитесь в исходное положение.']};})()
  : techniques.find(t=>t.id===id);
 export function videoLessonButton(id){return `<button class="secondary video-lesson-open" data-action="video-lesson:${id}">▷ Повторяй за тренером</button>`;}
