@@ -17,10 +17,11 @@ export function ensureEconomy(state) {
   const entries=Object.values(state.course?.lessons||{});
   state.economy={xp:entries.filter(l=>l.passed).length*20+entries.filter(l=>l.reviewed).length*10,reviewCorrect:0};
  }
+ if(!Number.isInteger(state.economy.reviewCorrect)||state.economy.reviewCorrect<0)state.economy.reviewCorrect=0;
  return state.economy;
 }
 export function changeXP(state,delta) {const e=ensureEconomy(state);e.xp+=delta;return e.xp;}
 export function recordReview(state) {
  const e=ensureEconomy(state);e.reviewCorrect++;
- const bonus=e.reviewCorrect%10===0?5:0;e.xp+=bonus;return bonus;
+ e.xp+=5;return 5;
 }

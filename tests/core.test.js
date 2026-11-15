@@ -56,11 +56,10 @@ test('XP migration preserves legacy earnings once and penalties persist',()=>{
  assert.equal(ensureEconomy(s).xp,49);
  const storage={getItem:()=>null,setItem(){}};const fresh=load(storage);assert.equal(changeXP(fresh,-1),-1);
 });
-test('review awards five XP only on each tenth correct answer',()=>{
- const s={};for(let i=1;i<=9;i++)assert.equal(recordReview(s),0);assert.equal(s.economy.xp,0);
- assert.equal(recordReview(s),5);assert.equal(s.economy.xp,5);changeXP(s,-1);
- for(let i=11;i<=19;i++)assert.equal(recordReview(s),0);
- assert.equal(recordReview(s),5);assert.equal(s.economy.reviewCorrect,20);assert.equal(s.economy.xp,9);
+test('review awards five XP for every correct answer and preserves the count',()=>{
+ const s={};for(let i=1;i<=20;i++){assert.equal(recordReview(s),5);assert.equal(s.economy.xp,i*5);assert.equal(s.economy.reviewCorrect,i);}
+ changeXP(s,-1);assert.equal(s.economy.xp,99);
+ const old={economy:{xp:30}};assert.equal(recordReview(old),5);assert.equal(old.economy.xp,35);assert.equal(old.economy.reviewCorrect,1);
 });
 
 import {relayTasks,relayPassed,validRelayOrder} from '../src/relay.js';
