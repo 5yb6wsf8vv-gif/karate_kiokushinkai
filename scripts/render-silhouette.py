@@ -53,7 +53,7 @@ def track_arms(source):
     return repair_short_gaps(np.array(tracks))
 
 
-def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasize_arms=False):
+def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True):
     cap=cv2.VideoCapture(str(source))
     fps=float(Fraction(subprocess.check_output(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=r_frame_rate','-of','default=nw=1:nk=1',str(source)]).decode().strip()))
     if not cap.isOpened() or fps<=0:raise RuntimeError('Cannot open input video')
@@ -64,7 +64,6 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
     arm_tracks=track_arms(source)
     print('Arm tracking complete',flush=True)
     previous_mask=None
-    previous_head=None
     transform=None
     missed=0
     motion=[]
@@ -98,7 +97,6 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                         mask=np.uint8(keep[labels])*255
                     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
                     previous_mask=mask.copy()
-                coverage=np.zeros(mask.shape,np.uint8)
                 # Pose-supported coverage is not gated by brightness or skin colour.
                 # Short tracking gaps are repaired offline, without blended video pixels.
                 if index<len(arm_tracks):
@@ -120,15 +118,6 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 projected=cv2.warpAffine(mask,matrix,(width,height),flags=cv2.INTER_LINEAR)
                 alpha=projected.astype(np.float32)/255
                 edge=cv2.dilate(projected,np.ones((3,3),np.uint8))
-                fist_region=np.zeros(mask.shape,np.uint8)
-                if index<len(arm_tracks):
-                    joints=arm_tracks[index]
-                    for elbow,wrist in [(13,15),(14,16)]:
-                        if min(joints[elbow,2],joints[wrist,2])<.2:continue
-                        hand=joints[wrist,:2]*np.array([width,height])
-                        forearm=np.linalg.norm((joints[wrist,:2]-joints[elbow,:2])*np.array([width,height]))
-                        radius=int(np.clip(forearm*.3,16,30))
-                        cv2.circle(fist_region,tuple(hand.astype(int)),radius,255,-1,cv2.LINE_AA)
                 # No glow or temporally blended silhouettes around moving limbs.
                 output=base.astype(np.float32).copy()
                 shadow=np.zeros((height,width),np.uint8)
@@ -137,8 +126,7 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 output*=1-shadow[:,:,None]*.7
 
                 border=np.maximum(0,edge.astype(np.float32)/255-alpha)
-                blue=np.array([243,219,79],np.float32)
-                output=output*(1-border[:,:,None])+blue*border[:,:,None]
+                output=output*(1-border[:,:,None]) + np.array([243,219,79],np.float32)*border[:,:,None]
                 # Preserve real folds and overlapping limb boundaries from the source,
                 # rather than drawing inferred skeleton bones over the person.
                 smooth=cv2.bilateralFilter(frame,5,25,25)
@@ -146,30 +134,12 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 lines=cv2.Canny(gray,35,90)
                 inner=cv2.erode(mask,np.ones((5,5),np.uint8))
                 lines=cv2.bitwise_and(lines,inner)
-                # Remove both edges AND source luminance from the full head region.
-                head_region=np.zeros(mask.shape,np.uint8)
+                # Keep the head anonymous: no eyes, nose or mouth in the silhouette.
                 if result.pose_landmarks:
                     points=result.pose_landmarks.landmark
                     head=np.array([[int(points[i].x*1280),int(points[i].y*720)] for i in range(11)])
                     hx,hy,hw,hh=cv2.boundingRect(head)
-                    previous_head=((hx+hw//2,hy+hh//2),(max(22,int(hw*1.05)),max(30,int(hh*1.5))))
-                if previous_head:
-                    cv2.ellipse(head_region,*previous_head,0,0,360,255,-1)
-                lines[head_region>0]=0
-                if emphasize_arms:
-                    # Keep a few long garment seams, not a dense map of every wrinkle.
-                    fabric=cv2.Canny(gray,100,200)
-                    fabric=cv2.bitwise_and(fabric,inner)
-                    fabric[head_region>0]=0
-                    contours,_=cv2.findContours(fabric,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
-                    sparse=np.zeros(mask.shape,np.uint8)
-                    for contour in contours:
-                        if cv2.arcLength(contour,False)>=65:
-                            cv2.drawContours(sparse,[contour],-1,255,1,cv2.LINE_AA)
-                    cloth=cv2.dilate(sparse,np.ones((2,2),np.uint8))
-                    # Detail on fists uses the original observed hand boundaries.
-                    lines=np.uint8(lines*(fist_region.astype(np.float32)/255)+cloth*(1-fist_region.astype(np.float32)/255))
-                gray[head_region>0]=235
+                    cv2.ellipse(lines,(hx+hw//2,hy+hh//2),(max(8,int(hw*.85)),max(12,int(hh*1.15))),0,0,360,0,-1)
                 lines=cv2.dilate(lines,np.ones((2,2),np.uint8))
                 projected_lines=cv2.warpAffine(lines,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
                 projected_gray=cv2.warpAffine(gray,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
@@ -177,7 +147,6 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 fill=np.empty_like(output)
                 for channel,color in enumerate([246,249,241]):fill[:,:,channel]=color*(.86+.14*projected_gray)
                 contour_color=np.array([116,90,34],np.float32)
-                # Same contour palette, thickness and opacity as the reference Taikyoku.
                 detail=projected_lines*.95
                 fill=fill*(1-detail[:,:,None])+contour_color*detail[:,:,None]
                 output=output*(1-alpha[:,:,None])+fill*alpha[:,:,None]
@@ -206,5 +175,5 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('target',type=Path)
-    parser.add_argument('--title',default='TAIKYOKU SONO ICHI');parser.add_argument('--no-return',action='store_true');parser.add_argument('--emphasize-arms',action='store_true')
-    args=parser.parse_args();render(args.source,args.target,args.title,not args.no_return,args.emphasize_arms)
+    parser.add_argument('--title',default='TAIKYOKU SONO ICHI');parser.add_argument('--no-return',action='store_true')
+    args=parser.parse_args();render(args.source,args.target,args.title,not args.no_return)
