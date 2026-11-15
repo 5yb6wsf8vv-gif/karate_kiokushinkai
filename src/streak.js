@@ -21,21 +21,34 @@ export function restoreStreak(state,now=Date.now()){
  return {ok:true,message:'Фонарик снова горит. Серия восстановлена!'};
 }
 const lantern=`<svg class="lantern" viewBox="0 0 64 84" aria-hidden="true"><path d="M25 10V5h14v5M32 74v7" fill="none" stroke="currentColor" stroke-width="3"/><rect x="20" y="10" width="24" height="6" rx="2" fill="currentColor"/><path class="lantern-paper" d="M22 17Q7 41 22 67H42Q57 41 42 17Z"/><path d="M22 25H42M18 34H46M17 43H47M19 52H45M22 61H42M27 18Q20 42 27 66M37 18Q44 42 37 66" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".5"/><path class="lantern-flame" d="M32 31C35 38 40 40 37 47Q32 53 27 47C23 42 29 37 32 31Z"/><rect x="20" y="68" width="24" height="6" rx="2" fill="currentColor"/></svg>`;
-export function createStreak(state,persist){
- let message='';
+export function createStreak(state,persist,onChange=()=>{}){
+ let message='',dialog=null;
  function visit(now=Date.now()){
   const before=state.streak?structuredClone(state.streak):undefined;
   if(!recordVisit(state,now))return false;
   if(!persist()){if(before)state.streak=before;else delete state.streak;return false;}
   message='';return true;
  }
- function badge(){const s=state.streak;return `<a class="streak-badge ${s?.restore?'is-out':'is-lit'}" href="#account" data-action="page:account" aria-label="Фонарик: серия ${s?.count||1} дн.${s?.restore?', пропущен день':''}">${lantern}<b>${s?.restore?'Погас':(s?.count||1)+' дн.'}</b></a>`;}
+ function badge(){const s=state.streak;return `<button type="button" class="streak-badge ${s?.restore?'is-out':'is-lit'}" data-action="streak-open" aria-haspopup="dialog" aria-label="Фонарик: серия ${s?.count||1} дн.${s?.restore?', пропущен день':''}">${lantern}<b>${s?.restore?'Погас':(s?.count||1)+' дн.'}</b></button>`;}
  function view(){const s=state.streak||{count:1},pending=Boolean(s.restore);return `<section class="card streak-card ${pending?'is-out':'is-lit'}" aria-label="Фонарик регулярности">${lantern}<div><h2>${pending?'Фонарик погас':'Фонарик горит'}</h2><p>${pending?'Вы пропустили один день. Восстановите серию за 100 XP сегодня или продолжайте новую серию.':'Серия посещений: '+s.count+' дн. Заходите каждый день, чтобы фонарик продолжал светиться.'}</p>${pending?`<button class="primary" data-action="streak-restore" ${ensureEconomy(state).xp<100?'disabled':''}>Зажечь фонарик · 100 XP</button>${ensureEconomy(state).xp<100?'<p>Недостаточно XP.</p>':''}`:''}<p class="streak-rule">День считается по времени Москвы. После двух и более пропущенных дней начинается новая серия.</p>${message?`<p role="status">${message}</p>`:''}</div></section>`;}
- function handle(action){if(action!=='streak-restore')return false;
+ function refreshDialog(){if(dialog?.open)dialog.querySelector('[data-streak-content]').innerHTML=view();}
+ function open(){
+  if(dialog?.open)return;
+  if(visit())onChange();
+  dialog=document.createElement('dialog');dialog.className='streak-dialog';dialog.setAttribute('aria-label','Фонарик регулярности');
+  dialog.innerHTML=`<button type="button" class="secondary streak-close" aria-label="Закрыть пояснение">✕</button><div data-streak-content>${view()}</div>`;
+  dialog.addEventListener('click',event=>{
+   if(event.target.closest('.streak-close')){dialog.close();return;}
+   if(event.target.closest('[data-action="streak-restore"]')){handle('streak-restore');onChange();refreshDialog();dialog.querySelector('.streak-close').focus();}
+  });
+  const opened=dialog;
+  opened.addEventListener('close',()=>{opened.remove();if(dialog===opened)dialog=null;document.querySelector('[data-streak-badge] button')?.focus();});document.body.append(opened);opened.showModal();
+ }
+ function handle(action){if(action==='streak-open'){open();return true;}if(action!=='streak-restore')return false;
   const before={streak:state.streak?structuredClone(state.streak):undefined,economy:{...ensureEconomy(state)}};
   const result=restoreStreak(state);message=result.message;
   if(!persist()){state.streak=before.streak;state.economy=before.economy;message='Не удалось сохранить восстановление. XP не списаны.';}
   return true;
  }
- return {visit,badge,view,handle};
+ return {visit,badge,view,handle,refreshDialog};
 }
