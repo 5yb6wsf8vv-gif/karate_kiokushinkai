@@ -8,8 +8,8 @@ import {techniqueIllustration} from './technique-illustrations.js';
 const moroteVideo={youtube:'y4r1qAHXHwI',attribution:'Сэйкэн моротэ-цуки · общее видео техники для трёх уровней.'};
 export const trainingVideos = [
  {id:'training-1',...trainingClip},
- {id:'training-kihon',name:'Кихон ката',url:`${import.meta.env.BASE_URL}videos/kihon-kata.mp4?v=4`,steps:['Примите исходную стойку.','Следите за поворотами и направлением движения.','Следите за положением рук и возвращением в стойку.']},
- {id:'training-10kyu',name:'10 кю-комплекс',url:`${import.meta.env.BASE_URL}videos/10-kyu-complex.mp4?v=4`,steps:['Примите исходную стойку.','Повторяйте удары и блоки вслед за тренером.','Выполняйте связку в темпе тренера или выберите замедление.']}
+ {id:'training-kihon',name:'Кихон ката',url:`${import.meta.env.BASE_URL}videos/kihon-kata.mp4?v=5`,steps:['Примите исходную стойку.','Следите за поворотами и направлением движения.','Следите за положением рук и возвращением в стойку.']},
+ {id:'training-10kyu',name:'10 кю-комплекс',url:`${import.meta.env.BASE_URL}videos/10-kyu-complex.mp4?v=5`,steps:['Примите исходную стойку.','Повторяйте удары и блоки вслед за тренером.','Выполняйте связку в темпе тренера или выберите замедление.']}
 ];
 export const lessonMedia = {'kihon-0':moroteVideo,'kihon-1':moroteVideo,'kihon-2':moroteVideo,...Object.fromEntries(trainingVideos.map(item=>[item.id,item]))};
 const escape = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

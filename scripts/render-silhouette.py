@@ -129,10 +129,6 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                         forearm=np.linalg.norm((joints[wrist,:2]-joints[elbow,:2])*np.array([width,height]))
                         radius=int(np.clip(forearm*.3,16,30))
                         cv2.circle(fist_region,tuple(hand.astype(int)),radius,255,-1,cv2.LINE_AA)
-                projected_fists=cv2.warpAffine(fist_region,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
-                if emphasize_arms:
-                    fist_edge=cv2.dilate(projected,np.ones((5,5),np.uint8))
-                    edge=np.maximum(edge,np.uint8(fist_edge*projected_fists))
                 # No glow or temporally blended silhouettes around moving limbs.
                 output=base.astype(np.float32).copy()
                 shadow=np.zeros((height,width),np.uint8)
@@ -141,7 +137,7 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 output*=1-shadow[:,:,None]*.7
 
                 border=np.maximum(0,edge.astype(np.float32)/255-alpha)
-                blue=np.array([255,115,15],np.float32) if emphasize_arms else np.array([243,219,79],np.float32)
+                blue=np.array([243,219,79],np.float32)
                 output=output*(1-border[:,:,None])+blue*border[:,:,None]
                 # Preserve real folds and overlapping limb boundaries from the source,
                 # rather than drawing inferred skeleton bones over the person.
@@ -181,12 +177,8 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 fill=np.empty_like(output)
                 for channel,color in enumerate([246,249,241]):fill[:,:,channel]=color*(.86+.14*projected_gray)
                 contour_color=np.array([116,90,34],np.float32)
-                if emphasize_arms:
-                    # Bright blue contours; fewer clothing lines instead of faded contours.
-                    contour_color=blue
-                    detail=projected_lines*.95
-                else:
-                    detail=projected_lines*.95
+                # Same contour palette, thickness and opacity as the reference Taikyoku.
+                detail=projected_lines*.95
                 fill=fill*(1-detail[:,:,None])+contour_color*detail[:,:,None]
                 output=output*(1-alpha[:,:,None])+fill*alpha[:,:,None]
                 encoded=np.uint8(np.clip(output,0,255))
