@@ -53,7 +53,7 @@ def track_arms(source):
     return repair_short_gaps(np.array(tracks))
 
 
-def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True):
+def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasize_arms=False):
     cap=cv2.VideoCapture(str(source))
     fps=float(Fraction(subprocess.check_output(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=r_frame_rate','-of','default=nw=1:nk=1',str(source)]).decode().strip()))
     if not cap.isOpened() or fps<=0:raise RuntimeError('Cannot open input video')
@@ -97,6 +97,7 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True):
                         mask=np.uint8(keep[labels])*255
                     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
                     previous_mask=mask.copy()
+                coverage=np.zeros(mask.shape,np.uint8)
                 # Pose-supported coverage is not gated by brightness or skin colour.
                 # Short tracking gaps are repaired offline, without blended video pixels.
                 if index<len(arm_tracks):
@@ -118,6 +119,12 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True):
                 projected=cv2.warpAffine(mask,matrix,(width,height),flags=cv2.INTER_LINEAR)
                 alpha=projected.astype(np.float32)/255
                 edge=cv2.dilate(projected,np.ones((3,3),np.uint8))
+                arm_region=cv2.dilate(coverage,np.ones((19,19),np.uint8))
+                projected_arms=cv2.warpAffine(arm_region,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
+                if emphasize_arms:
+                    # Broader cyan boundary only at observed arms, not clothing folds.
+                    arm_edge=cv2.dilate(projected,np.ones((5,5),np.uint8))
+                    edge=np.maximum(edge,np.uint8(arm_edge*projected_arms))
                 # No glow or temporally blended silhouettes around moving limbs.
                 output=base.astype(np.float32).copy()
                 shadow=np.zeros((height,width),np.uint8)
@@ -147,7 +154,14 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True):
                 fill=np.empty_like(output)
                 for channel,color in enumerate([246,249,241]):fill[:,:,channel]=color*(.86+.14*projected_gray)
                 contour_color=np.array([116,90,34],np.float32)
-                detail=projected_lines*.95
+                if emphasize_arms:
+                    # Stronger source edges around sleeves/hands; sparse soft fabric lines.
+                    fabric=cv2.Canny(gray,100,200)
+                    fabric=cv2.bitwise_and(fabric,inner)
+                    projected_fabric=cv2.warpAffine(fabric,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
+                    detail=projected_lines*projected_arms*.9+projected_fabric*(1-projected_arms)*.22
+                else:
+                    detail=projected_lines*.95
                 fill=fill*(1-detail[:,:,None])+contour_color*detail[:,:,None]
                 output=output*(1-alpha[:,:,None])+fill*alpha[:,:,None]
                 encoded=np.uint8(np.clip(output,0,255))
@@ -175,5 +189,5 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('target',type=Path)
-    parser.add_argument('--title',default='TAIKYOKU SONO ICHI');parser.add_argument('--no-return',action='store_true')
-    args=parser.parse_args();render(args.source,args.target,args.title,not args.no_return)
+    parser.add_argument('--title',default='TAIKYOKU SONO ICHI');parser.add_argument('--no-return',action='store_true');parser.add_argument('--emphasize-arms',action='store_true')
+    args=parser.parse_args();render(args.source,args.target,args.title,not args.no_return,args.emphasize_arms)

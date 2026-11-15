@@ -98,7 +98,9 @@ test('new uploaded complexes play as separate named lessons without kata cues',a
   await expect(dialog.getByRole('heading',{name,exact:true})).toBeVisible();
   await expect(video).toHaveAttribute('src',new RegExp(file.replace('.', '\\.')));
   await expect(dialog.getByRole('button',{name:'Начать · 3, 2, 1'})).toBeEnabled();
-  expect(await video.evaluate(v=>v.duration)).toBeGreaterThan(10);
+  const duration=await video.evaluate(v=>v.duration);
+  if(id==='training-kihon'){expect(duration).toBeGreaterThan(14);expect(duration).toBeLessThan(16);}
+  else{expect(duration).toBeGreaterThan(11);expect(duration).toBeLessThan(12);}
   await expect(dialog.locator('.follow-track')).toHaveCount(0);
   await dialog.getByRole('button',{name:'Зеркально'}).click();
   await expect(video).toHaveClass('mirrored');

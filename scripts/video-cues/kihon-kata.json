@@ -1,18 +1,18 @@
 [
   {
-    "time": 1.55,
+    "time": 1.1,
     "pose": "tsuki"
   },
   {
-    "time": 2.55,
+    "time": 2.3,
     "pose": "tsuki"
   },
   {
-    "time": 3.55,
+    "time": 3.2,
     "pose": "tsuki"
   },
   {
-    "time": 4.6,
+    "time": 4.2,
     "pose": "tsuki"
   },
   {
@@ -24,19 +24,27 @@
     "pose": "tsuki"
   },
   {
-    "time": 7.1,
+    "time": 7.6,
     "pose": "tsuki"
   },
   {
-    "time": 8.2,
+    "time": 8.6,
     "pose": "tsuki"
   },
   {
-    "time": 9.2,
+    "time": 9.4,
     "pose": "tsuki"
   },
   {
-    "time": 10.3,
+    "time": 10.8,
+    "pose": "tsuki"
+  },
+  {
+    "time": 11.6,
+    "pose": "tsuki"
+  },
+  {
+    "time": 12.8,
     "pose": "tsuki"
   }
 ]
