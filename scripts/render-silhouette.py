@@ -64,6 +64,7 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
     arm_tracks=track_arms(source)
     print('Arm tracking complete',flush=True)
     previous_mask=None
+    previous_head=None
     transform=None
     missed=0
     motion=[]
@@ -140,8 +141,7 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 output*=1-shadow[:,:,None]*.7
 
                 border=np.maximum(0,edge.astype(np.float32)/255-alpha)
-                if emphasize_arms:border*=.55+.45*projected_fists
-                blue=np.array([235,168,65],np.float32) if emphasize_arms else np.array([243,219,79],np.float32)
+                blue=np.array([255,115,15],np.float32) if emphasize_arms else np.array([243,219,79],np.float32)
                 output=output*(1-border[:,:,None])+blue*border[:,:,None]
                 # Preserve real folds and overlapping limb boundaries from the source,
                 # rather than drawing inferred skeleton bones over the person.
@@ -150,12 +150,30 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 lines=cv2.Canny(gray,35,90)
                 inner=cv2.erode(mask,np.ones((5,5),np.uint8))
                 lines=cv2.bitwise_and(lines,inner)
-                # Keep the head anonymous: no eyes, nose or mouth in the silhouette.
+                # Remove both edges AND source luminance from the full head region.
+                head_region=np.zeros(mask.shape,np.uint8)
                 if result.pose_landmarks:
                     points=result.pose_landmarks.landmark
                     head=np.array([[int(points[i].x*1280),int(points[i].y*720)] for i in range(11)])
                     hx,hy,hw,hh=cv2.boundingRect(head)
-                    cv2.ellipse(lines,(hx+hw//2,hy+hh//2),(max(8,int(hw*.85)),max(12,int(hh*1.15))),0,0,360,0,-1)
+                    previous_head=((hx+hw//2,hy+hh//2),(max(22,int(hw*1.05)),max(30,int(hh*1.5))))
+                if previous_head:
+                    cv2.ellipse(head_region,*previous_head,0,0,360,255,-1)
+                lines[head_region>0]=0
+                if emphasize_arms:
+                    # Keep a few long garment seams, not a dense map of every wrinkle.
+                    fabric=cv2.Canny(gray,100,200)
+                    fabric=cv2.bitwise_and(fabric,inner)
+                    fabric[head_region>0]=0
+                    contours,_=cv2.findContours(fabric,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+                    sparse=np.zeros(mask.shape,np.uint8)
+                    for contour in contours:
+                        if cv2.arcLength(contour,False)>=65:
+                            cv2.drawContours(sparse,[contour],-1,255,1,cv2.LINE_AA)
+                    cloth=cv2.dilate(sparse,np.ones((2,2),np.uint8))
+                    # Detail on fists uses the original observed hand boundaries.
+                    lines=np.uint8(lines*(fist_region.astype(np.float32)/255)+cloth*(1-fist_region.astype(np.float32)/255))
+                gray[head_region>0]=235
                 lines=cv2.dilate(lines,np.ones((2,2),np.uint8))
                 projected_lines=cv2.warpAffine(lines,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
                 projected_gray=cv2.warpAffine(gray,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
@@ -164,9 +182,9 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 for channel,color in enumerate([246,249,241]):fill[:,:,channel]=color*(.86+.14*projected_gray)
                 contour_color=np.array([116,90,34],np.float32)
                 if emphasize_arms:
-                    # Keep the original blue linework, softer across clothing and crisp on fists.
+                    # Bright blue contours; fewer clothing lines instead of faded contours.
                     contour_color=blue
-                    detail=projected_lines*(.38+.57*projected_fists)
+                    detail=projected_lines*.95
                 else:
                     detail=projected_lines*.95
                 fill=fill*(1-detail[:,:,None])+contour_color*detail[:,:,None]
