@@ -12,7 +12,7 @@ import numpy as np
 from arm_mask import arm_mask,repair_short_gaps
 
 
-def arena(width, height):
+def arena(width, height, title="TAIKYOKU SONO ICHI"):
     y, x = np.mgrid[0:height, 0:width]
     glow = np.exp(-(((x-width*.5)/(width*.45))**2+((y-height*.43)/(height*.6))**2)*2)
     image = np.empty((height,width,3),np.float32)
@@ -32,7 +32,7 @@ def arena(width, height):
             cv2.polylines(image,[corners],True,(119,103,53),1,cv2.LINE_AA)
     cv2.polylines(image,[np.array([point(0,0),point(1,0),point(1,1),point(0,1)])],True,(222,192,76),3,cv2.LINE_AA)
     cv2.ellipse(image,(width//2,343),(210,210),0,15,340,(95,65,28),2,cv2.LINE_AA)
-    cv2.putText(image,'TAIKYOKU SONO ICHI',(48,57),cv2.FONT_HERSHEY_SIMPLEX,.85,(215,226,235),2,cv2.LINE_AA)
+    cv2.putText(image,title,(48,57),cv2.FONT_HERSHEY_SIMPLEX,.85,(215,226,235),2,cv2.LINE_AA)
     cv2.putText(image,'KIHONGO  /  FOLLOW THE COACH',(49,87),cv2.FONT_HERSHEY_SIMPLEX,.4,(155,148,118),1,cv2.LINE_AA)
     return image
 
@@ -53,13 +53,13 @@ def track_arms(source):
     return repair_short_gaps(np.array(tracks))
 
 
-def render(source,target):
+def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True):
     cap=cv2.VideoCapture(str(source))
     fps=float(Fraction(subprocess.check_output(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=r_frame_rate','-of','default=nw=1:nk=1',str(source)]).decode().strip()))
     if not cap.isOpened() or fps<=0:raise RuntimeError('Cannot open input video')
     total=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     width,height=1280,720
-    base=arena(width,height)
+    base=arena(width,height,title)
     print('Tracking arms before rendering',flush=True)
     arm_tracks=track_arms(source)
     print('Arm tracking complete',flush=True)
@@ -158,8 +158,8 @@ def render(source,target):
                 index+=1
         # The missing return in the source is represented by an editorial dissolve,
         # followed by a hold of the exact initial stance. No invented kata steps.
-        return_frames=round(fps*1.2)
-        hold_frames=round(fps*1.5)
+        return_frames=round(fps*1.2) if return_to_start else 0
+        hold_frames=round(fps*1.5) if return_to_start else 0
         for frame_index in range(return_frames):
             amount=(frame_index+1)/return_frames
             blended=cv2.addWeighted(last_frame,1-amount,first_frame,amount,0)
@@ -175,4 +175,5 @@ def render(source,target):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('target',type=Path)
-    args=parser.parse_args();render(args.source,args.target)
+    parser.add_argument('--title',default='TAIKYOKU SONO ICHI');parser.add_argument('--no-return',action='store_true')
+    args=parser.parse_args();render(args.source,args.target,args.title,not args.no_return)

@@ -6,9 +6,14 @@ import {techniqueIllustration} from './technique-illustrations.js';
 // Fill with verified playable URLs when source videos are supplied.
 // Keep the original host attribution alongside each URL.
 const moroteVideo={youtube:'y4r1qAHXHwI',attribution:'Сэйкэн моротэ-цуки · общее видео техники для трёх уровней.'};
-export const lessonMedia = {'kihon-0':moroteVideo,'kihon-1':moroteVideo,'kihon-2':moroteVideo};
+export const trainingVideos = [
+ {id:'training-1',...trainingClip},
+ {id:'training-kihon',name:'Кихон ката',url:`${import.meta.env.BASE_URL}videos/kihon-kata.mp4`,steps:['Примите исходную стойку.','Повторяйте удары и блоки вслед за тренером.','Следите за положением рук и возвращением в стойку.']},
+ {id:'training-10kyu',name:'10 кю-комплекс',url:`${import.meta.env.BASE_URL}videos/10-kyu-complex.mp4`,steps:['Примите исходную стойку.','Следите за поворотами и направлением движения.','Выполняйте связку в темпе тренера или выберите замедление.']}
+];
+export const lessonMedia = {'kihon-0':moroteVideo,'kihon-1':moroteVideo,'kihon-2':moroteVideo,...Object.fromEntries(trainingVideos.map(item=>[item.id,item]))};
 const escape = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const lesson = id => id==='training-1'?trainingClip:id.startsWith('kihon-')
+const lesson = id => lessonMedia[id]?.url?lessonMedia[id]:id.startsWith('kihon-')
  ? (()=>{const row=kihon10[Number(id.slice(6))];return row&&{name:row[0],steps:[row[1],`Рабочая сторона: ${row[2].toLowerCase()}.`,'Вернитесь в исходное положение.']};})()
  : techniques.find(t=>t.id===id);
 export function videoLessonButton(id){return `<button class="secondary video-lesson-open" data-action="video-lesson:${id}">▷ Повторяй за тренером</button>`;}

@@ -88,3 +88,22 @@ test('video prompts use the same phased illustrations as technique cards',async(
  expect(await dialog.evaluate(e=>e.scrollWidth<=e.clientWidth)).toBe(true);
  await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
 });
+
+test('new uploaded complexes play as separate named lessons without kata cues',async({page})=>{
+ await page.goto('/#tech');
+ for(const [id,name,file] of [['training-kihon','Кихон ката','kihon-kata.mp4'],['training-10kyu','10 кю-комплекс','10-kyu-complex.mp4']]){
+  await expect(page.getByRole('heading',{name,exact:true})).toBeVisible();
+  await page.locator(`[data-action="video-lesson:${id}"]`).click();
+  const dialog=page.getByRole('dialog'),video=dialog.locator('video');
+  await expect(dialog.getByRole('heading',{name,exact:true})).toBeVisible();
+  await expect(video).toHaveAttribute('src',new RegExp(file.replace('.', '\\.')));
+  await expect(dialog.getByRole('button',{name:'Начать · 3, 2, 1'})).toBeEnabled();
+  expect(await video.evaluate(v=>v.duration)).toBeGreaterThan(10);
+  await expect(dialog.locator('.follow-track')).toHaveCount(0);
+  await dialog.getByRole('button',{name:'Зеркально'}).click();
+  await expect(video).toHaveClass('mirrored');
+  await dialog.getByRole('button',{name:'Начать · 3, 2, 1'}).click();
+  await expect(video).toHaveJSProperty('paused',false,{timeout:6000});
+  await dialog.getByRole('button',{name:'Закрыть видеоурок'}).click();
+ }
+});
