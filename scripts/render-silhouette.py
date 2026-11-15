@@ -119,12 +119,19 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 projected=cv2.warpAffine(mask,matrix,(width,height),flags=cv2.INTER_LINEAR)
                 alpha=projected.astype(np.float32)/255
                 edge=cv2.dilate(projected,np.ones((3,3),np.uint8))
-                arm_region=cv2.dilate(coverage,np.ones((19,19),np.uint8))
-                projected_arms=cv2.warpAffine(arm_region,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
+                fist_region=np.zeros(mask.shape,np.uint8)
+                if index<len(arm_tracks):
+                    joints=arm_tracks[index]
+                    for elbow,wrist in [(13,15),(14,16)]:
+                        if min(joints[elbow,2],joints[wrist,2])<.2:continue
+                        hand=joints[wrist,:2]*np.array([width,height])
+                        forearm=np.linalg.norm((joints[wrist,:2]-joints[elbow,:2])*np.array([width,height]))
+                        radius=int(np.clip(forearm*.3,16,30))
+                        cv2.circle(fist_region,tuple(hand.astype(int)),radius,255,-1,cv2.LINE_AA)
+                projected_fists=cv2.warpAffine(fist_region,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
                 if emphasize_arms:
-                    # Broader cyan boundary only at observed arms, not clothing folds.
-                    arm_edge=cv2.dilate(projected,np.ones((5,5),np.uint8))
-                    edge=np.maximum(edge,np.uint8(arm_edge*projected_arms))
+                    fist_edge=cv2.dilate(projected,np.ones((5,5),np.uint8))
+                    edge=np.maximum(edge,np.uint8(fist_edge*projected_fists))
                 # No glow or temporally blended silhouettes around moving limbs.
                 output=base.astype(np.float32).copy()
                 shadow=np.zeros((height,width),np.uint8)
@@ -133,7 +140,9 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 output*=1-shadow[:,:,None]*.7
 
                 border=np.maximum(0,edge.astype(np.float32)/255-alpha)
-                output=output*(1-border[:,:,None]) + np.array([243,219,79],np.float32)*border[:,:,None]
+                if emphasize_arms:border*=.55+.45*projected_fists
+                blue=np.array([235,168,65],np.float32) if emphasize_arms else np.array([243,219,79],np.float32)
+                output=output*(1-border[:,:,None])+blue*border[:,:,None]
                 # Preserve real folds and overlapping limb boundaries from the source,
                 # rather than drawing inferred skeleton bones over the person.
                 smooth=cv2.bilateralFilter(frame,5,25,25)
@@ -155,11 +164,9 @@ def render(source,target,title="TAIKYOKU SONO ICHI",return_to_start=True,emphasi
                 for channel,color in enumerate([246,249,241]):fill[:,:,channel]=color*(.86+.14*projected_gray)
                 contour_color=np.array([116,90,34],np.float32)
                 if emphasize_arms:
-                    # Stronger source edges around sleeves/hands; sparse soft fabric lines.
-                    fabric=cv2.Canny(gray,100,200)
-                    fabric=cv2.bitwise_and(fabric,inner)
-                    projected_fabric=cv2.warpAffine(fabric,matrix,(width,height),flags=cv2.INTER_LINEAR).astype(np.float32)/255
-                    detail=projected_lines*projected_arms*.9+projected_fabric*(1-projected_arms)*.22
+                    # Keep the original blue linework, softer across clothing and crisp on fists.
+                    contour_color=blue
+                    detail=projected_lines*(.38+.57*projected_fists)
                 else:
                     detail=projected_lines*.95
                 fill=fill*(1-detail[:,:,None])+contour_color*detail[:,:,None]
