@@ -1,3 +1,4 @@
+import {extraTechniques10} from './technique10.js';
 import {basicKicks} from '../shared/basic-kicks.js';
 import {program10Cards} from './program10.js';
 import {mergeTermDeck} from './japanese-terms.js';
@@ -19,6 +20,7 @@ for(const kick of basicKicks){terms.find(t=>t.id===kick.id).groups.push('vocabul
 terms.find(t=>t.id==='mawashi').groups.push('vocabulary');
 terms.find(t=>t.id==='mawashi').topics.push('Технический словарь');
 export const techniques = [
+...extraTechniques10,
 
 {id:'zenkutsu',name:'Дзэнкуцу-дачи',category:'Стойки',jp:'前屈立ち',steps:['С тренером определите длину и ширину стойки.','Согните переднюю ногу, направляя колено по линии стопы.','Сохраняйте устойчивость и ровное положение корпуса.'],errors:['Сведение колена внутрь','Чрезмерное напряжение плеч']},
 {id:'kiba',name:'Киба-дачи',category:'Стойки',jp:'騎馬立ち',steps:['Поставьте стопы шире плеч в пределах комфортной подвижности.','Плавно согните колени по направлению носков.','Держите корпус вертикально, дышите свободно.'],errors:['Слишком глубокая стойка','Колени заваливаются внутрь']},

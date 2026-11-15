@@ -1,3 +1,4 @@
+import {extraTechniques10} from './technique10.js';
 import {basicKicks} from '../shared/basic-kicks.js';
 const sheets={
  keageStraight:{url:new URL('./assets/technique-silhouettes/keage-straight.png',import.meta.url).href,width:1536,height:1024,columns:4,rows:2},
@@ -99,6 +100,7 @@ termPoses['p10-kihon-8']=sequence(lowerSteps);
 termPoses['p10-kihon-9']=kickSteps.hiza;
 termPoses['p10-kihon-10']=kickSteps.kin;
 const techniquePoses={mawashigeri:mawashiSteps,zenkutsu:one('zenkutsu'),kiba:one('kiba'),seiken:one('middleAttack'),gedan:sequence(lowerSteps),age:sequence(upperSteps),maegeri:kickSteps.mae,hizageri:kickSteps.hiza,kingeri:kickSteps.kin};
+for(const item of extraTechniques10){techniquePoses[item.id]=item.poses.map((pose,i)=>({pose,...(item.captions?{caption:item.captions[i],step:i+1}:{})}));}
 for(const kick of basicKicks){
  const items=kick.steps.map((caption,i)=>{
   const pose=`${kick.id}Step${i+1}`;
