@@ -179,3 +179,5 @@ button,input,select,textarea{max-width:100%;overflow-wrap:anywhere}
  body.relay-running main{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
 }
 .motion-arrow{stroke:#83bdff}
+
+.skin-card button,.base-avatar button{font-size:20px;line-height:1.3;min-height:64px;padding:17px 16px}
