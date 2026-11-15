@@ -20,7 +20,7 @@ export function buySkin(state,id){
 export function equipSkin(state,id){const c=ensureCosmetics(state);if(id!=='default'&&!c.owned.includes(id))return false;c.equipped=id;return true;}
 export function avatar(id,cls=''){
  const skin=skinById(id);
- return `<span class="player-avatar ${cls}" role="img" aria-label="Аватар: ${skin.name}" data-skin="${skin.id}"><span class="skin-art" style="background-image:url('${skin.id==='default'?skinsImage:animalSkinsImage}');background-size:${skin.id==='default'?'200% 200%':'300% 200%'};background-position:${skin.position}"></span></span>`;
+ return `<span class="player-avatar ${cls}" role="img" aria-label="Аватар: ${skin.name}" data-skin="${skin.id}"><span class="skin-art" style="background-image:url('${skin.id==='default'||skin.art==='classic'?skinsImage:animalSkinsImage}');background-size:${skin.id==='default'||skin.art==='classic'?'200% 200%':'300% 200%'};background-position:${skin.position}"></span></span>`;
 }
 export function createShop(state,persist){
  ensureCosmetics(state);let message='';
