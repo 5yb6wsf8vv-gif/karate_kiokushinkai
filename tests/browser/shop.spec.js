@@ -1,7 +1,7 @@
 import {navigate} from '../navigation.js';
 import {test,expect} from './fixtures.js';
-test('six skin slots, insufficient XP, buy, equip, reload and duel preview',async({page})=>{
- await page.goto('/#shop');await expect(page.locator('.skin-card')).toHaveCount(6);
+test('seven skin slots, insufficient XP, buy, equip, reload and duel preview',async({page})=>{
+ await page.goto('/#shop');await expect(page.locator('.skin-card')).toHaveCount(7);
  await expect(page.locator('[data-shop-skin="skin-1"]').getByRole('button',{name:'Купить за 170 XP',exact:true})).toBeDisabled();
  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('kyokushin-v1'));s.economy.xp=400;localStorage.setItem('kyokushin-v1',JSON.stringify(s));});await page.reload();
  await page.locator('[data-shop-skin="skin-1"]').getByRole('button',{name:'Купить за 170 XP',exact:true}).click();await expect(page.locator('.shop-wallet')).toContainText('230 XP');

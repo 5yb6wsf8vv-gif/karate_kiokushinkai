@@ -23,3 +23,7 @@ test('monkey requires 1000 XP and new animal avatars are shared online',()=>{
  const s={economy:{xp:999,reviewCorrect:0}};assert.equal(buySkin(s,'skin-5').ok,false);assert.equal(s.economy.xp,999);s.economy.xp=1000;assert.equal(buySkin(s,'skin-5').ok,true);assert.equal(s.economy.xp,0);assert.equal(s.cosmetics.equipped,'skin-5');
  const e=new DuelEngine();const a=e.create('A','skin-4'),b=e.join(a.code,'B','skin-5');assert.deepEqual(e.view(a.code,b.token).players.map(p=>p.skinId),['skin-4','skin-5']);
 });
+
+test('black cat costs 200 XP and is accepted in kumite',()=>{
+ const s={economy:{xp:199,reviewCorrect:0}};assert.equal(buySkin(s,'skin-7').ok,false);s.economy.xp=200;assert.equal(buySkin(s,'skin-7').ok,true);assert.equal(s.economy.xp,0);assert.equal(s.cosmetics.equipped,'skin-7');const e=new DuelEngine(),a=e.create('Кот','skin-7');assert.equal(e.view(a.code,a.token).players[0].skinId,'skin-7');
+});
